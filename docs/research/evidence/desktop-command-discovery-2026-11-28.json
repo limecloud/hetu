@@ -47,6 +47,46 @@
       "passed": true,
       "version": "0.172.0"
     },
-    "installation_status": "pending"
+    "installation_status": "passed",
+    "installed": {
+      "version": "0.16.0",
+      "target": "/Applications/Hetu.app",
+      "backup_created": false,
+      "verified_artifacts": 3154,
+      "signature": true,
+      "user_indexes_unchanged": true,
+      "source_sha256": "4f3cfdcdbdd92563859d130426ddaacdf86d45989b32f1c905b71f45582ec25f"
+    },
+    "packaged_live": {
+      "passed": 2,
+      "real_codex_minimal_path": true,
+      "same_thread_restore": true,
+      "model_turns": 0,
+      "settings_in_work_area": true,
+      "result": "../../../output/local-install-v0160/package-confirmed-results/"
+    },
+    "installed_live": {
+      "passed": 2,
+      "result": "../../../output/local-install-v0160/installed-results/"
+    },
+    "chat_regression": {
+      "passed": true,
+      "result": "../../../output/local-install-v0160/desktop-final-results/"
+    },
+    "native_helper_reuse": {
+      "reason": "机器高负载使Swift编译超过120秒",
+      "source_and_build_script_digests_identical": true,
+      "output_sha256": "05cc0acf0e216dad01b94a9d12152341bef877d62e19463349844cf0bba72584",
+      "source_manifest": "../../../output/local-install-20261127/hetu-dev-V9jtBj/manifest.json"
+    }
+  },
+  "release": {
+    "version": "0.16.0",
+    "status": "regression_validation_in_progress",
+    "failed_runs": [
+      46036082132,
+      46037356573
+    ],
+    "cancelled_release": 46038934141
   }
 }

@@ -1,10 +1,10 @@
 {
   "schema_version": "1.0.0",
-  "resource_uri": "ui://hetu/workbench/2/24a590111df171a737924b8ce852a03a2fe2521673826af326a6af0ed9be9cbd",
+  "resource_uri": "ui://hetu/workbench/2/a45090237c4af91aa03fdf20fa772a4cebeeaabd2faa4c71755097b607fe4a9c",
   "mime_type": "text/html;profile=mcp-app",
   "sdk": "@modelcontextprotocol/ext-apps@2.0.4",
-  "sha256": "24a590111df171a737924b8ce852a03a2fe2521673826af326a6af0ed9be9cbd",
-  "size_bytes": 5971974,
+  "sha256": "a45090237c4af91aa03fdf20fa772a4cebeeaabd2faa4c71755097b607fe4a9c",
+  "size_bytes": 5972024,
   "source_sha256": {
     "../../packages/workbench-ui/src/reading.css": "a5f13f78e461ce72b64540cc09686e8a78a8d19a835ea9258af1ba6031c694c2",
     "../../packages/workbench-ui/src/manuscript-review.css": "e5da924aefd29e7ca13c735939b8e749396dcedc25e2344dddfb4409fafd2cbc",
@@ -153,7 +153,7 @@
     "../desktop/src/renderer/computer-control-pane.tsx": "06d2b36594dd3ceb7f105d43fc5ee5e1090a285b1d7cbc469a266e4ddf44288f",
     "../desktop/src/renderer/external-runtime.css": "c42d1602c17d121f29bf5a983d14c630fe8875e6209d2cb0e47ff87e2ae09856",
     "../desktop/src/renderer/external-runtime-panel.tsx": "8534dd757144eaa652aed8ee416fa92f2cc431fbbf3c665ba46862913f2a2649",
-    "../desktop/src/renderer/agent-session.tsx": "276a92978864b9a578a4bf9729220575371be49e76dca7c18423a17f9c8b175c",
+    "../desktop/src/renderer/agent-session.tsx": "279072a8dbd61eafca30cf28d62a043c3e7cbbdedb5cca57fc83de20f8b8f64f",
     "../desktop/src/renderer/workbench.tsx": "eabfe287a17b6b82b0843a83ee37f5340a438cda6c8634291528f22e2ebbe7bc",
     "../desktop/src/renderer/agent-workspace.tsx": "cd7d8bbb8ebc475750406a8c61e5317fc3edb8670de63a05bd75b3e53ff9453f",
     "../desktop/src/renderer/outlines.tsx": "15fcecdd47872b37996a37e3b02f928d9045c19f5c0e8abdc2025949db89b205",

@@ -77,7 +77,7 @@ test("目录和预览完整键盘菜单、读取恢复、旧修订及迟到回�
     await app.evaluate((_,id)=>(globalThis as any).__failDocument=id,documents[2].document.document_id);
     await row("第四章 风雨").click();await expect(preview.getByRole("alert")).toContainText("隔离读取故障");await preview.getByRole("button",{name:"重新读取预览",exact:true}).click();await expect(preview).toContainText("第四章 风雨的固定原文");
     const reads=await app.evaluate((_,id)=>(globalThis as any).__contentReads[id],documents[2].document.document_id);
-    await tab("Codex").click();await row("第四章 风雨").click();await expect(preview).toContainText("第四章 风雨的固定原文");expect(await app.evaluate((_,id)=>(globalThis as any).__contentReads[id],documents[2].document.document_id)).toBe(reads);
+    await sessionTab.click();await row("第四章 风雨").click();await expect(preview).toContainText("第四章 风雨的固定原文");expect(await app.evaluate((_,id)=>(globalThis as any).__contentReads[id],documents[2].document.document_id)).toBe(reads);
     await app.evaluate((_,id)=>(globalThis as any).__delayDocument=id,documents[3].document.document_id);
     await row("第五章 来信").click();await expect.poll(()=>app.evaluate(()=>(globalThis as any).__delayed)).toBe(true);
     await row("第一章 雾港").click();await expect(preview).toContainText("灯塔在黎明前亮起");await app.evaluate(()=>(globalThis as any).__releasePreview());await expect(preview).toContainText("灯塔在黎明前亮起");await expect(preview).not.toContainText("第五章 来信的固定原文");
@@ -93,7 +93,7 @@ test("目录和预览完整键盘菜单、读取恢复、旧修订及迟到回�
     await expect(tab("第二章 潮声（旧修订）")).toHaveAttribute("aria-selected","true");
     await page.screenshot({path:path.join(screenshots,"fixed-revision-preview.png")});
     await preview.getByRole("button",{name:"查看当前修订",exact:true}).click();await expect(preview).toContainText("第二章的新修订正文");await expect(preview.getByText("正在查看旧修订",{exact:true})).toHaveCount(0);
-    await page.getByRole("tab",{name:"第二章 潮声",exact:true}).last().click({button:"right"});await page.screenshot({path:path.join(screenshots,"preview-tab-menu.png")});await page.getByRole("menuitem",{name:"关闭所有预览",exact:true}).click();await expect(page.getByRole("tab")).toHaveCount(0);await expect(page.locator(".agent-content-terminal")).toBeVisible();await expect(page.locator(".xterm-helper-textarea")).toBeFocused();
+    await page.getByRole("tab",{name:"第二章 潮声",exact:true}).last().click({button:"right"});await page.screenshot({path:path.join(screenshots,"preview-tab-menu.png")});await page.getByRole("menuitem",{name:"关闭所有预览",exact:true}).click();await expect(page.locator(".agent-content-tabs [role=tab]")).toHaveCount(0);await expect(sessionTab).toBeVisible();await expect(page.locator(".agent-content-terminal")).toBeVisible();await expect(page.locator(".xterm-helper-textarea")).toBeFocused();
     const after=await page.evaluate(()=>window.hetuDesktop.agentSession("get"));expect(after.session_id).toBe(before.session_id);expect(after.thread_id).toBe(before.thread_id);expect(after.state).toBe("idle");
     await page.screenshot({path:path.join(screenshots,"preview-keyboard-and-recovery.png")});
   }finally{await app.evaluate(()=>(globalThis as any).__releasePreview?.()).catch(()=>{});await closeApplication(app);await core.close();}
