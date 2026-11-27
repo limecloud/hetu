@@ -24,5 +24,5 @@ test("Finder环境发现真实Codex并连接TUI，恢复原线程且不发送模
   await expect.poll(async()=>{const state=await get();return state.terminal_connected&&state.terminal_replay?.includes("]7501;state=idle");},{timeout:60000}).toBe(true);
   const restored=await get();expect(restored.thread_id).toBe(original.thread_id);expect(restored.messages).toHaveLength(0);
   await writeFile(info.outputPath("discovery.json"),JSON.stringify({packaged:!!executable,minimal_path:true,explicit_codex_override:false,real_tui_connected:true,same_thread_restored:true,model_messages:0},null,2)+"\n");
- }finally{await closeApplication(app);}
+ }finally{await app.windows()[0]?.evaluate(()=>window.hetuDesktop.agentSession("stop",{scope:"library"})).catch(()=>{});await closeApplication(app);}
 });

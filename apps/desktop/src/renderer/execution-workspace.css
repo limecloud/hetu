@@ -35,7 +35,8 @@
 .execution-navigation .navigation-resize { left:auto; right:-3px; bottom:0; }
 .execution-navigation-backdrop { display:none; }
 .execution-tab-strip { display:flex; align-self:stretch; align-items:center; flex:1; min-width:0; overflow:hidden; }
-.execution-tabs { display:flex; align-self:stretch; min-width:0; max-width:100%; overflow:auto; scrollbar-width:none; }
+.execution-tab-track { display:flex; flex:1; align-self:stretch; min-width:0; overflow:auto; scrollbar-width:none; }
+.execution-tabs { display:flex; align-self:stretch; flex-shrink:0; min-width:0; }
 .execution-tab { display:flex; align-items:center; flex-shrink:0; min-width:128px; max-width:220px; border-right:.5px solid var(--line); border-bottom:2px solid transparent; background:var(--hover); }
 .execution-tab[data-active=true] { background:var(--page); border-bottom-color:var(--blue-9); }
 .execution-tab > [role=tab] { display:flex; align-items:center; justify-content:flex-start; gap:6px; min-width:0; flex:1; height:33px; padding:4px 8px; border:0; border-radius:0; color:var(--muted); background:transparent; font-size:12px; font-weight:400; }

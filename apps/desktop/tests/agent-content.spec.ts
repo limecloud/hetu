@@ -18,6 +18,7 @@ test("目录和预览完整键盘菜单、读取恢复、旧修订及迟到回�
   const call=async(action:string,input:any)=>{const result=await core.request("workspace/request",{action,contract_revision:"1",input});expect(result.status,JSON.stringify(result)).toBe("succeeded");return result.data;};
   const documents:any[]=[];
   for(const [index,title] of ["第二章 潮声","第三章 夜航","第四章 风雨","第五章 来信"].entries())documents.push(await call("hetu.documents.create",{kind:"novel_chapter",title,source_format:"markdown",content:title+"的固定原文。"+"\n\n海风从远方吹来。".repeat(80),operation_key:"content-"+index}));
+  const access=await call("hetu.collaboration.authorize_workspace",{work_ref:context.novel,client_adapter:"codex",collaboration_path:collaboration,operation_key:"initial-connection"});
   await mkdir(profile,{recursive:true});await writeFile(path.join(profile,"creative-library.json"),JSON.stringify({schema_version:1,roots:[{path:workspace,workspace_id:context.novel.workspace_id,works:[{work_ref:context.novel,title:"默认小说"}]}]}));
   const env={...process.env,HETU_DESKTOP_PROFILE:profile,HETU_COLLABORATION_DIR:collaboration};
   for(const key of ["HETU_APP_SERVER","HETU_CLI","HETU_MCP","HETU_PLUGIN_NODE","ELECTRON_RUN_AS_NODE"])delete (env as Record<string,string|undefined>)[key];
@@ -27,7 +28,6 @@ test("目录和预览完整键盘菜单、读取恢复、旧修订及迟到回�
     const page=await app.firstWindow();await page.setViewportSize({width:1440,height:900});
     await page.getByRole("button",{name:"刷新创作库",exact:true}).click();await page.getByRole("button",{name:"打开作品 默认小说",exact:true}).click();await navigate(page,"Agent 协作");await page.getByRole("button",{name:"关闭创建会话",exact:true}).click();
     // 当前章节交接必须修复失效的私有连接，不能让作者再复制正文或手工授权。
-    const access=await call("hetu.collaboration.authorize_workspace",{work_ref:context.novel,client_adapter:"codex",collaboration_path:collaboration,operation_key:"initial-connection"});
     const grantFile=path.join(collaboration,"management/codex",access.management_ref.grant_id+".json");
     const grant=JSON.parse(await readFile(grantFile,"utf8"));grant.root_identity.device+=1;await writeFile(grantFile,JSON.stringify(grant));
     expect((await page.evaluate(()=>window.hetuDesktop.connection("status","codex"))).authorized).toBe(false);
@@ -49,7 +49,7 @@ test("目录和预览完整键盘菜单、读取恢复、旧修订及迟到回�
     await tab("第一章 雾港").focus();await tab("第一章 雾港").press("Shift+F10");await page.getByRole("menuitem",{name:"保留标签",exact:true}).click();await expect(page.locator(".agent-content-temporary")).toHaveCount(0);
     await row("第三章 夜航").dblclick();await expect(tab("第三章 夜航")).toBeVisible();
     await tab("第一章 雾港").focus();await tab("第一章 雾港").press("ArrowLeft");await expect(tab("第二章 潮声")).toBeFocused();await expect(tab("第三章 夜航")).toHaveAttribute("aria-selected","true");await tab("第二章 潮声").press("Enter");await expect(tab("第二章 潮声")).toHaveAttribute("aria-selected","true");
-    await tab("第二章 潮声").press("Home");const sessionTab=tab(before.title??"Codex");await expect(sessionTab).toBeFocused();await expect(tab("第二章 潮声")).toHaveAttribute("aria-selected","true");await sessionTab.press("Enter");await expect(page.locator(".agent-content-terminal")).toBeVisible();
+    await tab("第二章 潮声").press("Home");const sessionTab=page.getByRole("tablist",{name:"会话标签",exact:true}).getByRole("tab").first();await expect(sessionTab).toBeFocused();await expect(tab("第二章 潮声")).toHaveAttribute("aria-selected","true");await sessionTab.press("Enter");await expect(page.locator(".agent-content-terminal")).toBeVisible();
     await sessionTab.press("End");await expect(tab("第三章 夜航")).toBeFocused();await tab("第三章 夜航").press("Enter");
     await tab("第三章 夜航").click({button:"middle"});await expect(tab("第三章 夜航")).toHaveCount(0);await expect(tab("第一章 雾港")).toHaveAttribute("aria-selected","true");await expect(tab("第一章 雾港")).toBeFocused();
     await tab("第二章 潮声").click({button:"right"});await page.getByRole("menuitem",{name:"关闭右侧预览",exact:true}).click();await expect(tab("第一章 雾港")).toHaveCount(0);

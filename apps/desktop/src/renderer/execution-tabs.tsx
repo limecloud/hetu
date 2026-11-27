@@ -45,7 +45,7 @@ export function ExecutionTabs({items, activeId, disabled, onSelect, onClose, onN
     if(event.nativeEvent.isComposing||!["ArrowLeft","ArrowRight","Home","End"].includes(event.key)||(event.target as HTMLElement).getAttribute("role")!=="tab")return;
     const tabs=[...event.currentTarget.querySelectorAll<HTMLButtonElement>('[role="tab"]')].filter(tab=>!tab.disabled),index=tabs.indexOf(event.target as HTMLButtonElement);if(!tabs.length)return;
     event.preventDefault();event.stopPropagation();const next=event.key==="Home"?0:event.key==="End"?tabs.length-1:(index+(event.key==="ArrowLeft"?-1:1)+tabs.length)%tabs.length;tabs[next]?.focus();
-  }}><div ref={host} className="execution-tabs" role="presentation">
+  }}><div ref={host} className="execution-tab-track"><div className="execution-tabs" role="presentation">
     {items.map((item, index) => <div className="execution-tab" key={item.session_id} data-active={activeId === item.session_id}>
       <button type="button" id={"execution-tab-"+item.session_id} role="tab" aria-controls={panelId} aria-selected={activeId === item.session_id} title={item.title} disabled={disabled} tabIndex={activeId === item.session_id ? 0 : -1} onClick={() => onSelect(item.session_id)} onKeyDown={event => {
         if(event.nativeEvent.isComposing) return;
@@ -54,5 +54,5 @@ export function ExecutionTabs({items, activeId, disabled, onSelect, onClose, onN
       }}><Icon name="comment" size={12}/><span>{item.title}</span></button>
       <IconButton icon="close" label={"关闭标签 " + item.title} title="关闭视图，保留原会话与后台执行" disabled={disabled} onClick={() => onClose(item.session_id)}/>
     </div>)}
-  </div>{children}<IconButton icon="plus" label={newLabel} disabled={disabled} onClick={onNew}/></div>;
+  </div>{children}</div><IconButton icon="plus" label={newLabel} disabled={disabled} onClick={onNew}/></div>;
 }

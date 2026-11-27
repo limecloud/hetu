@@ -15,11 +15,12 @@ export function AgentPreviewTabs({sessionTitle,tabs,activeId,onSelect,onClose,on
     const reveal=()=>{
       const selected=element.querySelector<HTMLElement>('[role="tab"][aria-selected="true"]');if(!selected)return;
       const target=selected.parentElement===element?selected:selected.parentElement!;
-      const bounds=element.getBoundingClientRect(),item=target.getBoundingClientRect();
-      if(item.right>bounds.right)element.scrollLeft+=item.right-bounds.right;
-      if(item.left<bounds.left)element.scrollLeft-=bounds.left-item.left;
+      const scroll=element.closest<HTMLElement>(".execution-tab-track")??element;
+      const bounds=scroll.getBoundingClientRect(),item=target.getBoundingClientRect();
+      if(item.right>bounds.right)scroll.scrollLeft+=item.right-bounds.right;
+      if(item.left<bounds.left)scroll.scrollLeft-=bounds.left-item.left;
     };
-    reveal();const observer=new ResizeObserver(reveal);observer.observe(element);return()=>observer.disconnect();
+    reveal();const observer=new ResizeObserver(reveal);observer.observe(element);const track=element.closest(".execution-tab-track");if(track)observer.observe(track);return()=>observer.disconnect();
   },[activeId,tabLayout]);
   const focus=(id?:string)=>requestAnimationFrame(()=>[...host.current?.querySelectorAll<HTMLButtonElement>("[role=tab]")??[]].find(button=>button.dataset.previewId===(id??""))?.focus({preventScroll:true}));
   const close=(ids:string[])=>focus(onClose(ids));

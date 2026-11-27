@@ -26,6 +26,7 @@ test("独立桌面 Agent 会话通过精确作品引用运行在私有沙箱", a
   await writeFile(codex, `#!/bin/sh\nexec ${process.execPath} ${JSON.stringify(codex + ".mjs")} ${JSON.stringify(log)} "$@"\n`);
   await writeFile(codex + ".mjs", `
     import { appendFileSync } from "node:fs";
+    import { randomUUID } from "node:crypto";
     import http from "node:http";
     import WebSocket from ${JSON.stringify(createRequire(import.meta.url).resolve("ws"))};
     const log = process.argv[2];
@@ -39,7 +40,7 @@ test("独立桌面 Agent 会话通过精确作品引用运行在私有沙箱", a
       else if(message.method==="config/read")reply(message.id,{config:{}});
       else if (message.method === "thread/start" || message.method === "thread/resume") {
         appendFileSync(log, JSON.stringify({ method: message.method, params: message.params, collaboration: process.env.HETU_COLLABORATION_DIR }) + "\\n");
-        reply(message.id, { thread: { id: ${JSON.stringify(threadId)} } });
+        reply(message.id, { thread: { id: message.params.threadId ?? ${JSON.stringify(threadId)} + "-" + randomUUID() } });
       } else if (message.method === "turn/start") {
         appendFileSync(log, JSON.stringify({ method: message.method, params: message.params }) + "\\n");
         reply(message.id, { turn: { id: "turn-desktop-e2e" } });
@@ -70,9 +71,14 @@ test("独立桌面 Agent 会话通过精确作品引用运行在私有沙箱", a
     await page.evaluate(async()=>{const api=(window as any).hetuDesktop;const state=await api.settings("preferences");await api.settings("update",{expected_revision:state.revision,patch:{agent_session:{default_surface:"gui"}}});});
     await navigate(page, "Agent 协作");
     await page.getByRole("dialog",{name:"创建会话",exact:true}).getByRole("button",{name:/^引擎(?: |$)/}).click();await page.getByRole("button",{name:"打开聊天",exact:true}).click();
+    await expect(page.getByRole("dialog",{name:"创建会话",exact:true})).toHaveCount(0,{timeout:30000});
     await expect(page.getByText("已连接", { exact: true })).toBeVisible({ timeout: 30000 });
+    await expect.poll(async()=> (await page.evaluate(()=>window.hetuDesktop.agentSession("get"))).state,{timeout:30000}).toBe("ready");
     await page.getByRole("textbox", { name: "发送给 Agent", exact: true }).fill("请读取当前章节的固定来源并返回确认。");
     const fixed = await page.evaluate(()=>window.hetuDesktop.agentSession("get"));
+    expect(fixed.state,JSON.stringify({state:fixed.state,error:fixed.error,thread_id:fixed.thread_id,draft:fixed.draft})).toBe("ready");
+    await expect(page.getByRole("button",{name:"发送",exact:true})).toBeEnabled();
+    expect(fixed.state).toBe("ready");
     // 同一会话的线程绑定回包不能覆盖作者已经输入、尚未保存的草稿。
     await app.evaluate(({BrowserWindow},snapshot)=>{const view=BrowserWindow.getAllWindows().find(window=>!window.webContents.getURL().includes("?view=settings"))!;view.webContents.send("desktop:agent-session",{type:"snapshot",snapshot:{...snapshot,thread_id:undefined}});},fixed);
     await expect(page.getByRole("textbox",{name:"发送给 Agent",exact:true})).toHaveValue("请读取当前章节的固定来源并返回确认。");
