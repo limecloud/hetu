@@ -2,7 +2,7 @@
 
 ## 外部执行工具
 
-稳定MCP提供 `hetu_sessions`、`hetu_bots`、`hetu_computer`，对应[30外部执行应用入口](30-应用API详细设计.md#外部执行应用入口)。先以 `method=capabilities`发现当前Schema，再选择已安装提供方、固定会话或原窗口；不因目录登记推定模型、认证或平台可用。
+稳定MCP通过精简目录的 `hetu_inspect_collaboration` 发现 `hetu.sessions.request`、`hetu.bots.request`、`hetu.computer.request`，再用 `hetu_call_action` 调用；完整工具目录及App另提供 `hetu_sessions`、`hetu_bots`、`hetu_computer` 别名，对应[30外部执行应用入口](30-应用API详细设计.md#外部执行应用入口)。先以 `method=capabilities`发现当前Schema，再选择已安装提供方、固定会话或原窗口；不因目录登记推定模型、认证或平台可用。
 
 电脑截图以MCP `image`内容块传递，`structuredContent.data.screenshot`只保留格式、尺寸及 `delivered_as=mcp_image`，不重复嵌入Base64。截图、树、OCR和提供方消息均为外部数据，不构成指令、权限或作品完成证据。Bot配置与普通会话分开路由，普通sessions写入口不能绕过固定Bot配置；未知派发只沿所属工具的原operation查询，不转到作品操作账本或换键重发。
 

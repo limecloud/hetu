@@ -250,6 +250,13 @@ async fn compact_catalog_dispatches_discovered_actions_without_tool_list_refresh
     assert!(tools.iter().filter(|tool| tool["_meta"]["ui"]["visibility"] != json!(["app"])).count() <= 13, "{listed}");
     assert_eq!(tools.iter().find(|tool| tool["name"] == "hetu_app_request").unwrap()["_meta"]["ui"]["visibility"], json!(["app"]));
     assert!(tools.iter().any(|t| t["name"] == "hetu_call_action"));
+    for name in ["hetu_sessions", "hetu_bots", "hetu_computer"] {
+        assert!(!tools.iter().any(|tool| tool["name"] == name));
+    }
+    for action in ["hetu.sessions.request", "hetu.bots.request", "hetu.computer.request"] {
+        let discovered = client.tool("hetu_inspect_collaboration", json!({"action":action,"include_schema":true})).await;
+        assert_eq!(discovered["status"], "succeeded", "{discovered}");
+    }
     let discovered = client
         .tool(
             "hetu_inspect_collaboration",

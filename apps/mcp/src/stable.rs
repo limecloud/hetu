@@ -123,9 +123,6 @@ impl ServerHandler for StableServer {
                                     | "hetu_save_task_checkpoint"
                                     | "hetu_inspect_runtime"
                                     | "hetu_call_action"
-                                    | "hetu_sessions"
-                                    | "hetu_bots"
-                                    | "hetu_computer"
                                     | "hetu_open_task_view"
                                     | "hetu_save_task_selection"
                                     | "hetu_request_model_confirmation"
@@ -393,7 +390,7 @@ fn compact_tool(name: &str) -> bool {
     matches!(name, "hetu_inspect_collaboration" | "hetu_get_capability_map" | "hetu_begin_creation"
         | "hetu_open_collaboration_task" | "hetu_read_creative_task" | "hetu_read_task_operation"
         | "hetu_get_task_checkpoint" | "hetu_save_task_checkpoint" | "hetu_inspect_runtime"
-        | "hetu_call_action" | "hetu_sessions" | "hetu_bots" | "hetu_computer" | "hetu_open_task_view" | "hetu_save_task_selection" | "hetu_request_model_confirmation")
+        | "hetu_call_action" | "hetu_open_task_view" | "hetu_save_task_selection" | "hetu_request_model_confirmation")
 }
 
 /// 受管连接已持有私有范围；模型只需要公开WorkRef，后续请求仍由同一连接解析。
