@@ -1,0 +1,457 @@
+{
+  "recorded_at": "2026-11-27T02:13:17.809413+00:00",
+  "version": "0.15.4",
+  "git_sha": "147e2440ded2cbd8c4005ac8ffbd93a6e16b115a",
+  "source_ci": {
+    "run_id": 45917552352,
+    "conclusion": "success",
+    "jobs": [
+      "macOS optimized Core tests",
+      "Electron macOS arm64 tests",
+      "Website and task view tests"
+    ],
+    "website_passed": 658,
+    "task_view": {
+      "passed": 133,
+      "prerequisite_skipped": 20,
+      "failed": 0
+    },
+    "desktop": {
+      "passed": 95,
+      "prerequisite_skipped": 26,
+      "failed": 0
+    },
+    "acp_original_protocol_passed_ms": 60.983917,
+    "acp_controlled_persistence_passed_ms": 103.202917,
+    "workflow": {
+      "url": "https://github.com/limecloud/hetu/actions/runs/45917552352",
+      "status": "completed",
+      "conclusion": "success",
+      "headSha": "147e2440ded2cbd8c4005ac8ffbd93a6e16b115a",
+      "jobs": [
+        {
+          "name": "macOS optimized Core tests",
+          "conclusion": "success",
+          "startedAt": "2026-11-27T00:34:58Z",
+          "completedAt": "2026-11-27T00:40:37Z",
+          "url": "https://github.com/limecloud/hetu/actions/runs/45917552352/job/140240308682"
+        },
+        {
+          "name": "Website and task view tests",
+          "conclusion": "success",
+          "startedAt": "2026-11-27T00:34:59Z",
+          "completedAt": "2026-11-27T01:05:18Z",
+          "url": "https://github.com/limecloud/hetu/actions/runs/45917552352/job/140240308888"
+        },
+        {
+          "name": "Electron macOS arm64 tests",
+          "conclusion": "success",
+          "startedAt": "2026-11-27T00:34:59Z",
+          "completedAt": "2026-11-27T00:51:59Z",
+          "url": "https://github.com/limecloud/hetu/actions/runs/45917552352/job/140240308939"
+        }
+      ]
+    }
+  },
+  "release": {
+    "run_id": 45917607305,
+    "url": "https://github.com/limecloud/hetu/actions/runs/45917607305",
+    "status": "completed",
+    "conclusion": "success",
+    "headSha": "147e2440ded2cbd8c4005ac8ffbd93a6e16b115a",
+    "jobs": [
+      {
+        "name": "Electron macOS arm64",
+        "conclusion": "success",
+        "startedAt": "2026-11-27T00:35:29Z",
+        "completedAt": "2026-11-27T01:44:19Z",
+        "url": "https://github.com/limecloud/hetu/actions/runs/45917607305/job/140240478987"
+      },
+      {
+        "name": "Electron windows-x64",
+        "conclusion": "success",
+        "startedAt": "2026-11-27T00:35:29Z",
+        "completedAt": "2026-11-27T00:57:04Z",
+        "url": "https://github.com/limecloud/hetu/actions/runs/45917607305/job/140240479213"
+      },
+      {
+        "name": "Electron linux-x64",
+        "conclusion": "success",
+        "startedAt": "2026-11-27T00:35:29Z",
+        "completedAt": "2026-11-27T00:45:33Z",
+        "url": "https://github.com/limecloud/hetu/actions/runs/45917607305/job/140240479244"
+      },
+      {
+        "name": "publish",
+        "conclusion": "success",
+        "startedAt": "2026-11-27T01:44:22Z",
+        "completedAt": "2026-11-27T01:45:50Z",
+        "url": "https://github.com/limecloud/hetu/actions/runs/45917607305/job/140261888536"
+      },
+      {
+        "name": "Publish npmjs launcher",
+        "conclusion": "success",
+        "startedAt": "2026-11-27T01:45:53Z",
+        "completedAt": "2026-11-27T01:49:00Z",
+        "url": "https://github.com/limecloud/hetu/actions/runs/45917607305/job/140262334598"
+      }
+    ],
+    "release_url": "https://github.com/limecloud/hetu/releases/tag/v0.15.4",
+    "published_at": "2026-11-27T01:45:47Z",
+    "public_release": "published",
+    "npm": "published",
+    "macos_combination_tests": {
+      "started_at": "2026-11-27T00:44:22Z",
+      "completed_at": "2026-11-27T01:30:28Z",
+      "conclusion": "success"
+    },
+    "macos_signing_notarization": {
+      "started_at": "2026-11-27T01:30:28Z",
+      "completed_at": "2026-11-27T01:43:21Z",
+      "conclusion": "success"
+    },
+    "signed_packaged_validation": {
+      "started_at": "2026-11-27T01:43:21Z",
+      "completed_at": "2026-11-27T01:43:53Z",
+      "conclusion": "success"
+    }
+  },
+  "portable_downloads": [
+    {
+      "platform": "linux",
+      "outer_artifact_sha256": "966c5d7953ab0e930101adfd2018d1868212376ac6defa453293b8f3b97f4f3d",
+      "git_sha": "147e2440ded2cbd8c4005ac8ffbd93a6e16b115a",
+      "version": "0.15.4",
+      "files": [
+        {
+          "name": "Hetu-0.15.4-linux-x64.tar.gz",
+          "sha256": "23cb088e24b9ed31c46edacbfd82756517a6bd110d08a2bf2fc56db2df4e6c9b",
+          "bytes": 259022550
+        }
+      ],
+      "runner_success": true,
+      "inner_application_not_extracted_or_executed_locally": true
+    },
+    {
+      "platform": "windows",
+      "outer_artifact_sha256": "12e6d12fe688e25f2833f6ec49e94f3077cbc9181fd006a76fc7c70f17478310",
+      "git_sha": "147e2440ded2cbd8c4005ac8ffbd93a6e16b115a",
+      "version": "0.15.4",
+      "files": [
+        {
+          "name": "Hetu-0.15.4-windows-x64.zip",
+          "sha256": "3a083f98d757fccc528a72d45ca59140eb785180d4050cca398c8998f2ee1d6f",
+          "bytes": 274313365
+        }
+      ],
+      "runner_success": true,
+      "inner_application_not_extracted_or_executed_locally": true
+    }
+  ],
+  "local": {
+    "agent_tests": {
+      "passed": 105,
+      "failed": 0,
+      "skipped": 0
+    },
+    "authoring_tests": {
+      "passed": 7,
+      "failed": 0,
+      "skipped": 0
+    },
+    "acp_independent_fixed_runs": 20,
+    "model_turns": 0,
+    "signed_and_installed_checks": {
+      "signed_package_desktop": {
+        "startTime": "2026-11-27T01:48:21.158Z",
+        "duration": 98273.319,
+        "expected": 2,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "signed_package_cross_entry_first_run": {
+        "startTime": "2026-11-27T01:50:01.099Z",
+        "duration": 239852.234,
+        "expected": 5,
+        "skipped": 0,
+        "unexpected": 1,
+        "flaky": 0
+      },
+      "signed_package_desktop_image_native_close_recheck": {
+        "startTime": "2026-11-27T01:56:10.256Z",
+        "duration": 9484.860999999999,
+        "expected": 1,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "installed_desktop": {
+        "startTime": "2026-11-27T01:57:18.492Z",
+        "duration": 29892.212,
+        "expected": 2,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "installed_cross_entry": {
+        "startTime": "2026-11-27T01:57:49.083Z",
+        "duration": 165248.22499999998,
+        "expected": 6,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      }
+    },
+    "signed_and_installed_scope": {
+      "desktop": "包内及实际安装各两项随包工作台用例，含真实PTY与作品业务。",
+      "cross_entry": "三入口三类作品归档恢复与图片固定区域意见恢复，共六项；stdio和官方Codex转发仍属于协议工作台，非原生GUI。",
+      "first_package_failure": "桌面图片业务及result.json已完成，普通调试器清理等待30秒后退出码仍null；保留五通过／一失败。原进程随后消失，未强杀且未取得该次线程栈。",
+      "recheck": "仅该失败用例改用既有HETU_TEST_NATIVE_CLOSE原生正常退出专项通过；实际安装随后两项桌面与六项三入口全部通过，零失败／跳过。",
+      "limitation": "本机正常退出专项通过不关闭间歇退出根因。"
+    }
+  },
+  "website": {
+    "deployment": "0369cb80",
+    "four_page_http_verification": "passed",
+    "fixed_original_bytes_match": true,
+    "public_bytes_match_after_only_known_beacon_removal": true,
+    "evidence": "website-v0154-2026-11-27.json"
+  },
+  "installation": {
+    "status": "completed",
+    "version": "0.15.4",
+    "git_sha": "147e2440ded2cbd8c4005ac8ffbd93a6e16b115a",
+    "source_sha256": "7a99a8bc03761cb7a7fe3f9108b50279bfd52b6537ab8fd14982bfb57b1baf0f",
+    "source_inputs": 3087,
+    "complete_application_entries": 3134,
+    "developer_id_verified": true,
+    "gatekeeper_accepted": true,
+    "stapled_ticket_valid": true,
+    "atomic_swap": true,
+    "backup_created": false,
+    "old_bundle_removed": true,
+    "profile_indexes_unchanged": true,
+    "connection_revision": 24,
+    "normal_user_launch": {
+      "recorded_at": "2026-11-27T02:05:07.413065+00:00",
+      "version": "0.15.4",
+      "pid": 84698,
+      "launch_mode": "normal installed application, original user profile, no debugger",
+      "windows": 1,
+      "ax_nodes": 380,
+      "ax_truncated": false,
+      "visible_controls": [
+        "创作库",
+        "刷新创作库",
+        "打开作品",
+        "新建作品",
+        "本机设置",
+        "河图洛书"
+      ],
+      "initial_ax_tree_only_outer_nodes": true,
+      "app_local_manual_accessibility_enabled": true,
+      "enhanced_ui_attribute_unsupported": true,
+      "normal_termination_requested": true,
+      "pid_exited": true,
+      "profile_index_checks": {
+        "creative-library.json": true,
+        "LocalSettings/settings.json": true,
+        "agent-sessions/index/selection.json": true
+      },
+      "profile_indexes_unchanged": true,
+      "model_turns": 0,
+      "created_or_edited_works": 0,
+      "visual_and_content_counts_not_asserted": true
+    }
+  },
+  "not_verified": [
+    "本机间歇退出的确切根因",
+    "26.1120.50957原生Codex品牌、归档恢复、unknown及完整业务；当前对话常驻MCP未热重载",
+    "Windows和Linux用户实机及完整最新软件旅程；本机未展开或运行其内部应用",
+    "全部页面视觉／读屏、更多专业组合、完整真实一集制作、作者试用及38所有工作包退出条件"
+  ],
+  "tag": "v0.15.4",
+  "manifests": [
+    {
+      "version": "0.15.4",
+      "git_sha": "147e2440ded2cbd8c4005ac8ffbd93a6e16b115a",
+      "platform": "macos",
+      "architecture": "arm64",
+      "kind": "electron-release-package",
+      "signing": "developer-id",
+      "notarization_status": "Accepted",
+      "notarization_id": "c1f55693-965b-4de3-853a-23819b0835d4",
+      "dmg_notarization_id": "8a72abc3-df41-4674-8b7d-00433ce31d73",
+      "files": {
+        "Hetu-0.15.4-macos-arm64.zip": "4ce6686902acaec00f5c658300cba00d6ecfbded144b8462239b343f2f24d2e9",
+        "Hetu-0.15.4-macos-arm64.dmg": "0ffbebfda99fe7833a38d3c093b3af9a1ccb25d0d28f319f675daa0c54771f1f"
+      }
+    },
+    {
+      "version": "0.15.4",
+      "git_sha": "147e2440ded2cbd8c4005ac8ffbd93a6e16b115a",
+      "platform": "windows",
+      "architecture": "x64",
+      "kind": "electron-release-package",
+      "signing": "unsigned",
+      "notarization_status": "not-applicable",
+      "notarization_id": null,
+      "dmg_notarization_id": null,
+      "files": {
+        "Hetu-0.15.4-windows-x64.zip": "3a083f98d757fccc528a72d45ca59140eb785180d4050cca398c8998f2ee1d6f"
+      }
+    },
+    {
+      "version": "0.15.4",
+      "git_sha": "147e2440ded2cbd8c4005ac8ffbd93a6e16b115a",
+      "platform": "linux",
+      "architecture": "x64",
+      "kind": "electron-release-package",
+      "signing": "unsigned",
+      "notarization_status": "not-applicable",
+      "notarization_id": null,
+      "dmg_notarization_id": null,
+      "files": {
+        "Hetu-0.15.4-linux-x64.tar.gz": "23cb088e24b9ed31c46edacbfd82756517a6bd110d08a2bf2fc56db2df4e6c9b"
+      }
+    }
+  ],
+  "assets": [
+    {
+      "name": "Hetu-0.15.4-linux-x64.tar.gz",
+      "bytes": 259022550,
+      "github_digest": "sha256:23cb088e24b9ed31c46edacbfd82756517a6bd110d08a2bf2fc56db2df4e6c9b"
+    },
+    {
+      "name": "Hetu-0.15.4-macos-arm64.dmg",
+      "bytes": 295710575,
+      "github_digest": "sha256:0ffbebfda99fe7833a38d3c093b3af9a1ccb25d0d28f319f675daa0c54771f1f"
+    },
+    {
+      "name": "Hetu-0.15.4-macos-arm64.zip",
+      "bytes": 249432059,
+      "github_digest": "sha256:4ce6686902acaec00f5c658300cba00d6ecfbded144b8462239b343f2f24d2e9"
+    },
+    {
+      "name": "Hetu-0.15.4-windows-x64.zip",
+      "bytes": 274313365,
+      "github_digest": "sha256:3a083f98d757fccc528a72d45ca59140eb785180d4050cca398c8998f2ee1d6f"
+    },
+    {
+      "name": "release-manifest-linux-x64.json",
+      "bytes": 1011264,
+      "github_digest": "sha256:83ded83bc82e955e146080d398bf558ab3abda297312f538a9a8225a28a51a02"
+    },
+    {
+      "name": "release-manifest-windows-x64.json",
+      "bytes": 1010227,
+      "github_digest": "sha256:e689581bb3b7a8803db73dc40ff3e1982e7137685603114f61e974f306f54352"
+    },
+    {
+      "name": "release-manifest.json",
+      "bytes": 1113622,
+      "github_digest": "sha256:69a0fe16c89bab4e5e84c48168ca6257fc3c7a716c84380467806e2460fb67c7"
+    },
+    {
+      "name": "SHA256SUMS",
+      "bytes": 276,
+      "github_digest": "sha256:e6f09c9660369f8f85cd053b561226ddc54ab63583d3f338d7e46328a8e35ba2"
+    },
+    {
+      "name": "SHA256SUMS-linux-x64",
+      "bytes": 193,
+      "github_digest": "sha256:38405378c884ca9bd5649eb65438d7d9eeba397e5f599aee48686b3055dc977f"
+    },
+    {
+      "name": "SHA256SUMS-windows-x64",
+      "bytes": 194,
+      "github_digest": "sha256:f34a572cb5a805c0df23bb55b2b36485442e87ffd8c8d318aff316ec17307d1d"
+    }
+  ],
+  "all_public_asset_digests_matched_manifests_and_sums": true,
+  "portable_public_archives_match_actual_runner_downloads": true,
+  "mac_zip_download_verified": true,
+  "npm": {
+    "name": "@limecloud/hetu",
+    "version": "0.15.4",
+    "tarball_bytes": 9218,
+    "integrity": "sha512-lmLrA9sdCyxyjpo5lC1SnaGj5YPA+ghbpGJ5UnqGCn5BNGqhxEbWyHzmPuirjR6Ss7/hEd0pK7ktEaDJbJ4bkg==",
+    "actual_tarball_integrity_verified": true
+  },
+  "local_macos_bundle": {
+    "version": "0.15.4",
+    "git_sha": "147e2440ded2cbd8c4005ac8ffbd93a6e16b115a",
+    "product_source_sha256": "7a99a8bc03761cb7a7fe3f9108b50279bfd52b6537ab8fd14982bfb57b1baf0f",
+    "source_files": 3087,
+    "complete_application_entries": 3134,
+    "complete_bundle_verified": true,
+    "source_bytes_matched": true,
+    "developer_id_verified": true,
+    "gatekeeper_accepted": true,
+    "staple_valid": true
+  },
+  "machine_connection_upgrade": {
+    "version": "0.15.4",
+    "registered": true,
+    "session_loaded": false,
+    "operation_id": "localop_b33f430c-84fd-4d7b-9f50-6011f79338dc",
+    "package_sha256": "4bc89bc6b8c2b176b126a7f3a29e48fbdd18f2f8fe5e28de914703bb046a5fac",
+    "display_name": "河图洛书工作台",
+    "absolute_signed_mcp_command": true,
+    "preferences_preserved": true,
+    "library_and_sessions_preserved": true,
+    "before_revision": 24,
+    "after_revision": 25,
+    "model_turns": 0
+  },
+  "native_host_new_version_preflight": {
+    "recorded_at": "2026-11-27T02:11:34.998561+00:00",
+    "host": {
+      "bundle": "com.openai.codex",
+      "version": "26.1120.50957",
+      "build": "30866"
+    },
+    "application_version": "0.15.4",
+    "host_initially_running": false,
+    "started_pid": 90990,
+    "host_window_observed": true,
+    "native_page_ax_not_ready": true,
+    "guard_refused_nonfrontmost_input": true,
+    "archive_or_restore_executed": false,
+    "model_requests": 0,
+    "normal_termination_requested": true,
+    "original_pid_exited": true,
+    "hetu_profile_indexes_unchanged": true,
+    "not_verified": [
+      "新版宿主品牌与入口",
+      "新版原生归档与恢复",
+      "新版原生unknown恢复"
+    ],
+    "driver_observations": [
+      "CUA初始化缺kernel assets；没有使用其操作应用。",
+      "首轮探针在编译结束前调用，程序尚不存在；另一次旧二进制拒绝未识别动作，均无点击。",
+      "AX树未提供目标页面控件，两个辅助属性分别notImplemented或unsupported；不推定产品根因。",
+      "窗口像素正常显示，但实际前台核对失败，点选保护拒绝输入；未继续抢占前台。",
+      "先前原生成功证据仅适用于26.1117.41037，不外推本次新宿主。"
+    ]
+  },
+  "prior_failures_retained": [
+    {
+      "version": "0.15.2",
+      "run_id": 45884120841,
+      "conclusion": "failure",
+      "scope": "Mac图片业务后的清理失败；Windows和Linux成功，publish/npm跳过。"
+    },
+    {
+      "version": "0.15.3",
+      "run_id": 45906706960,
+      "conclusion": "cancelled",
+      "scope": "Mac MCP133通过后ACP断言失败，夹具未finally停止；约89分钟后本任务取消以取日志，未签名／公开／安装。原断言根因未确定。"
+    },
+    {
+      "version": "0.15.3",
+      "scope": "本机完整152通过／1失败为旧工具可见性断言；另次远端MCP132通过／20前置跳过／1失败为刷新测试竞态。修正及后续通过不改写首轮。"
+    }
+  ]
+}
