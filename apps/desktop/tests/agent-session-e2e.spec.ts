@@ -109,6 +109,7 @@ test("独立桌面 Agent 会话通过精确作品引用运行在私有沙箱", a
       handlers.set("desktop:resources",async(...args:any[])=>{if(args[1]==="list"){(globalThis as any).__resourceLoads++;if((globalThis as any).__holdResourceLists)await new Promise<void>(resolve=>(globalThis as any).__heldResourceLists.push(resolve));}return resources(...args);});
       handlers.set("desktop:library",async(...args:any[])=>{const result=await library(...args);if(args[1]==="refresh")(globalThis as any).__libraryRefreshes++;return result;});
     });
+    await workspaceAction(page,"并排查看作品");
     await navigate(page,"资料与素材");
     await expect(page.getByRole("region",{name:"作品资料与素材",exact:true})).toBeVisible();
     await expect(page.getByRole("button",{name:"让 AI 整理资料",exact:true})).toBeEnabled();
