@@ -1,0 +1,4993 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HetuExternalExecution",
+  "$defs": {
+    "sessions": {
+      "type": "object",
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "capabilities"
+            }
+          },
+          "required": [
+            "method"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "providers"
+            }
+          },
+          "required": [
+            "method"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "list"
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            },
+            "offset": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10000
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 128
+            }
+          },
+          "required": [
+            "method"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "create"
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            },
+            "launch": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "client": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                },
+                "surface": {
+                  "enum": [
+                    "gui",
+                    "tui"
+                  ]
+                },
+                "title": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 100
+                },
+                "model": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 255
+                },
+                "reasoning_effort": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "client",
+                "surface"
+              ]
+            },
+            "operation_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            }
+          },
+          "required": [
+            "method",
+            "launch",
+            "operation_key"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "operation"
+            },
+            "operation_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            }
+          },
+          "required": [
+            "method",
+            "operation_key"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "read"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^(codex|terminal)-[a-zA-Z0-9-]{16,64}$"
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            },
+            "offset": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10000000
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 16000
+            },
+            "expected_generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "expected_sequence": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "request_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "cursor": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 8192
+            },
+            "history_revision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "format": {
+              "enum": [
+                "text",
+                "conversation"
+              ]
+            }
+          },
+          "required": [
+            "method",
+            "session_id"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "models"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^(codex|terminal)-[a-zA-Z0-9-]{16,64}$"
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            },
+            "offset": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10000000
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 16000
+            },
+            "expected_generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "expected_sequence": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "request_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "cursor": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 8192
+            },
+            "history_revision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "method",
+            "session_id"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "interaction"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^(codex|terminal)-[a-zA-Z0-9-]{16,64}$"
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            },
+            "offset": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10000000
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 16000
+            },
+            "expected_generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "expected_sequence": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "request_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "cursor": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 8192
+            },
+            "history_revision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "method",
+            "session_id"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "history"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^(codex|terminal)-[a-zA-Z0-9-]{16,64}$"
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            },
+            "offset": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10000000
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 16000
+            },
+            "expected_generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "expected_sequence": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "request_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "cursor": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 8192
+            },
+            "history_revision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "method",
+            "session_id"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "commands"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^(codex|terminal)-[a-zA-Z0-9-]{16,64}$"
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            },
+            "offset": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10000000
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 16000
+            },
+            "expected_generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "expected_sequence": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "request_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "cursor": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 8192
+            },
+            "history_revision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "method",
+            "session_id"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "start"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^(codex|terminal)-[a-zA-Z0-9-]{16,64}$"
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            },
+            "operation_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            }
+          },
+          "required": [
+            "method",
+            "session_id",
+            "generation",
+            "operation_key"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "restore"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^(codex|terminal)-[a-zA-Z0-9-]{16,64}$"
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            },
+            "operation_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            }
+          },
+          "required": [
+            "method",
+            "session_id",
+            "generation",
+            "operation_key"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "interrupt"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^(codex|terminal)-[a-zA-Z0-9-]{16,64}$"
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            },
+            "operation_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            }
+          },
+          "required": [
+            "method",
+            "session_id",
+            "generation",
+            "operation_key"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "stop"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^(codex|terminal)-[a-zA-Z0-9-]{16,64}$"
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            },
+            "operation_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            }
+          },
+          "required": [
+            "method",
+            "session_id",
+            "generation",
+            "operation_key"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "send"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^(codex|terminal)-[a-zA-Z0-9-]{16,64}$"
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            },
+            "operation_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            },
+            "data": {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 65536
+            }
+          },
+          "required": [
+            "method",
+            "session_id",
+            "generation",
+            "operation_key",
+            "data"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "input"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^(codex|terminal)-[a-zA-Z0-9-]{16,64}$"
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            },
+            "operation_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            },
+            "data": {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 65536
+            }
+          },
+          "required": [
+            "method",
+            "session_id",
+            "generation",
+            "operation_key",
+            "data"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "paste"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^(codex|terminal)-[a-zA-Z0-9-]{16,64}$"
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            },
+            "operation_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            },
+            "data": {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 65536
+            }
+          },
+          "required": [
+            "method",
+            "session_id",
+            "generation",
+            "operation_key",
+            "data"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "draft"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^(codex|terminal)-[a-zA-Z0-9-]{16,64}$"
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            },
+            "operation_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            },
+            "data": {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 65536
+            }
+          },
+          "required": [
+            "method",
+            "session_id",
+            "generation",
+            "operation_key",
+            "data"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "resize"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^(codex|terminal)-[a-zA-Z0-9-]{16,64}$"
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            },
+            "operation_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            },
+            "cols": {
+              "type": "integer",
+              "minimum": 2,
+              "maximum": 1000
+            },
+            "rows": {
+              "type": "integer",
+              "minimum": 2,
+              "maximum": 1000
+            }
+          },
+          "required": [
+            "method",
+            "session_id",
+            "generation",
+            "operation_key",
+            "cols",
+            "rows"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "model"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^(codex|terminal)-[a-zA-Z0-9-]{16,64}$"
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            },
+            "operation_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            },
+            "model_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "effort_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80
+            }
+          },
+          "required": [
+            "method",
+            "session_id",
+            "generation",
+            "operation_key",
+            "model_id"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "answer"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^(codex|terminal)-[a-zA-Z0-9-]{16,64}$"
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            },
+            "operation_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            },
+            "request_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "answers": {
+              "type": "object",
+              "maxProperties": 8,
+              "additionalProperties": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 32,
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 8000
+                }
+              }
+            }
+          },
+          "required": [
+            "method",
+            "session_id",
+            "generation",
+            "operation_key",
+            "request_id",
+            "answers"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "respond"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^(codex|terminal)-[a-zA-Z0-9-]{16,64}$"
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            },
+            "operation_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            },
+            "request_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "request_revision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "response": {
+              "type": "object",
+              "maxProperties": 32
+            }
+          },
+          "required": [
+            "method",
+            "session_id",
+            "generation",
+            "operation_key",
+            "request_id",
+            "request_revision",
+            "response"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "approve"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^(codex|terminal)-[a-zA-Z0-9-]{16,64}$"
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            },
+            "operation_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            },
+            "approval_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "option_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            }
+          },
+          "required": [
+            "method",
+            "session_id",
+            "generation",
+            "operation_key",
+            "approval_id",
+            "option_id"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "configure"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^(codex|terminal)-[a-zA-Z0-9-]{16,64}$"
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            },
+            "operation_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            },
+            "configuration_revision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "option_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "value": {
+              "type": [
+                "string",
+                "boolean"
+              ]
+            }
+          },
+          "required": [
+            "method",
+            "session_id",
+            "generation",
+            "operation_key",
+            "configuration_revision",
+            "option_id",
+            "value"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "command"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^(codex|terminal)-[a-zA-Z0-9-]{16,64}$"
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            },
+            "operation_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            },
+            "command_revision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "command_name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "command_arguments": {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 65536
+            }
+          },
+          "required": [
+            "method",
+            "session_id",
+            "generation",
+            "operation_key",
+            "command_revision",
+            "command_name",
+            "command_arguments"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "compact"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^(codex|terminal)-[a-zA-Z0-9-]{16,64}$"
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            },
+            "operation_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            }
+          },
+          "required": [
+            "method",
+            "session_id",
+            "generation",
+            "operation_key"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "rewind"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^(codex|terminal)-[a-zA-Z0-9-]{16,64}$"
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            },
+            "operation_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            },
+            "history_revision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "turn_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            }
+          },
+          "required": [
+            "method",
+            "session_id",
+            "generation",
+            "operation_key",
+            "history_revision",
+            "turn_id"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "draft_read"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^(codex|terminal)-[a-zA-Z0-9-]{16,64}$"
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            },
+            "offset": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10000000
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 16000
+            },
+            "expected_draft_version": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "method",
+            "session_id"
+          ]
+        }
+      ]
+    },
+    "bots": {
+      "type": "object",
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "capabilities"
+            }
+          },
+          "required": [
+            "method"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "providers"
+            }
+          },
+          "required": [
+            "method"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "templates"
+            }
+          },
+          "required": [
+            "method"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "operation"
+            },
+            "operation_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            }
+          },
+          "required": [
+            "method",
+            "operation_key"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "list"
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            },
+            "offset": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10000
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 128
+            },
+            "expected_catalog_revision": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "method"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "get"
+            },
+            "bot_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            }
+          },
+          "required": [
+            "method",
+            "bot_id"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "create"
+            },
+            "config": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 100
+                },
+                "purpose": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 8000
+                },
+                "execution": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "provider_id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 80
+                    },
+                    "surface": {
+                      "enum": [
+                        "gui",
+                        "tui"
+                      ]
+                    },
+                    "model_id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 255
+                    }
+                  },
+                  "required": [
+                    "provider_id",
+                    "surface",
+                    "model_id"
+                  ]
+                }
+              },
+              "required": [
+                "name",
+                "purpose",
+                "execution"
+              ]
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            },
+            "operation_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            }
+          },
+          "required": [
+            "method",
+            "config",
+            "operation_key"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "update"
+            },
+            "expected_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "bot_id": {
+                  "type": "string",
+                  "pattern": "^bot_[0-9a-f-]{36}$"
+                },
+                "revision": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "bot_id",
+                "revision",
+                "sha256"
+              ]
+            },
+            "operation_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            },
+            "patch": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 100
+                },
+                "purpose": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 8000
+                },
+                "execution": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "provider_id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 80
+                    },
+                    "surface": {
+                      "enum": [
+                        "gui",
+                        "tui"
+                      ]
+                    },
+                    "model_id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 255
+                    }
+                  },
+                  "required": [
+                    "provider_id",
+                    "surface",
+                    "model_id"
+                  ]
+                }
+              },
+              "required": [],
+              "minProperties": 1
+            }
+          },
+          "required": [
+            "method",
+            "expected_ref",
+            "operation_key",
+            "patch"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "pause"
+            },
+            "expected_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "bot_id": {
+                  "type": "string",
+                  "pattern": "^bot_[0-9a-f-]{36}$"
+                },
+                "revision": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "bot_id",
+                "revision",
+                "sha256"
+              ]
+            },
+            "operation_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            }
+          },
+          "required": [
+            "method",
+            "expected_ref",
+            "operation_key"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "resume"
+            },
+            "expected_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "bot_id": {
+                  "type": "string",
+                  "pattern": "^bot_[0-9a-f-]{36}$"
+                },
+                "revision": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "bot_id",
+                "revision",
+                "sha256"
+              ]
+            },
+            "operation_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            }
+          },
+          "required": [
+            "method",
+            "expected_ref",
+            "operation_key"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "archive"
+            },
+            "expected_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "bot_id": {
+                  "type": "string",
+                  "pattern": "^bot_[0-9a-f-]{36}$"
+                },
+                "revision": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "bot_id",
+                "revision",
+                "sha256"
+              ]
+            },
+            "operation_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            }
+          },
+          "required": [
+            "method",
+            "expected_ref",
+            "operation_key"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "restore"
+            },
+            "expected_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "bot_id": {
+                  "type": "string",
+                  "pattern": "^bot_[0-9a-f-]{36}$"
+                },
+                "revision": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "bot_id",
+                "revision",
+                "sha256"
+              ]
+            },
+            "operation_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            }
+          },
+          "required": [
+            "method",
+            "expected_ref",
+            "operation_key"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "session_create"
+            },
+            "expected_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "bot_id": {
+                  "type": "string",
+                  "pattern": "^bot_[0-9a-f-]{36}$"
+                },
+                "revision": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "bot_id",
+                "revision",
+                "sha256"
+              ]
+            },
+            "operation_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            }
+          },
+          "required": [
+            "method",
+            "expected_ref",
+            "operation_key"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "sessions"
+            },
+            "bot_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            },
+            "offset": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10000
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 128
+            }
+          },
+          "required": [
+            "method",
+            "bot_id"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "session_get"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^(codex|terminal)-[a-zA-Z0-9-]{16,64}$"
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            },
+            "operation_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            },
+            "data": {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 65536
+            },
+            "offset": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10000000
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 16000
+            }
+          },
+          "required": [
+            "method",
+            "session_id"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "session_read"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^(codex|terminal)-[a-zA-Z0-9-]{16,64}$"
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            },
+            "operation_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            },
+            "data": {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 65536
+            },
+            "offset": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10000000
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 16000
+            },
+            "format": {
+              "enum": [
+                "text",
+                "conversation"
+              ]
+            }
+          },
+          "required": [
+            "method",
+            "session_id"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "session_start"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^(codex|terminal)-[a-zA-Z0-9-]{16,64}$"
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            },
+            "operation_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            },
+            "data": {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 65536
+            },
+            "offset": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10000000
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 16000
+            }
+          },
+          "required": [
+            "method",
+            "session_id",
+            "generation",
+            "operation_key"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "session_restore"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^(codex|terminal)-[a-zA-Z0-9-]{16,64}$"
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            },
+            "operation_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            },
+            "data": {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 65536
+            },
+            "offset": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10000000
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 16000
+            }
+          },
+          "required": [
+            "method",
+            "session_id",
+            "generation",
+            "operation_key"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "session_send"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^(codex|terminal)-[a-zA-Z0-9-]{16,64}$"
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            },
+            "operation_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            },
+            "data": {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 65536
+            },
+            "offset": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10000000
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 16000
+            }
+          },
+          "required": [
+            "method",
+            "session_id",
+            "generation",
+            "operation_key",
+            "data"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "session_interrupt"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^(codex|terminal)-[a-zA-Z0-9-]{16,64}$"
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            },
+            "operation_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            },
+            "data": {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 65536
+            },
+            "offset": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10000000
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 16000
+            }
+          },
+          "required": [
+            "method",
+            "session_id",
+            "generation",
+            "operation_key"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "session_stop"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^(codex|terminal)-[a-zA-Z0-9-]{16,64}$"
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            },
+            "operation_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            },
+            "data": {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 65536
+            },
+            "offset": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10000000
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 16000
+            }
+          },
+          "required": [
+            "method",
+            "session_id",
+            "generation",
+            "operation_key"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "session_models"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^(codex|terminal)-[a-zA-Z0-9-]{16,64}$"
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            },
+            "offset": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10000000
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 16000
+            },
+            "expected_generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "expected_sequence": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "request_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "cursor": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 8192
+            },
+            "history_revision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "method",
+            "session_id"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "session_interaction"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^(codex|terminal)-[a-zA-Z0-9-]{16,64}$"
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            },
+            "offset": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10000000
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 16000
+            },
+            "expected_generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "expected_sequence": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "request_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "cursor": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 8192
+            },
+            "history_revision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "method",
+            "session_id"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "session_history"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^(codex|terminal)-[a-zA-Z0-9-]{16,64}$"
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            },
+            "offset": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10000000
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 16000
+            },
+            "expected_generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "expected_sequence": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "request_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "cursor": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 8192
+            },
+            "history_revision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "method",
+            "session_id"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "session_commands"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^(codex|terminal)-[a-zA-Z0-9-]{16,64}$"
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            },
+            "offset": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10000000
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 16000
+            },
+            "expected_generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "expected_sequence": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "request_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "cursor": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 8192
+            },
+            "history_revision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "method",
+            "session_id"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "session_approve"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^(codex|terminal)-[a-zA-Z0-9-]{16,64}$"
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            },
+            "operation_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            },
+            "approval_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "option_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            }
+          },
+          "required": [
+            "method",
+            "session_id",
+            "generation",
+            "operation_key",
+            "approval_id",
+            "option_id"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "session_answer"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^(codex|terminal)-[a-zA-Z0-9-]{16,64}$"
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            },
+            "operation_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            },
+            "request_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "answers": {
+              "type": "object",
+              "maxProperties": 8,
+              "additionalProperties": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 32,
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 8000
+                }
+              }
+            }
+          },
+          "required": [
+            "method",
+            "session_id",
+            "generation",
+            "operation_key",
+            "request_id",
+            "answers"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "session_respond"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^(codex|terminal)-[a-zA-Z0-9-]{16,64}$"
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            },
+            "operation_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            },
+            "request_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "request_revision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "response": {
+              "type": "object",
+              "maxProperties": 32
+            }
+          },
+          "required": [
+            "method",
+            "session_id",
+            "generation",
+            "operation_key",
+            "request_id",
+            "request_revision",
+            "response"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "session_resize"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^(codex|terminal)-[a-zA-Z0-9-]{16,64}$"
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            },
+            "operation_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            },
+            "cols": {
+              "type": "integer",
+              "minimum": 2,
+              "maximum": 1000
+            },
+            "rows": {
+              "type": "integer",
+              "minimum": 2,
+              "maximum": 1000
+            }
+          },
+          "required": [
+            "method",
+            "session_id",
+            "generation",
+            "operation_key",
+            "cols",
+            "rows"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "session_input"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^(codex|terminal)-[a-zA-Z0-9-]{16,64}$"
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            },
+            "operation_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            },
+            "data": {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 65536
+            }
+          },
+          "required": [
+            "method",
+            "session_id",
+            "generation",
+            "operation_key",
+            "data"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "session_paste"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^(codex|terminal)-[a-zA-Z0-9-]{16,64}$"
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            },
+            "operation_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            },
+            "data": {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 65536
+            }
+          },
+          "required": [
+            "method",
+            "session_id",
+            "generation",
+            "operation_key",
+            "data"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "session_draft"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^(codex|terminal)-[a-zA-Z0-9-]{16,64}$"
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            },
+            "operation_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            },
+            "data": {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 65536
+            }
+          },
+          "required": [
+            "method",
+            "session_id",
+            "generation",
+            "operation_key",
+            "data"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "session_draft_read"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^(codex|terminal)-[a-zA-Z0-9-]{16,64}$"
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "work_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "workspace_id": {
+                  "type": "string",
+                  "pattern": "^workspace_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "kind": {
+                  "enum": [
+                    "novel",
+                    "drama",
+                    "video"
+                  ]
+                },
+                "object_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                }
+              },
+              "required": [
+                "workspace_id",
+                "kind",
+                "object_id"
+              ]
+            },
+            "offset": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10000000
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 16000
+            },
+            "expected_draft_version": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "method",
+            "session_id"
+          ]
+        }
+      ]
+    },
+    "computer": {
+      "type": "object",
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "capabilities"
+            }
+          },
+          "required": [
+            "method"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "permissions"
+            }
+          },
+          "required": [
+            "method"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "apps"
+            },
+            "offset": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100000
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 128
+            }
+          },
+          "required": [
+            "method"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "windows"
+            },
+            "app": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "pid": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 2147483647
+                    }
+                  },
+                  "required": [
+                    "pid"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "bundle_id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 255
+                    }
+                  },
+                  "required": [
+                    "bundle_id"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 255
+                    }
+                  },
+                  "required": [
+                    "name"
+                  ]
+                }
+              ]
+            },
+            "offset": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100000
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 128
+            }
+          },
+          "required": [
+            "method",
+            "app"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "snapshot"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,79}$"
+            },
+            "app": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "pid": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 2147483647
+                    }
+                  },
+                  "required": [
+                    "pid"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "bundle_id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 255
+                    }
+                  },
+                  "required": [
+                    "bundle_id"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 255
+                    }
+                  },
+                  "required": [
+                    "name"
+                  ]
+                }
+              ]
+            },
+            "window_id": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 2147483647
+            },
+            "max_nodes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000
+            },
+            "max_depth": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 64
+            },
+            "base_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^csnp_[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$"
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "id",
+                "sha256"
+              ]
+            },
+            "screenshot": {
+              "oneOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "format": {
+                      "enum": [
+                        "png",
+                        "jpeg"
+                      ]
+                    },
+                    "max_edge": {
+                      "type": "integer",
+                      "minimum": 64,
+                      "maximum": 2048
+                    },
+                    "annotate": {
+                      "type": "boolean"
+                    },
+                    "ocr": {
+                      "type": "boolean"
+                    },
+                    "crop": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "x": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 100000
+                        },
+                        "y": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 100000
+                        },
+                        "width": {
+                          "type": "number",
+                          "exclusiveMinimum": 0,
+                          "maximum": 100000
+                        },
+                        "height": {
+                          "type": "number",
+                          "exclusiveMinimum": 0,
+                          "maximum": 100000
+                        }
+                      },
+                      "required": [
+                        "x",
+                        "y",
+                        "width",
+                        "height"
+                      ]
+                    }
+                  },
+                  "required": []
+                }
+              ]
+            }
+          },
+          "required": [
+            "method",
+            "session_id",
+            "app",
+            "window_id"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "query"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,79}$"
+            },
+            "snapshot_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^csnp_[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$"
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "id",
+                "sha256"
+              ]
+            },
+            "query": {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            "role": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80
+            },
+            "root_index": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 999
+            },
+            "offset": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100000
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 128
+            }
+          },
+          "required": [
+            "method",
+            "session_id",
+            "snapshot_ref"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "wait"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,79}$"
+            },
+            "app": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "pid": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 2147483647
+                    }
+                  },
+                  "required": [
+                    "pid"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "bundle_id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 255
+                    }
+                  },
+                  "required": [
+                    "bundle_id"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 255
+                    }
+                  },
+                  "required": [
+                    "name"
+                  ]
+                }
+              ]
+            },
+            "window_id": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 2147483647
+            },
+            "condition": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "text": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 256
+                    }
+                  },
+                  "required": [
+                    "text"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "enabled": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 256
+                    }
+                  },
+                  "required": [
+                    "enabled"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "window_title": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 256
+                    }
+                  },
+                  "required": [
+                    "window_title"
+                  ]
+                }
+              ]
+            },
+            "timeout_ms": {
+              "type": "integer",
+              "minimum": 200,
+              "maximum": 20000
+            },
+            "max_nodes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000
+            }
+          },
+          "required": [
+            "method",
+            "session_id",
+            "app",
+            "condition"
+          ],
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "condition": {
+                    "required": [
+                      "window_title"
+                    ]
+                  }
+                }
+              },
+              "then": {},
+              "else": {
+                "required": [
+                  "window_id"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "act"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,79}$"
+            },
+            "snapshot_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^csnp_[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$"
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "id",
+                "sha256"
+              ]
+            },
+            "element_index": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 999
+            },
+            "operation_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            },
+            "action": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "kind": {
+                      "const": "focus_window"
+                    }
+                  },
+                  "required": [
+                    "kind"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "kind": {
+                      "const": "focus_element"
+                    }
+                  },
+                  "required": [
+                    "kind"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "kind": {
+                      "const": "perform_action"
+                    },
+                    "name": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 80
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "name"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "kind": {
+                      "const": "set_value"
+                    },
+                    "text": {
+                      "type": "string",
+                      "minLength": 0,
+                      "maxLength": 4096
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "text"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "kind": {
+                      "const": "type_text"
+                    },
+                    "text": {
+                      "type": "string",
+                      "minLength": 0,
+                      "maxLength": 4096
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "text"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "kind": {
+                      "const": "paste"
+                    },
+                    "text": {
+                      "type": "string",
+                      "minLength": 0,
+                      "maxLength": 4096
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "text"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "kind": {
+                      "const": "press_key"
+                    },
+                    "key": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 16
+                    },
+                    "modifiers": {
+                      "type": "array",
+                      "maxItems": 4,
+                      "uniqueItems": true,
+                      "items": {
+                        "enum": [
+                          "command",
+                          "control",
+                          "option",
+                          "shift"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "key"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "kind": {
+                      "const": "click"
+                    },
+                    "position": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "x": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 100000
+                        },
+                        "y": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 100000
+                        }
+                      },
+                      "required": [
+                        "x",
+                        "y"
+                      ]
+                    },
+                    "button": {
+                      "enum": [
+                        "primary",
+                        "secondary"
+                      ]
+                    },
+                    "count": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 2
+                    }
+                  },
+                  "required": [
+                    "kind"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "kind": {
+                      "const": "scroll"
+                    },
+                    "position": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "x": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 100000
+                        },
+                        "y": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 100000
+                        }
+                      },
+                      "required": [
+                        "x",
+                        "y"
+                      ]
+                    },
+                    "dx": {
+                      "type": "integer",
+                      "minimum": -2000,
+                      "maximum": 2000
+                    },
+                    "dy": {
+                      "type": "integer",
+                      "minimum": -2000,
+                      "maximum": 2000
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "dx",
+                    "dy"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "kind": {
+                      "const": "drag"
+                    },
+                    "position": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "x": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 100000
+                        },
+                        "y": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 100000
+                        }
+                      },
+                      "required": [
+                        "x",
+                        "y"
+                      ]
+                    },
+                    "to": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "x": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 100000
+                        },
+                        "y": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 100000
+                        }
+                      },
+                      "required": [
+                        "x",
+                        "y"
+                      ]
+                    },
+                    "duration_ms": {
+                      "type": "integer",
+                      "minimum": 100,
+                      "maximum": 2000
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "to"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "kind": {
+                      "const": "move_resize"
+                    },
+                    "frame": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "x": {
+                          "type": "number",
+                          "minimum": -100000,
+                          "maximum": 100000
+                        },
+                        "y": {
+                          "type": "number",
+                          "minimum": -100000,
+                          "maximum": 100000
+                        },
+                        "width": {
+                          "type": "number",
+                          "minimum": 100,
+                          "maximum": 10000
+                        },
+                        "height": {
+                          "type": "number",
+                          "minimum": 100,
+                          "maximum": 10000
+                        }
+                      },
+                      "required": [
+                        "x",
+                        "y",
+                        "width",
+                        "height"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "frame"
+                  ]
+                }
+              ]
+            },
+            "verify": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "text": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 1024
+                    }
+                  },
+                  "required": [
+                    "text"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "value_equals": {
+                      "type": "string",
+                      "minLength": 0,
+                      "maxLength": 4096
+                    }
+                  },
+                  "required": [
+                    "value_equals"
+                  ]
+                }
+              ]
+            }
+          },
+          "required": [
+            "method",
+            "session_id",
+            "snapshot_ref",
+            "operation_key",
+            "action"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "launch"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,79}$"
+            },
+            "operation_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            },
+            "app_path": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096,
+              "pattern": "^/.*\\.app$"
+            },
+            "activate": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "method",
+            "session_id",
+            "operation_key",
+            "app_path"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "operation"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,79}$"
+            },
+            "operation_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            }
+          },
+          "required": [
+            "method",
+            "session_id",
+            "operation_key"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "takeover"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,79}$"
+            },
+            "snapshot_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^csnp_[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$"
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "id",
+                "sha256"
+              ]
+            },
+            "operation_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            }
+          },
+          "required": [
+            "method",
+            "session_id",
+            "snapshot_ref",
+            "operation_key"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "const": "resume"
+            },
+            "session_id": {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,79}$"
+            },
+            "snapshot_ref": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^csnp_[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$"
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "id",
+                "sha256"
+              ]
+            },
+            "operation_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            }
+          },
+          "required": [
+            "method",
+            "session_id",
+            "snapshot_ref",
+            "operation_key"
+          ]
+        }
+      ]
+    }
+  }
+}

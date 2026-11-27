@@ -9851,6 +9851,66 @@
         "instruction_authority": "none",
         "authorization_effect": "none"
       }
+    },
+    {
+      "name": "hetu.sessions.request",
+      "purpose": "管理固定外部会话与原生PTY",
+      "contract_revision": "1",
+      "effect": "write",
+      "author_only": false,
+      "scopes": [
+        "collaboration"
+      ],
+      "input_schema_ref": "schemas/external-execution.schema.json#/$defs/sessions",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "external_execution",
+          "core_receipt"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
+    },
+    {
+      "name": "hetu.bots.request",
+      "purpose": "管理固定Bot配置与独立会话",
+      "contract_revision": "1",
+      "effect": "write",
+      "author_only": false,
+      "scopes": [
+        "collaboration"
+      ],
+      "input_schema_ref": "schemas/external-execution.schema.json#/$defs/bots",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "external_execution",
+          "core_receipt"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
+    },
+    {
+      "name": "hetu.computer.request",
+      "purpose": "观察本机电脑并执行固定目标动作",
+      "contract_revision": "1",
+      "effect": "write",
+      "author_only": false,
+      "scopes": [
+        "collaboration"
+      ],
+      "input_schema_ref": "schemas/external-execution.schema.json#/$defs/computer",
+      "result_provenance": {
+        "contract_revision": "1",
+        "data_roles": [
+          "external_execution",
+          "core_receipt"
+        ],
+        "instruction_authority": "none",
+        "authorization_effect": "none"
+      }
     }
   ]
 }

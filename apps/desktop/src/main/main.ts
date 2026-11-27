@@ -53,7 +53,8 @@ import { MediaAccess } from "./media.ts";
 import { VideoReview } from "./video-review.ts";
 import { OutlineReview } from "./outlines.ts";
 import { scopedCli } from "./cli.ts";
-import {readSessionResults,readLibrarySessionResults} from "./agent/session-results.ts";
+import {readSessionResults,readLibrarySessionResults,readBotSessionResults} from "./agent/session-results.ts";
+import type {AgentTool} from "../agent-session-contract.ts";
 import {prepareAgentContext,verifyAgentContexts} from "./agent/fixed-context.ts";
 import {taskSourceContext,pluginSourceContext,sceneSourceContext,videoSourceContext} from "./agent/source-context.ts";
 import { CreativeLibrary } from "./library.ts";
@@ -77,6 +78,8 @@ import { AppServer } from "./rpc.ts";
 import { AgentSessions } from "./agent/session-manager.ts";
 import {EngineCatalog,discoverEngines,machineClient} from "./agent/engines.ts";
 import { CodexSession } from "./agent/codex-session.ts";
+import {ExternalAgentSession} from "./agent/external-agent-session.ts";
+import {externalExecution,ExternalExecutionJournal} from "./external-execution.ts";
 import { agentSessionSandbox, buildAgentSessionPrompt, createAgentSession, type AgentSessionAdapter, type AgentSessionContext, type AgentSessionEvent } from "./agent-session.ts";
 protocol.registerSchemesAsPrivileged([
   {
@@ -124,6 +127,7 @@ let canon: CanonReview | undefined;
 let agentSession: AgentSessionAdapter | undefined;
 let agentSessions: AgentSessions | undefined;
 let engineCatalog:EngineCatalog|undefined;
+let externalJournal:ExternalExecutionJournal|undefined;
 let localState: any;
 async function agentSettings(action: string, input: unknown, client = agentClient()) {
   return unwrap(await settingsServer.request("local_settings/request", {
@@ -525,6 +529,27 @@ function collaborationContext(client: string) {
   return { client, work: selectedWork, call, check, base, status };
 }
 async function ensureConnection(client:string){return ensureWorkConnection(collaborationContext(client));}
+async function verifiedAgentResults(tools:AgentTool[],client:string,selected:WorkRef|undefined,sessionId:string,checkCurrent:()=>void){
+  checkCurrent();
+  let results;
+  if(!selected){
+    const discovered:any[]=[];let cursor:string|undefined;
+    do{const result=unwrap(await scopedCli(coreCliBinary(),client,process.env.HETU_COLLABORATION_DIR,"hetu.collaboration.created_works",{limit:100,...(cursor?{cursor}:{})}));checkCurrent();discovered.push(...result.works);cursor=result.next_cursor??undefined;}while(cursor);
+    await library.refresh(discovered);checkCurrent();
+    results=readLibrarySessionResults(tools,library.rows(),new Set(discovered.map(item=>item.workspace_id)));
+  }else{
+    const context=collaborationContext(client),access=await context.status();checkCurrent();
+    if(!access.authorized||!access.management_ref)throw Error("当前作品的机器连接已断开，成果尚未回读。");
+    results=await readSessionResults(tools,selected,async(action,input)=>{
+      checkCurrent();context.check();
+      const fixed=action==="hetu.execution.get_plan"?input:{...input,management_ref:access.management_ref};
+      const data=unwrap(await scopedCli(coreCliBinary(),client,process.env.HETU_COLLABORATION_DIR,action,fixed));
+      checkCurrent();context.check();return data;
+    });
+  }
+  checkCurrent();window?.webContents.send("desktop:agent-session",{type:"notification",method:"results/verified",params:{},session_id:sessionId,...(selected?{work_ref:selected}:{})});
+  return results;
+}
 function applyInterfaceScale(target: Electron.WebContents, value: number) {
   if (!interfaceScales.includes(value as any)) throw new Error("界面大小不在可用范围内。");
   target.setZoomFactor(value / 100);
@@ -870,6 +895,11 @@ app
     });
     shellHandler("desktop:agent-session", async (method: string, input: any = {}) => {
       if (method === "open_link") { if(typeof input.url!=="string"||input.url.length>8192)throw new Error("网页链接无效或超过预算。");const url = new URL(input.url); if (!["https:", "http:"].includes(url.protocol)) throw new Error("仅支持打开网页链接。"); await shell.openExternal(url.href); return; }
+      if(method==="runtime_permissions_open"){
+        if(process.platform!=="darwin")throw new Error("当前平台没有对应的系统权限页面。");
+        const pages:Record<string,string>={accessibility:"x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility",screen_capture:"x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture"};
+        const target=pages[input.permission];if(!target)throw new Error("系统权限页面无效。");await shell.openExternal(target);return {opened:true,permission_changed:false};
+      }
       const selected = input.scope === "library" ? undefined : work && structuredClone(work), selectedEpoch = epoch;
       if(input.work_ref&&(!selected||!sameWork(selected,input.work_ref)))throw new Error("作品已切换，请重新准备会话请求。");
       const check = () => { if (selectedEpoch !== epoch || selected && (!work || !sameWork(work, selected))) throw new Error("作品已切换，请重新读取Codex会话。"); };
@@ -881,6 +911,49 @@ app
       engineCatalog??=new EngineCatalog({directory:path.join(app.getPath("userData"),"agent-sessions","catalog"),runtimeDirectory:path.dirname(mcpBinary())});
       if(method==="catalog")return discoverEngines(path.dirname(mcpBinary()));
       if(method==="model_options")return engineCatalog.models(input.client);
+      if(method==="runtime_pending")return (externalJournal??=new ExternalExecutionJournal(app.getPath("userData"))).read(selected);
+      if(method==="runtime_computer_state")return (externalJournal??=new ExternalExecutionJournal(app.getPath("userData"))).computerSession(selected);
+      if(method==="runtime"){
+        if(!["bots","computer","sessions"].includes(input.domain)||!input.input||typeof input.input!=="object"||Array.isArray(input.input))throw Error("外部执行请求无效。");
+        const fixed={...input.input};
+        if(input.domain==="bots"&&!["capabilities","providers","templates","operation"].includes(fixed.method)){
+          if(fixed.work_ref&&(!selected||!sameWork(fixed.work_ref,selected)))throw Error("助手不属于当前作品。");
+          if(selected){await ensureConnection("generic");check();fixed.work_ref=selected;}else delete fixed.work_ref;
+        }
+        const location=await settingsServer.request("collaboration/directory",{});check();
+        if(selected&&input.domain==="bots"&&["session_start","session_restore"].includes(fixed.method)){
+          const described=await externalExecution(coreCliBinary(),location.directory,"hetu.bots.request",{method:"session_get",session_id:fixed.session_id,work_ref:selected});check();
+          if(described.status==="succeeded"){
+            const current=await externalExecution(coreCliBinary(),location.directory,"hetu.bots.request",{method:"get",bot_id:described.data.bot_ref.bot_id,work_ref:selected});check();
+            if(current.status==="succeeded"&&current.data.bot.status==="active"&&JSON.stringify(current.data.bot_ref)===JSON.stringify(described.data.bot_ref))await ensureConnection(machineClient(described.data.bot.config.execution.provider_id));
+            check();
+          }
+        }
+        const journal=externalJournal??=new ExternalExecutionJournal(app.getPath("userData"));
+        const writing=!!fixed.operation_key&&fixed.method!=="operation";
+        const invoke=async()=>{
+          check();if(writing)await journal.before(selected,input.domain,fixed);
+          try{check();}catch(error){if(writing)await journal.after(selected,input.domain,fixed.operation_key,{status:"failed"});throw error;}
+          let result;
+          try{result=await externalExecution(coreCliBinary(),location.directory,"hetu."+input.domain+".request",fixed);}
+          catch(error){if(fixed.operation_key)await journal.after(selected,input.domain,fixed.operation_key,{status:"unknown"});throw error;}
+          if(fixed.operation_key)await journal.after(selected,input.domain,fixed.operation_key,result);
+          if(input.domain==="computer"&&result.status==="succeeded"){
+            if(fixed.method==="snapshot")await journal.observed(selected,fixed,result.data);
+            if(["takeover","resume","operation"].includes(fixed.method))await journal.controlled(selected,fixed,result.data);
+          }
+          check();return result;
+        };
+        return writing?journal.dispatch(selected,input.domain,fixed,invoke):invoke();
+      }
+      if(method==="runtime_results"){
+        if(input.domain!=="bots"||!input.bot_ref)throw Error("请选择原Bot会话读取成果。");
+        const location=await settingsServer.request("collaboration/directory",{});check();
+        const results=await readBotSessionResults({session_id:input.session_id,bot_ref:input.bot_ref,generation:input.generation,client:"generic",work_ref:selected},async fixed=>{
+          check();const response=await externalExecution(coreCliBinary(),location.directory,"hetu.bots.request",fixed);check();return unwrap(response);
+        },(tools,provider)=>verifiedAgentResults(tools,machineClient(provider),selected,input.session_id,check));
+        check();return results;
+      }
       if (method === "list") return agentSessions.list(selected);
       if (method === "new") { const launch=input.launch?await engineCatalog.validate(input.launch):undefined;check();const created = await agentSessions.create(selected, launch?.surface??defaultSurface,launch); check();if(agentSessions.isSelected(created,selected))agentSession=created;if(launch){if(selected&&launch.client!=="shell")await ensureConnection(machineClient(launch.client));check();return created.start();}return created.snapshot(); }
       const activeSession = await agentSessions.get(selected, defaultSurface);
@@ -889,6 +962,11 @@ app
       check();
       if(agentSessions.isSelected(session,selected))agentSession=session;
       if (method === "get" || method === "select") return session.snapshot();
+      if(method==="model"){
+        if(input.generation!==session.snapshot().generation||typeof input.model_id!=="string")throw Error("原会话或模型选择已变化。");
+        if(!("selectModel" in session))throw Error("当前执行端没有对应的模型选择能力。");
+        await session.selectModel(input.model_id,input.effort_id);check();return session.snapshot();
+      }
       if (method === "rename") return session.rename(input.title);
       const checkSession=()=>{check();if(!agentSessions!.isSelected(session,selected))throw new Error("会话已经切换，旧输入未发送。");if(input.generation!==undefined&&input.generation!==session.snapshot(false).generation)throw new Error("终端已重新连接，请重新准备输入。");};
       checkSession();
@@ -918,43 +996,36 @@ app
       if (method === "terminal_resize") { session.terminalResize!(input.cols, input.rows, input.generation); return; }
       if (method === "draft") return session.updateDraft(input.text, input.context_refs,{surface:input.surface,generation:input.generation});
       if(method==="attach_context"){
-        if(!selected||!authoring||!(session instanceof CodexSession))throw Error("请在当前作品的聊天界面附加上下文。");
+        if(!selected||!authoring||!(session instanceof CodexSession||session instanceof ExternalAgentSession))throw Error("请在当前作品的聊天界面附加上下文。");
         const reference=await prepareAgentContext(input,selected,contextHandoff);
         checkSession();return session.attachContext(reference,{generation:input.generation},checkSession);
       }
       if(method==="remove_context"){
-        if(!(session instanceof CodexSession))throw Error("当前引擎使用终端输入。");
+        if(!(session instanceof CodexSession||session instanceof ExternalAgentSession))throw Error("当前引擎使用终端输入。");
         return session.removeContext(input.reference,{generation:input.generation});
       }
       if (method === "recover") return session.recover!();
       if (method === "models") return session.models!();
+      if(method==="external"){
+        if(!(session instanceof ExternalAgentSession))throw Error("当前引擎没有此结构化交互入口。");
+        if(input.external_method==="open_url"){
+          const request=session.snapshot().external?.elicitations?.find(value=>value.id===input.external_input?.request_id);
+          if(!request||request.mode!=="url")throw Error("原网页验证请求已结束。");
+          checkSession();await shell.openExternal(request.url);return {snapshot:session.snapshot(),result:{opened:true}};
+        }
+        const result=await session.requestExternal(input.external_method,{...input.external_input,generation:input.generation});checkSession();
+        return {snapshot:session.snapshot(),result};
+      }
       if (method === "results") {
         const client=machineClient(session.snapshot(false).client);
         const tools="readTools" in session?await session.readTools():session.snapshot(false).tools??[];
-        if(!selected){
-          const discovered:any[]=[];let cursor:string|undefined;
-          do{const result=unwrap(await scopedCli(coreCliBinary(),client,process.env.HETU_COLLABORATION_DIR,"hetu.collaboration.created_works",{limit:100,...(cursor?{cursor}:{})}));discovered.push(...result.works);cursor=result.next_cursor??undefined;}while(cursor);
-          await library.refresh(discovered);check();
-          checkSession();window?.webContents.send("desktop:agent-session",{type:"notification",method:"results/verified",params:{},session_id:session.snapshot(false).session_id});
-          return readLibrarySessionResults(tools,library.rows(),new Set(discovered.map(item=>item.workspace_id)));
-        }
-        const context=collaborationContext(client),access=await context.status();
-        if(!access.authorized||!access.management_ref)throw new Error("当前作品的机器连接已断开，成果尚未回读。");
-        const results=await readSessionResults(tools,selected,async(action,input)=>{
-          context.check();
-          const fixed=action==="hetu.execution.get_plan"?input:{...input,management_ref:access.management_ref};
-          const data=unwrap(await scopedCli(coreCliBinary(),client,process.env.HETU_COLLABORATION_DIR,action,fixed));
-          context.check();return data;
-        });
-        checkSession();
-        window?.webContents.send("desktop:agent-session",{type:"notification",method:"results/verified",params:{},session_id:session.snapshot(false).session_id,work_ref:selected});
-        return results;
+        return verifiedAgentResults(tools,client,selected,session.snapshot(false).session_id!,checkSession);
       }
       if (method === "insert") { if (selected ? !input.work_ref || !sameWork(selected,input.work_ref) : input.scope!=="library" || input.work_ref) throw new Error("作品已切换，请重新准备请求。");if(selected)await ensureConnection(machineClient(session.snapshot().client));checkSession();return session.insertDraft(input.text,checkSession); }
       if(method==="paste_draft"){if(!("pasteDraft" in session))throw new Error("此引擎请使用原生请求入口。");return session.pasteDraft(input.draft_version);}
       if (method === "send") {
         const text = typeof input.text === "string" ? input.text : "";
-        if (selected) { const access = await ensureConnection("codex"); if (!access.management_ref || typeof access.management_ref !== "object") throw new Error("当前作品的机器连接不可用。"); }
+        if (selected) { const access = await ensureConnection(machineClient(session.snapshot().client)); if (!access.management_ref || typeof access.management_ref !== "object") throw new Error("当前作品的机器连接不可用。"); }
         checkSession();
         const fixed=session.snapshot(false),draftVersion=fixed.draft_version??0;
         if(input.draft_version!==undefined&&input.draft_version!==draftVersion)throw Error("草稿或附加上下文已变化，请核对后重新发送。");

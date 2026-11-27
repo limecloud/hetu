@@ -1,6 +1,7 @@
 import {access,constants,open,readdir} from "node:fs/promises";
 import path from "node:path";
 import os from "node:os";
+import {readLoginShellEnvironment} from "./shell-environment.ts";
 
 export function executableCandidates(name:string,directories:string[],platform=process.platform){
  const paths=platform==="win32"?path.win32:path;
@@ -9,12 +10,14 @@ export function executableCandidates(name:string,directories:string[],platform=p
  return directories.flatMap(directory=>names.map(value=>paths.join(directory,value)));
 }
 
-/** Finder不继承登录Shell；仅探测已知安装目录，不运行Shell初始化文件。 */
-export async function engineSearchPaths(runtimeDirectory?:string){
+/** Shell路径优先，已知安装目录及随包运行时只作兜底。 */
+export async function engineSearchEnvironment(runtimeDirectory?:string){
+ const shell=await readLoginShellEnvironment();
  let nodePaths:string[]=[];
  try{nodePaths=(await readdir(path.join(os.homedir(),".nvm/versions/node"))).sort((a,b)=>b.localeCompare(a,undefined,{numeric:true})).map(version=>path.join(os.homedir(),".nvm/versions/node",version,"bin"));}
  catch(error){if((error as NodeJS.ErrnoException).code!=="ENOENT")throw error;}
- return [...new Set([...(process.env.PATH??"").split(path.delimiter),...(runtimeDirectory?[runtimeDirectory]:[]),path.join(os.homedir(),".local/bin"),...(process.platform==="win32"?[]:["/opt/homebrew/bin","/usr/local/bin"]),...nodePaths].filter(Boolean))];
+ const paths=[...new Set([...(shell.PATH??"").split(path.delimiter),...(process.env.PATH??"").split(path.delimiter),path.join(os.homedir(),".local/bin"),...(process.env.BUN_INSTALL?[path.join(process.env.BUN_INSTALL,"bin")]:[]),path.join(os.homedir(),".bun/bin"),...(process.platform==="win32"?[]:["/opt/homebrew/bin","/usr/local/bin"]),...nodePaths,...(runtimeDirectory?[runtimeDirectory]:[])].filter(Boolean))];
+ return {paths,env:{...process.env,...shell,PATH:paths.join(path.delimiter)}};
 }
 /** 执行位不代表脚本可启动：旧安装器可能仍指向已移除的绝对解释器。 */
 export async function runnableCommand(candidate:string,platform=process.platform){

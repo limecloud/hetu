@@ -1,0 +1,131 @@
+{
+  "date": "2026-11-27",
+  "scope": "Orca execution workspace UI/UX/UE alignment; ordinary GUI/PTY/TUI, Bots, computer permission/window pages and independent settings",
+  "status": "validation_in_progress",
+  "reference": "docs/research/evidence/orca-execution-ui-2026-11-27.json",
+  "reference_versions": {
+    "installed": "1.4.278",
+    "source": "1.4.214",
+    "source_head": "34e4ec6f5a723c1998f98a897880b90a86369954"
+  },
+  "reference_dark_screenshots_collected": false,
+  "paid_model_calls": 0,
+  "installed": false,
+  "published": false,
+  "verification": {
+    "round_5": {
+      "report": "output/verification/orca-ui-rework-2026-11-27/results-round-5.json",
+      "exit_code": 1,
+      "stats": {
+        "startTime": "2026-11-27T15:31:51.772Z",
+        "duration": 680900.211,
+        "expected": 4,
+        "skipped": 0,
+        "unexpected": 5,
+        "flaky": 0
+      },
+      "tests": [
+        {
+          "file": "agent-chat.spec.ts",
+          "title": "GUI展示真实协议时间线，历史锚点、Markdown、输入与偏好保持一致",
+          "status": "failed",
+          "duration_ms": 146210,
+          "error": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.agent-chat').getByRole('button', { name: '有新记录，回到最新', exact: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" locator('.agent-chat').getByRole('button', { name: '有新记录，回到最新', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.agent-chat').getByRole('button', { name: '有新记录，回到最新', exact: true })\u001b[22m\n"
+        },
+        {
+          "file": "agent-launch-accessibility.spec.ts",
+          "title": "引擎选择朗读当前值，图标标签、候选导航与Escape焦点保持一致",
+          "status": "failed",
+          "duration_ms": 45843,
+          "error": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m0\u001b[39m\nReceived: \u001b[31mnull\u001b[39m\n\nCall Log:\n- Timeout 30000ms exceeded while waiting on the predicate\n关闭状态：{\"state\":{\"disconnected\":true},\"pid\":37718,\"exit_code\":null,\"signal\":null,\"killed\":false}"
+        },
+        {
+          "file": "execution-workspace.spec.ts",
+          "title": "Orca工作面保持导航、标签、逐项设置和原GUI/PTY，浅暗宽窄可读",
+          "status": "passed",
+          "duration_ms": 109590,
+          "error": ""
+        },
+        {
+          "file": "external-runtime.spec.ts",
+          "title": "多引擎GUI保留原问题/表单和草稿，Bots固定配置及窄窗浅暗可用",
+          "status": "failed",
+          "duration_ms": 46271,
+          "error": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).not.\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  getByRole('region', { name: 'Bots', exact: true }).getByRole('complementary', { name: '会话导航', exact: true })\nExpected: not visible\nReceived: visible\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"not toBeVisible\" getByRole('region', { name: 'Bots', exact: true }).getByRole('complementary', { name: '会话导航', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('region', { name: 'Bots', exact: true }).getByRole('complementary', { name: '会话导航', exact: true })\u001b[22m\n\u001b[2m    14 × locator resolved to <aside aria-label=\"会话导航\" class=\"execution-navigation\">…</aside>\u001b[22m\n\u001b[2m       - unexpected value \"visible\"\u001b[22m\n"
+        },
+        {
+          "file": "external-runtime.spec.ts",
+          "title": "Bot GUI与TUI真实MCP保存后打开固定历史并返回原Bot，停用仍可回读",
+          "status": "failed",
+          "duration_ms": 88839,
+          "error": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeEnabled\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  getByRole('region', { name: 'Bots', exact: true }).locator('.bot-main').getByRole('button', { name: '查看作品成果', exact: true })\nExpected: enabled\nReceived: disabled\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeEnabled\" getByRole('region', { name: 'Bots', exact: true }).locator('.bot-main').getByRole('button', { name: '查看作品成果', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('region', { name: 'Bots', exact: true }).locator('.bot-main').getByRole('button', { name: '查看作品成果', exact: true })\u001b[22m\n\u001b[2m    12 × locator resolved to <button disabled title=\"查看作品成果\" aria-label=\"查看作品成果\" aria-expanded=\"false\">…</button>\u001b[22m\n\u001b[2m       - unexpected value \"disabled\"\u001b[22m\n"
+        },
+        {
+          "file": "external-runtime.spec.ts",
+          "title": "仅截图窗口保留原观察和接管，辅助功能动作失败关闭",
+          "status": "failed",
+          "duration_ms": 53518,
+          "error": "TimeoutError: locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('region', { name: '计算机控制', exact: true }).getByRole('button', { name: '查看应用窗口', exact: true })\u001b[22m\n"
+        },
+        {
+          "file": "session-document-results.spec.ts",
+          "title": "原会话保存文稿后打开固定历史、原范围重试及比较，当前稿与PTY保持",
+          "status": "passed",
+          "duration_ms": 28637,
+          "error": ""
+        },
+        {
+          "file": "settings-visual.spec.ts",
+          "title": "独立设置分类截图、即时保存、浮层和窗口权限",
+          "status": "passed",
+          "duration_ms": 47876,
+          "error": ""
+        },
+        {
+          "file": "settings-visual.spec.ts",
+          "title": "模型渠道错误保留输入并先回读原保存",
+          "status": "passed",
+          "duration_ms": 8626,
+          "error": ""
+        }
+      ]
+    },
+    "earlier_rounds_retained": [
+      "output/verification/orca-ui-rework-2026-11-27/test-results-round-1",
+      "output/verification/orca-ui-rework-2026-11-27/test-results-round-2",
+      "output/verification/orca-ui-rework-2026-11-27/test-results-round-3",
+      "output/verification/orca-ui-rework-2026-11-27/test-results-round-4"
+    ],
+    "cancelled_old_artifact_round_3": true
+  },
+  "work_completed": [
+    "shared execution navigation and search",
+    "flat view tabs and explicit stop semantics",
+    "aligned right user messages/left assistant text/composer",
+    "Bot Home/history/settings and per-field CAS edits",
+    "shared Bot model picker preserving original session config",
+    "computer permission home and observed-window subpage",
+    "independent settings sidebar/search/breadcrumb"
+  ],
+  "followup_fixes": [
+    "narrow Bot navigation closes before asynchronous reads",
+    "select current Bot opens retained view directly",
+    "optional engine settings moved to top-right toolbar",
+    "nested menu Escape preserves execution panel",
+    "protocol acceptance awaited before new-message assertions"
+  ],
+  "package": {
+    "status": "pending_final_source_freeze"
+  },
+  "native_window": {
+    "status": "pending_new_development_package"
+  },
+  "limits": [
+    "full AX control blocked by isolated AppKit window identity",
+    "real model quality not revalidated",
+    "latest VoiceOver and native IME not revalidated",
+    "reference dark native appearance not collected",
+    "Windows/Linux execution UI not run",
+    "complete crash/orphan and distribution matrices remain separate"
+  ]
+}

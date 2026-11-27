@@ -7,6 +7,7 @@ import { mkdir, copyFile, writeFile, readFile } from "node:fs/promises";
 import {createRequire} from "node:module";
 import path from "node:path";
 import {preparePtyHelpers} from "./pty-helper.mjs";
+import {buildComputerHelper} from "./computer-helper.mjs";
 import { createHash } from "node:crypto";
 const buildMain = (file, out) =>
   build({
@@ -21,12 +22,14 @@ const buildMain = (file, out) =>
   });
 await preparePtyHelpers(path.dirname(createRequire(import.meta.url).resolve("node-pty/package.json")));
 await mkdir("dist/renderer", { recursive: true });
+await buildComputerHelper(process.cwd());
 await writeFile("dist/baseline.json", JSON.stringify(baseline, null, 2) + "\n");
 await buildMain("main", "main");
 await buildMain("shell-preload", "shell-preload");
 await buildMain("plugin-preload", "plugin-preload");
 await build({entryPoints:["src/main/agent/mcp-relay.mjs"],outfile:"dist/agent-mcp-relay.mjs",bundle:true,platform:"node",target:"node24",format:"esm"});
 await copyFile("src/main/agent/engine-guard.mjs","dist/agent-engine-guard.mjs");
+await build({entryPoints:["src/main/agent/agent-machine-service.ts"],outfile:"dist/agent-machine-service.mjs",bundle:true,platform:"node",target:"node24",format:"esm",external:["node-pty","ws"]});
 await buildWorkbench();
 await copyFile(
   "../../packages/plugin-host/src/worker.mjs",

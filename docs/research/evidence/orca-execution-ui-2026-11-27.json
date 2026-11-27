@@ -1,0 +1,195 @@
+{
+  "date": "2026-11-27",
+  "purpose": "UI/UX/UE alignment for external execution, GUI/TUI, Bots and Computer Use",
+  "reference_app": "/Applications/Orca.app",
+  "observed_app_version": "1.4.278",
+  "reference_source_repo": "/Users/coso/Documents/dev/js/orca",
+  "source_head": "34e4ec6f5a723c1998f98a897880b90a86369954",
+  "source_package_version": "1.4.214",
+  "source_and_installed_version_are_separate": true,
+  "screenshots": [
+    {
+      "path": "output/verification/external-execution-2026-11-27/orca-reference/bot-agent-picker.png",
+      "sha256": "e6d7ed0fbc52c5df298e1a189c702bc9964630b5f5267077e732d4ad0c66bef1",
+      "width": 2560,
+      "height": 1283,
+      "mime_type": "image/jpeg"
+    },
+    {
+      "path": "output/verification/external-execution-2026-11-27/orca-reference/bot-create.png",
+      "sha256": "a6848bb8913069dde793bd173b525175927d94c250470bc8216bffd4aad8e116",
+      "width": 2560,
+      "height": 1283,
+      "mime_type": "image/jpeg"
+    },
+    {
+      "path": "output/verification/external-execution-2026-11-27/orca-reference/bot-settings.png",
+      "sha256": "5e432d7d3ee692f758fd2383ba60dcff6c7c5063e044c133897c6542ab33d4cf",
+      "width": 2560,
+      "height": 1283,
+      "mime_type": "image/jpeg"
+    },
+    {
+      "path": "output/verification/external-execution-2026-11-27/orca-reference/bot-workspace.png",
+      "sha256": "e1296b4522b19267a1996c7f5f591f898410acf41713dafb9d40975094b97cca",
+      "width": 2560,
+      "height": 1283,
+      "mime_type": "image/jpeg"
+    },
+    {
+      "path": "output/verification/external-execution-2026-11-27/orca-reference/computer-control.png",
+      "sha256": "e5eb5b93c7ab8b443fd2fa3bbef4f049032c361e02855bd76e751c312d9c7321",
+      "width": 2560,
+      "height": 1283,
+      "mime_type": "image/jpeg"
+    },
+    {
+      "path": "output/verification/external-execution-2026-11-27/orca-reference/settings.png",
+      "sha256": "5851c76731beb9f8d958de8a626ee5d8ba50d3cb07374f466a9de617f8b94035",
+      "width": 2560,
+      "height": 1283,
+      "mime_type": "image/jpeg"
+    },
+    {
+      "path": "output/verification/orca-ui-rework-2026-11-27/orca-bot-settings.png",
+      "sha256": "b1a14f4e0efa5378006f62f818445715cb0e54f6283646acf11c30225a908356",
+      "width": 2560,
+      "height": 1283,
+      "mime_type": "image/jpeg"
+    },
+    {
+      "path": "output/verification/orca-ui-rework-2026-11-27/orca-chat-settings.png",
+      "sha256": "1b60305a6cbcc9a3f6fa5ee33820d18937b63e3aea71e8639372e2b9f423178e",
+      "width": 2560,
+      "height": 1283,
+      "mime_type": "image/jpeg"
+    },
+    {
+      "path": "output/verification/orca-ui-rework-2026-11-27/orca-computer-settings.png",
+      "sha256": "9f468fddabd3ba1528a3a64da7e9445bae7d7e405e96ca45cea92d3f32c2d878",
+      "width": 2560,
+      "height": 1283,
+      "mime_type": "image/jpeg"
+    },
+    {
+      "path": "output/verification/orca-ui-rework-2026-11-27/orca-global-settings.png",
+      "sha256": "3a0118c37aab1af7c79c4f1dba3c65aaf94bea334a83a4c05620a2317ed82dd4",
+      "width": 2560,
+      "height": 1283,
+      "mime_type": "image/jpeg"
+    }
+  ],
+  "source_files": [
+    {
+      "path": "src/renderer/src/components/bots/NewBotDialog.tsx",
+      "sha256": "d6d5b6231c6ee675127f1792278ce9d2077b672057eb41aa4b820737e36cc7c9"
+    },
+    {
+      "path": "src/renderer/src/components/bots/NewBotDialogFooter.tsx",
+      "sha256": "26345ec56a01870177fcd82a8004f159811562ae29a15edeb36565696a83a943"
+    },
+    {
+      "path": "src/renderer/src/components/bots/BotCreateButton.tsx",
+      "sha256": "deff43fd60f5d969741a4ab09d0df4db6e861ad4ffe2d3412e39a899e5906993"
+    },
+    {
+      "path": "src/renderer/src/components/bots/BotAgentLaunchPicker.tsx",
+      "sha256": "1a3a115d9c8075601b8cab10de3eaa89d2260f3067fae1bcfd13fbd5c88052d0"
+    },
+    {
+      "path": "src/renderer/src/components/bots/BotSidebarRow.tsx",
+      "sha256": "7cee273ad8aa0feb051b2b7c2b72af1cffbca8406b47ae1fbc0485e9ce4b849e"
+    },
+    {
+      "path": "src/renderer/src/components/bots/settings-view/BotSettingsRows.tsx",
+      "sha256": "344d3772be207665f5efcc1ebb9ff43c5225b4a93c7597c90800114947f92ef0"
+    },
+    {
+      "path": "src/renderer/src/components/agent/AgentPickerAgentRail.tsx",
+      "sha256": "db87e82a96b0fdeed79298da0ffc40eb8adba7c13c0e97728e7051ee83c9ca02"
+    },
+    {
+      "path": "src/renderer/src/components/agent/AgentLaunchPickerDropdown.tsx",
+      "sha256": "9c5008591a2c71715bb92b70e98fdb59089a0c95ff0af1d1d8baac5cc7580140"
+    },
+    {
+      "path": "src/renderer/src/components/settings/computer-use/ComputerUsePane.tsx",
+      "sha256": "64aed5e753d5e5eb65c2a9f93342be448fec2b17335c77df1ba875507b17965a"
+    },
+    {
+      "path": "src/renderer/src/components/ui/dialog.tsx",
+      "sha256": "ca36da749ef96091e0f5b065e48ac003547c0f71afecacf1032bc71295c7b1c7"
+    },
+    {
+      "path": "src/renderer/src/assets/main.css",
+      "sha256": "9b1fa73dbe4a8512fb38148b11645cef980f00ccee449d3a1d5bd76098d73d73"
+    },
+    {
+      "path": "src/renderer/src/components/agent/icons/agent-icon-glyphs.tsx",
+      "sha256": "1b5e84c851ba154eb0b8914a0c873b7394fa02d6d0bcca817b8517123ede4dde"
+    },
+    {
+      "path": "src/renderer/src/components/status-bar/accounts/provider-icons.tsx",
+      "sha256": "333ce4a45da583de0b7f050f5582366f064faec936a543259a1c181da015dfab"
+    },
+    {
+      "path": "src/shared/bots/bot-avatar-color.ts",
+      "sha256": "0c4d933815b8d04126417ac20397db9b64cd09ef436a93cc649bfd9af6a285de"
+    },
+    {
+      "path": "src/renderer/src/components/bots/settings-view/BotSettingsView.tsx",
+      "sha256": "9d5a606711288a965cd991667fbb2277371159d8c55c96d9eacd55227025d360"
+    },
+    {
+      "path": "src/renderer/src/components/bots/settings-view/BotSettingsSubpage.tsx",
+      "sha256": "1425df71efbfed7ad903c5e8b905d1f03c6a4953bca9c50aa28168fb2cb9b4a1"
+    },
+    {
+      "path": "src/renderer/src/components/settings/navigation/SettingsSidebar.tsx",
+      "sha256": "a3fb317fb9815cecfae3ba6448b4ec653ada1e7cb363e31f24d07ce336f726a5"
+    },
+    {
+      "path": "src/renderer/src/components/native-chat/appearance/NativeChatSettingsButton.tsx",
+      "sha256": "1f98d2bbb9860ce05d8bb7174c3f31cf0f6f3191e0f542da7ae33a8aeb40b68c"
+    }
+  ],
+  "adopted": {
+    "provider_picker": "horizontal 34x36 icon tabs, model search/list, effort and surface footer",
+    "form": {
+      "width": 480,
+      "padding": 20,
+      "avatar": 64,
+      "purpose_height": 120,
+      "avatar_background": "#b3dbf4",
+      "top_band_height": 84,
+      "top_band_opacity": {
+        "light": 0.46,
+        "dark": 0.26
+      }
+    },
+    "bots": "sidebar, shared full-height chat/terminal, optional profile inspector",
+    "computer": "permission home and observed-window subpage; back retains the original snapshot/window/takeover",
+    "keyboard_focus": {
+      "light": "#a1a1a1",
+      "dark": "#737373",
+      "source": "src/renderer/src/assets/main.css"
+    },
+    "navigation": "one stable execution sidebar with shared search, Bots and work groups; sidebar state retained across surfaces",
+    "tabs": "flat session tabs and add button; close hides the view; input and stop remain separate actions",
+    "chat": "right user bubbles, left assistant text, aligned 736px message/composer column; width menu at content top-right",
+    "bot_inspector": "Home/chat history/settings with drill-in pages and per-field edits; model opens shared picker directly",
+    "settings_layout": {
+      "window_drag_height": 36,
+      "navigation_width": 280,
+      "breadcrumb_height": 48,
+      "content_max_width": 720
+    }
+  },
+  "reference_model_messages_sent": 0,
+  "reference_config_values_changed": false,
+  "created_reference_bots": 0,
+  "reference_restored_to_original_chat": true,
+  "alignment_verified": false,
+  "reference_dark_screenshots_collected": false,
+  "alignment_evidence": "docs/research/evidence/orca-workspace-ui-validation-2026-11-27.json"
+}

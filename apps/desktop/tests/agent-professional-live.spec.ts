@@ -3,7 +3,7 @@ import {mkdir,mkdtemp,readFile,writeFile,rename} from "node:fs/promises";
 import {spawnSync} from "node:child_process";
 import {createHash} from "node:crypto";
 import path from "node:path";
-import {navigate,closeApplication} from "./navigation.ts";
+import {navigate,closeApplication, workspaceAction} from "./navigation.ts";
 import {liveAgentRound} from "./fixtures/live-agent-round.ts";
 
 const root=path.resolve(import.meta.dirname,"../../.."),output=path.join(root,"output/professional-gui-20261126");
@@ -106,7 +106,7 @@ test("真实安装GUI组合文风与审校，原任务局部返工后停用插�
   state.review_ref??={owner_plugin_id:ids[1],object_id:report.object.object_id,revision:report.object.revision,sha256:report.sha256};await save();
   const actualReport=await read("hetu.plugin_results.get",{work_ref:state.work,...state.review_ref});expect(actualReport.sha256).toBe(state.review_ref.sha256);expect(actualReport.object.source_refs.length).toBeGreaterThanOrEqual(2);expect(actualReport.object.content.checks.some((item:any)=>["canon","promises"].includes(item.domain)&&["inconclusive","unchecked"].includes(item.status))).toBe(true);
   if(!state.feedback_prompt){
-   await page.getByRole("button",{name:"关闭终端面板",exact:true}).click();await navigate(page,"参考稿审核");await page.getByRole("combobox",{name:"当前审阅任务",exact:true}).selectOption(state.task_ref.task_id);
+   await workspaceAction(page,"关闭终端面板");await navigate(page,"参考稿审核");await page.getByRole("combobox",{name:"当前审阅任务",exact:true}).selectOption(state.task_ref.task_id);
    const frame=page.frameLocator('iframe[title="任务候选审阅"]');await expect(frame.getByLabel("补充要求或意见",{exact:true})).toBeVisible();
    await frame.getByLabel("补充要求或意见",{exact:true}).fill("隔离QA意见：沿这份参考稿再改一次，只在原许可中段增加一次‘江岚将信推到灯下，封蜡擦过桌面的盐粒’的具体动作。删去为这次动作解释心理的句子，保持原开头、结尾、日期悬念和其他范围字节；不采纳或定稿。");await frame.getByRole("button",{name:"按此修改",exact:true}).click();
    const prompt=frame.getByLabel("继续提示词",{exact:true});await expect(prompt).toHaveValue(/feedback_/);state.feedback_prompt=await prompt.inputValue();await save();await frame.getByRole("button",{name:"放入当前草稿",exact:true}).click();await expect(page.locator(".agent-chat")).toBeVisible({timeout:60000});

@@ -1,10 +1,32 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import type {AgentTool} from "../src/agent-session-contract.ts";
-import {readSessionResults,readLibrarySessionResults} from "../src/main/agent/session-results.ts";
+import {readSessionResults,readLibrarySessionResults,readBotSessionResults} from "../src/main/agent/session-results.ts";
 const work={workspace_id:"workspace",kind:"novel" as const,object_id:"novel"};
 const tool=(action:string,data:any,server="hetu"):AgentTool=>({id:"tool",turn_id:"turn",kind:"mcpToolCall",title:"test",server,state:"completed",output:JSON.stringify({structuredContent:{action,status:"succeeded",data}})});
 const reference={document_id:"doc",revision_id:"revision",sha256:"sha"};
+const botRef={bot_id:"bot_00000000-0000-4000-8000-000000000001",revision:1,sha256:"a".repeat(64)};
+const botIdentity={session_id:"terminal-00000000-0000-4000-8000-000000000001",bot_ref:botRef,generation:7,client:"generic",work_ref:work};
+const botDescriptor={session_id:botIdentity.session_id,client:"generic",bot_ref:botRef,bot:{status:"paused",work_ref:work,config:{name:"固定助手",purpose:"核对当前稿，保留作者意见。",execution:{provider_id:"kilo",surface:"gui",model_id:"fixed"}}}};
+const botConversation={session_id:botIdentity.session_id,client:"kilo",bot_ref:botRef,generation:7,work_ref:work,conversation:{tools:[],receipts:[tool("hetu.documents.create",{document:{document_id:"doc"},revision:{document_id:"doc",revision_id:"revision",sha256:"sha"}})],total_tools:0,total_receipts:3,receipts_complete:false}};
+
+test("Bot停用后仍从原会话真实回执核对固定成果，省略回执保持待核对",async()=>{
+ const calls:any[]=[];
+ const result=await readBotSessionResults(botIdentity,async input=>{calls.push(input);return input.method==="session_get"?botDescriptor:botConversation;},async(tools,provider)=>{
+  assert.equal(provider,"kilo");return readSessionResults(tools,work,async(action,input)=>{assert.equal(action,"hetu.documents.get");assert.deepEqual(input,{document_id:"doc",revision_id:"revision"});return {work_ref:work,document:{document_id:"doc",title:"Core固定稿",current_revision_id:"newer"},revision:{document_id:"doc",revision_id:"revision",sha256:"sha"}};});
+ });
+ assert.deepEqual(calls,[{method:"session_get",session_id:botIdentity.session_id,work_ref:work},{method:"session_read",session_id:botIdentity.session_id,generation:7,format:"conversation",work_ref:work}]);
+ assert.equal(result.items[0].title,"Core固定稿");assert.equal(result.items[0].state,"verified");assert.match(result.items[0].message!,/已有更新/);assert.equal(result.unread,2);
+});
+
+test("Bot成果拒绝错误原配置、客户端、作品及迟到会话，不回退普通会话或最新稿",async()=>{
+ const descriptions=[{...botDescriptor,client:"codex"},{...botDescriptor,bot_ref:{...botRef,revision:2}},{...botDescriptor,bot:{...botDescriptor.bot,work_ref:{...work,object_id:"other"}}},{...botDescriptor,bot:{...botDescriptor.bot,config:{...botDescriptor.bot.config,name:""}}}];
+ const views=[{...botConversation,session_id:"other"},{...botConversation,generation:8},{...botConversation,client:"opencode"},{...botConversation,bot_ref:{...botRef,revision:2}},{...botConversation,work_ref:{...work,object_id:"other"}},{...botConversation,conversation:undefined}];
+ for(const [description,view]of [...descriptions.map(value=>[value,botConversation]),...views.map(value=>[botDescriptor,value])]){
+  let verified=false;await assert.rejects(readBotSessionResults(botIdentity,async input=>input.method==="session_get"?description:view,async()=>{verified=true;return {items:[],unread:0};}),/原Bot/);assert.equal(verified,false);
+ }
+ await assert.rejects(readBotSessionResults(botIdentity,async()=>{throw Error("原作品已撤权");},async()=>{throw Error("不能回退");}),/撤权/);
+});
 test("保存回执必须独立回读Core；读操作和其他MCP不能伪装写入成果",async()=>{
  let reads=0;
  const data={document:{document_id:"doc"},revision:{document_id:"doc",revision_id:"revision",sha256:"sha"}};

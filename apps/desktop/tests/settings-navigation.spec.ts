@@ -4,6 +4,24 @@ import os from "node:os";
 import path from "node:path";
 import {openSettings, closeSettings, closeApplication} from "./navigation.ts";
 
+test("设置窗口按当前屏幕可用区域定位，主窗口铺满屏幕也不遮住标题栏",async({},info)=>{
+ test.setTimeout(120000);
+ const root=path.resolve(import.meta.dirname,"../../.."),profile=await mkdtemp(path.join(os.tmpdir(),"hetu-settings-bounds-"));
+ const env={...process.env,HETU_DESKTOP_PROFILE:profile,HETU_LOCAL_SETTINGS_DIR:path.join(profile,"settings"),HETU_COLLABORATION_DIR:path.join(profile,"collaboration"),HETU_PLUGIN_STATE_DIR:profile};
+ const app=await electron.launch(process.env.HETU_PACKAGED_APP?{executablePath:process.env.HETU_PACKAGED_APP,args:[],env}:{args:[path.join(root,"apps/desktop")],env});
+ try{
+  const main=await app.firstWindow();await expect(main.getByRole("button",{name:"刷新创作库",exact:true})).toBeEnabled();
+  await app.evaluate(({BrowserWindow,screen})=>{const parent=BrowserWindow.getAllWindows()[0],display=screen.getDisplayMatching(parent.getBounds());parent.setBounds(display.bounds);});
+  const page=await openSettings(app,main);await expect(page.getByRole("tabpanel",{name:"通用",exact:true})).toBeVisible();
+  const bounds=await app.evaluate(({BrowserWindow,screen})=>{const view=BrowserWindow.getAllWindows().find(window=>window.webContents.getURL().endsWith("?view=settings"))!,bounds=view.getBounds();return{bounds,workArea:screen.getDisplayMatching(bounds).workArea};});
+  expect(bounds.bounds.x).toBeGreaterThanOrEqual(bounds.workArea.x);expect(bounds.bounds.y).toBeGreaterThanOrEqual(bounds.workArea.y);
+  expect(bounds.bounds.x+bounds.bounds.width).toBeLessThanOrEqual(bounds.workArea.x+bounds.workArea.width);
+  expect(bounds.bounds.y+bounds.bounds.height).toBeLessThanOrEqual(bounds.workArea.y+bounds.workArea.height);
+  for(const title of ["关于","通用"]){await page.getByRole("tab",{name:title,exact:true}).click();await expect(page.getByRole("tabpanel",{name:title,exact:true})).toBeVisible();expect(await page.locator(".settings-titlebar").evaluate(element=>element.getBoundingClientRect().top)).toBe(0);}
+  await page.screenshot({path:info.outputPath("settings-work-area.png")});await writeFile(info.outputPath("settings-bounds.json"),JSON.stringify(bounds,null,2)+"\n");
+ }finally{await closeApplication(app);}
+});
+
 test("独立设置窗口的分类按视觉顺序循环，200%界面仍可操作并返回主窗口", async ({}, info) => {
   test.setTimeout(180000);
   const root = path.resolve(import.meta.dirname, "../../.."), profile = await mkdtemp(path.join(os.tmpdir(), "hetu-settings-navigation-"));

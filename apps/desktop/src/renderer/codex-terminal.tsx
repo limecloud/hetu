@@ -8,7 +8,7 @@ import { WebLinksAddon } from "@xterm/addon-web-links";
 import { WebglAddon } from "@xterm/addon-webgl";
 import { LigaturesAddon } from "@xterm/addon-ligatures";
 import { useContextMenu, agentPreferences,IconButton } from "@hetu/workbench-ui";
-import type { SessionSnapshot } from "../agent-session-contract.ts";
+import type { AgentSessionEvent,SessionSnapshot } from "../agent-session-contract.ts";
 import { desktop } from "./bridge.ts";
 import { repairTerminalScale } from "./terminal-renderer.ts";
 import { terminalTheme } from "./terminal-theme.ts";
@@ -17,10 +17,13 @@ import {TerminalStream} from "./terminal-stream.ts";
 import {terminalKeyInput} from "./terminal-keys.ts";
 import "@xterm/xterm/css/xterm.css";
 
-export function CodexTerminal({ snapshot, preferences, notify,actions,toolbarTarget }: { snapshot: SessionSnapshot; preferences: any; notify: (message: string) => void;actions?:React.ReactNode;toolbarTarget?:HTMLElement|null }) {
+export type TerminalTransport={read():Promise<SessionSnapshot>;input(value:{session_id?:string;generation?:number;data:string}):Promise<unknown>;resize(value:{session_id?:string;generation?:number;cols:number;rows:number}):Promise<unknown>;subscribe(listener:(event:AgentSessionEvent)=>void):()=>void};
+
+export function CodexTerminal({ snapshot, preferences, notify,actions,toolbarTarget,transport,readOnly=false }: { snapshot: SessionSnapshot; preferences: any; notify: (message: string) => void;actions?:React.ReactNode;toolbarTarget?:HTMLElement|null;transport?:TerminalTransport;readOnly?:boolean }) {
   const appearance = useEffectiveAppearance();
   const contextMenu = useContextMenu();
-  const paste = async () => { const active=terminal.current;const output=stream.current;const text = await desktop.paste(); if (new TextEncoder().encode(text).length > 60_000) throw new Error("粘贴内容超过60KB，请使用固定资料引用。");if(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/.test(text))throw Error("剪贴板包含终端控制字符，内容未粘贴。"); if(!active||active!==terminal.current||output!==stream.current||!output?.acceptsInput)throw Error("终端已切换或尚未核对，内容未粘贴。");active.paste(text); active.focus(); };
+  const inputBlocked=useRef(readOnly);inputBlocked.current=readOnly;
+  const paste = async () => {if(inputBlocked.current)throw Error("当前终端仅可读取。"); const active=terminal.current;const output=stream.current;const text = await desktop.paste(); if (new TextEncoder().encode(text).length > 60_000) throw new Error("粘贴内容超过60KB，请使用固定资料引用。");if(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/.test(text))throw Error("剪贴板包含终端控制字符，内容未粘贴。"); if(inputBlocked.current||!active||active!==terminal.current||output!==stream.current||!output?.acceptsInput)throw Error("终端已切换或尚未核对，内容未粘贴。");active.paste(text); active.focus(); };
   const host = useRef<HTMLDivElement>(null);
   const terminal = useRef<Terminal>();
   const current = useRef(snapshot); current.current = snapshot;
@@ -76,29 +79,32 @@ export function CodexTerminal({ snapshot, preferences, notify,actions,toolbarTar
     instance.focus();
     instance.parser.registerOscHandler(52, () => true);
     const scope=snapshot.work_ref?{work_ref:snapshot.work_ref}:{scope:"library"};
-    const output=new TerminalStream({read:()=>desktop.agentSession("get",{...scope,session_id:snapshot.session_id}),reset:replay=>new Promise(resolve=>{instance.reset();instance.write(replay,resolve);}),write:data=>instance.write(data),error:error=>setStreamError(error.message),inputStatus:ready=>{
+    const output=new TerminalStream({read:()=>transport?transport.read():desktop.agentSession("get",{...scope,session_id:snapshot.session_id}),reset:replay=>new Promise(resolve=>{instance.reset();instance.write(replay,resolve);}),write:data=>instance.write(data),error:error=>setStreamError(error.message),inputStatus:ready=>{
       if(terminal.current!==instance)return;
-      instance.options.disableStdin=!ready||!current.current.terminal_connected||current.current.state==="switching";
+      instance.options.disableStdin=inputBlocked.current||!ready||!current.current.terminal_connected||current.current.state==="switching";
       if(host.current){host.current.dataset.terminalInputReady=String(!instance.options.disableStdin);host.current.setAttribute("aria-busy",String(!ready));}
     }});stream.current=output;
     const input = instance.onData(data => {
       const active = current.current;
-      if (!output.acceptsInput || !active.terminal_connected || active.generation!==snapshot.generation || active.state==="switching") return;
-      void desktop.agentSession("terminal_input", { ...(active.work_ref ? {} : { scope: "library" }), session_id: active.session_id, generation: active.generation, data }).catch(error => notify(error.message));
+      if (inputBlocked.current||!output.acceptsInput || !active.terminal_connected || active.generation!==snapshot.generation || active.state==="switching") return;
+      void (transport?transport.input({session_id:active.session_id,generation:active.generation,data}):desktop.agentSession("terminal_input", { ...(active.work_ref ? {} : { scope: "library" }), session_id: active.session_id, generation: active.generation, data })).catch(error => notify(error.message));
     });
     const selection = instance.onSelectionChange(() => {
       if (settings.current.terminal_copy_on_select && instance.hasSelection()) void navigator.clipboard.writeText(instance.getSelection()).catch(error => notify(error.message));
     });
-    const unsubscribe = desktop.onAgentSession(event => {
+    const receive=(event:AgentSessionEvent)=>{
       if (event.type === "terminal") output.receive(event);
-    });
+    };
+    const unsubscribe=transport?transport.subscribe(receive):desktop.onAgentSession(receive);
     setStreamError("");void output.sync().catch(error=>setStreamError(error.message));
+    let lastSize:string|undefined;
     const resize = () => {
       if (!host.current?.clientHeight || !host.current.clientWidth) return;
       repairTerminalScale(instance); fit.fit();
       if (host.current) host.current.dataset.terminalMetrics = JSON.stringify({fontSize:instance.options.fontSize, cols:instance.cols, rows:instance.rows, dpr:devicePixelRatio});
       const active = current.current;
-      if (active.terminal_connected) void desktop.agentSession("terminal_resize", { ...(active.work_ref ? {} : { scope: "library" }), session_id: active.session_id, generation: active.generation, cols: instance.cols, rows: instance.rows }).catch(error => notify(error.message));
+      const size=JSON.stringify([active.session_id,active.generation,instance.cols,instance.rows]);
+      if (active.terminal_connected&&!inputBlocked.current&&size!==lastSize){lastSize=size;void (transport?transport.resize({session_id:active.session_id,generation:active.generation,cols:instance.cols,rows:instance.rows}):desktop.agentSession("terminal_resize", { ...(active.work_ref ? {} : { scope: "library" }), session_id: active.session_id, generation: active.generation, cols: instance.cols, rows: instance.rows })).catch(error => notify(error.message));}
     };
     const observer = new ResizeObserver(resize); observer.observe(host.current);
     window.addEventListener("resize", resize);
@@ -109,9 +115,10 @@ export function CodexTerminal({ snapshot, preferences, notify,actions,toolbarTar
   }, [snapshot.session_id, snapshot.generation, snapshot.terminal_connected]);
   useEffect(()=>{
     const instance=terminal.current;if(!instance)return;
-    instance.options.disableStdin=!stream.current?.acceptsInput||!snapshot.terminal_connected||snapshot.state==="switching";
+    instance.options.disableStdin=readOnly||!stream.current?.acceptsInput||!snapshot.terminal_connected||snapshot.state==="switching";
     if(host.current)host.current.dataset.terminalInputReady=String(!instance.options.disableStdin);
-  },[snapshot.state,snapshot.generation,snapshot.terminal_connected]);
+    if(!instance.options.disableStdin)window.dispatchEvent(new Event("resize"));
+  },[snapshot.state,snapshot.generation,snapshot.terminal_connected,readOnly]);
   useEffect(() => {
     const instance = terminal.current; if (!instance) return;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;

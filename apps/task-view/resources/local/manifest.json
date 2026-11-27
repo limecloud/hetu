@@ -69,14 +69,14 @@
     "src/task-review.ts": "af4a31602e05ce4bba111e8cb5c08eafb7391582f5cc0dbf6e73bc62be8b2379",
     "src/app.ts": "f19dfcfe3aaca4648faf7bdeb947ecbf42218bd8f781887eefc566efaf6434a0",
     "src/app.css": "7695fea4fd00e4ecc70660e0b19e497f64dd7871f70f0f095b4962d68eb8de55",
-    "../../assets/styles/radix-workbench.css": "1a3923b5c461718b6856b507df3d778a477f47dd2a0a010e21a029b7b4dcc342",
+    "../../assets/styles/radix-workbench.css": "590de8d8a1d8b7fdd288c284463605e0c517ca02cc19029ecbc6905e35d48468",
     "../../packages/workbench-ui/src/reading.css": "a5f13f78e461ce72b64540cc09686e8a78a8d19a835ea9258af1ba6031c694c2",
     "../../packages/workbench-ui/src/manuscript-review.css": "e5da924aefd29e7ca13c735939b8e749396dcedc25e2344dddfb4409fafd2cbc",
     "../../packages/workbench-ui/src/canon-details.css": "dc95728e0c04b4cd92bf5267c46bf0b2963f6020d066fd3b667a48e907ff8296",
     "../../packages/workbench-ui/src/image-region.css": "75cdf2dfb351adea96c88338329f8f3c4d2a6d4446037cd605570a34941d245c",
     "../../packages/workbench-ui/src/task-feedback-history.css": "0e0940167699c5a8aa10f4d3e85f43aaf455251de0b37195c9a59852cd83f96d",
     "scripts/build.mjs": "2cb8078ee2ff0ab2fd8d6222955a9640f47d8c67eff6699137014a07d415f821",
-    "package.json": "fd177c4ed85b7339b6fbf7abfba49481dcce3f8aaa970d9ab37af5583369ef80",
+    "package.json": "c396938471fcc4216db0dccf8639bda9c9ef907747833c8beab1f8504a81576e",
     "THIRD-PARTY-NOTICES.txt": "f8da2e92ce87daf26c9d6d8b2e1ba99a8a28da89a09d3fa48f498b0f337cad8b",
     "src/local/host.ts": "97844772ecf15c8b00d49361b430a6b58ca2e3afd7f1cff0cd10dface1203fbc",
     "src/local/server.ts": "489c5d11be4e38980cf3ab6b00d04d32c8ab753c72a040fbb648fa4698faa4c7",
@@ -85,8 +85,8 @@
   "files": {
     "host.js": "2172d6a93a1c54e5247e5e0909487ea463b325cecf3b2d5a61ae7946ca0078b1",
     "server.mjs": "3f01a663aa4b04b45f17e5103af9874ad947beb41d2982a2a339dc711fb0ad47",
-    "index.html": "863cd3b985f419f4dd7a4f6ed92d713e14632ed6818bd8b925c0124f6f85e5f1",
-    "task-view.html": "e96dc47e30840b1bc98a8fa273e9b53977ebbef48e71b6b96b26e004b1226045",
+    "index.html": "e2ccb59c75b9663c6d36a526194efc58ff6cad090cafe2f72dff148ebced726d",
+    "task-view.html": "46c6a1b51e849c80ff52aed8c534cdfc47cd78a0c9668fa55abb3ac53f95a95b",
     "THIRD-PARTY-NOTICES.txt": "f8da2e92ce87daf26c9d6d8b2e1ba99a8a28da89a09d3fa48f498b0f337cad8b"
   }
 }

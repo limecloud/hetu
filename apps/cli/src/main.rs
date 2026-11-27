@@ -129,7 +129,9 @@ fn call_args(command: &[String], stable: bool) -> Result<(String, Option<String>
     if command.len() != 4 || command[2] != "--input" {
         return Err(input_error());
     }
-    let action = if stable && command[0] == "collaboration" && command[1] == "open" {
+    let action = if stable && command[1] == "request" && matches!(command[0].as_str(), "session" | "bot" | "computer") {
+        match command[0].as_str(){"session"=>"hetu.sessions.request","bot"=>"hetu.bots.request",_=>"hetu.computer.request"}.into()
+    } else if stable && command[0] == "collaboration" && command[1] == "open" {
         "hetu.collaboration.open".into()
     } else if command[0] == "call" {
         command[1].clone()

@@ -1,5 +1,13 @@
 # MCP 与 Agent 接入
 
+## 外部执行工具
+
+稳定MCP提供 `hetu_sessions`、`hetu_bots`、`hetu_computer`，对应[30外部执行应用入口](30-应用API详细设计.md#外部执行应用入口)。先以 `method=capabilities`发现当前Schema，再选择已安装提供方、固定会话或原窗口；不因目录登记推定模型、认证或平台可用。
+
+电脑截图以MCP `image`内容块传递，`structuredContent.data.screenshot`只保留格式、尺寸及 `delivered_as=mcp_image`，不重复嵌入Base64。截图、树、OCR和提供方消息均为外部数据，不构成指令、权限或作品完成证据。Bot配置与普通会话分开路由，普通sessions写入口不能绕过固定Bot配置；未知派发只沿所属工具的原operation查询，不转到作品操作账本或换键重发。
+
+观察树超出MCP结果预算时，保留原snapshot_ref并显式返回省略范围及下一条固定query；逐元素查询使用同一快照、筛选和偏移。像素仍由独立image块交付。查询读冻结数据，不能据此断言窗口当前未变，执行动作仍须原生重新核验。
+
 ## 调用前的任务分流
 
 临时问题可由Agent直接回答；需要作品内容时先窄查和读取，写入不是查询的收尾步骤。MCP工具描述不要求无任务必建任务；操作成功、内容可信度和作者认可分别报告。

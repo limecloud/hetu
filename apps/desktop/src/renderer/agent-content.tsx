@@ -16,7 +16,7 @@ const referenceType="application/x-hetu-work-reference";
 const entryKey=(entry:Entry)=>JSON.stringify([entry.kind,entry.id,entry.revision]);
 
 /** 只呈现Core正式内容；临时预览和目录状态不拥有作品数据。 */
-export function AgentContent({work,snapshot,sessionTitle,children,notify,header,maximized=false}:{work?:WorkRef;snapshot:SessionSnapshot;sessionTitle:string;children:React.ReactNode;notify(message:string):void;header?(controls:React.ReactNode,tabs:React.ReactNode):React.ReactNode;maximized?:boolean}) {
+export function AgentContent({work,snapshot,sessionTitle,children,notify,header,maximized=false,includeSessionTab=true}:{work?:WorkRef;snapshot:SessionSnapshot;sessionTitle:string;children:React.ReactNode;notify(message:string):void;header?(controls:React.ReactNode,tabs:React.ReactNode,preview:{active:boolean;onSession():void}):React.ReactNode;maximized?:boolean;includeSessionTab?:boolean}) {
   const [groups,setGroups]=useState<Group[]>([]),[errors,setErrors]=useState<string[]>([]),[busy,setBusy]=useState(false);
   const [query,setQuery]=useState(""),[collapsed,setCollapsed]=useState<Set<string>>(new Set());
   const [visible,setVisible]=useState(()=>viewStorage.getItem("hetu-agent-directory-visible")!=="false"),[narrow,setNarrow]=useState(false),[overlay,setOverlay]=useState(false),[width,setWidth]=useState(()=>Math.max(220,Math.min(440,Number(viewStorage.getItem("hetu-agent-directory-width"))||350)));
@@ -133,8 +133,8 @@ export function AgentContent({work,snapshot,sessionTitle,children,notify,header,
     onKeyDownCapture={event=>{if(event.nativeEvent.isComposing)return;if(event.key==="Enter"&&(event.ctrlKey||event.metaKey)){event.preventDefault();void open(entry,true);}}}>
     <Icon name="file" size={14}/><span>{entry.title}</span></button>;}
   const directoryControl=work&&<IconButton icon="inspector" label="作品目录" aria-pressed={directoryVisible} onClick={()=>showDirectory(!directoryVisible)}/>;
-  const tabs=work&&!!previews.length&&<AgentPreviewTabs sessionTitle={sessionTitle} tabs={previews.map(item=>({id:entryKey(item.entry),title:item.entry.title+(outdated(item.entry)?"（旧修订）":""),preview:!item.pinned}))} activeId={active} onSelect={select} onClose={close} onKeep={key=>setPreviews(previous=>previous.map(item=>entryKey(item.entry)===key?{...item,pinned:true}:item))} onReveal={reveal} notify={notify}/>;
-  return <>{header?.(directoryControl,tabs)}<div className="agent-content" ref={panel}>
+  const tabs=work&&!!previews.length&&<AgentPreviewTabs sessionTitle={sessionTitle} includeSession={includeSessionTab} tabs={previews.map(item=>({id:entryKey(item.entry),title:item.entry.title+(outdated(item.entry)?"（旧修订）":""),preview:!item.pinned}))} activeId={active} onSelect={select} onClose={close} onKeep={key=>setPreviews(previous=>previous.map(item=>entryKey(item.entry)===key?{...item,pinned:true}:item))} onReveal={reveal} notify={notify}/>;
+  return <>{header?.(directoryControl,tabs,{active:!!active,onSession:terminal})}<div className="agent-content" ref={panel}>
     <div className="agent-content-main">
       {!header&&tabs}
       <div className="agent-content-terminal" hidden={!!active} onDragOver={event=>{if(event.dataTransfer.types.includes(referenceType)){event.preventDefault();event.dataTransfer.dropEffect="copy";}}} onDrop={event=>{

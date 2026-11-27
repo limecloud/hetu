@@ -1,4 +1,4 @@
-import {mkdir,readFile,stat} from "node:fs/promises";
+import {mkdir} from "node:fs/promises";
 import path from "node:path";
 import type {WorkRef} from "@hetu/plugin-sdk";
 import type {AgentContextRef,AgentSessionEvent,AgentSurface,SessionLaunch,SessionSnapshot} from "../../agent-session-contract.ts";
@@ -6,7 +6,12 @@ import {CodexTerminal as PtyProcess} from "./codex-terminal.ts";
 import {atomicJson,loadRecord,recordPath,validateContextRefs} from "./session-storage.ts";
 import {SessionLease} from "./session-lease.ts";
 import {engineName,resolveEngine} from "./engines.ts";
-import {prepareBusinessContext} from "./business-context.ts";
+import {externalProvider} from "../../shared/external-ai.ts";
+import {resolveExternalStorageBinding} from "./external-storage-binding.ts";
+import {canBindExternalStorage} from "../../shared/external-storage-binding.ts";
+import {externalEnvironment,prepareExternalLaunch} from "./external-ai-launch.ts";
+import {hermesProfileArgs} from "./hermes-profile.ts";
+import {readSessionToolReceipts} from "./session-tool-receipts.ts";
 
 /** 原生CLI只承接真实PTY；不从终端文字推断模型轮次、线程或作品保存。 */
 export class ProcessSession {
@@ -15,7 +20,7 @@ export class ProcessSession {
   constructor(options:ProcessSession["options"]){
     this.options=options;
     this.#lease=new SessionLease(options.profile,recordPath(options.profile,options.work,options.id));
-    this.#snapshot={session_id:options.id,client:options.launch.client,title:options.launch.title??engineName(options.launch.client),work_ref:options.work,surface:"tui",state:"idle",messages:[],updated_at:new Date().toISOString(),capabilities:{terminal:true,steer:false,models:false,chat:false}};
+    this.#snapshot={session_id:options.id,client:options.launch.client,title:options.launch.title??engineName(options.launch.client),model:options.launch.model,bot_context:options.launch.bot_context,work_ref:options.work,surface:"tui",state:"idle",messages:[],updated_at:new Date().toISOString(),capabilities:{terminal:true,steer:false,models:false,chat:false}};
   }
   snapshot(includeReplay=true):SessionSnapshot{return {...structuredClone(this.#snapshot),generation:this.#generation,terminal_connected:this.#terminal.connected,terminal_sequence:this.#terminal.sequence,...(includeReplay?{terminal_replay:this.#terminal.replay}:{})};}
   async load(){if(this.#loaded)return this.snapshot();const saved=await loadRecord(recordPath(this.options.profile,this.options.work,this.options.id),this.options.work,this.options.cwd);if(saved){if(saved.client!==this.options.launch.client)throw Error("终端引擎与原记录不一致。");const {input_generation,request_generation,...projection}=saved;this.#generation=input_generation??Date.now();this.#snapshot={...this.#snapshot,...projection,client:saved.client,state:"idle"};}this.#loaded=true;return this.snapshot();}
@@ -30,11 +35,22 @@ export class ProcessSession {
       await mkdir(this.options.cwd,{recursive:true,mode:0o700});
       const args:string[]=[];const client=this.options.launch.client;
       if(client==="shell"&&process.platform!=="win32")args.push("-i");
-      if(client==="opencode")args.push("--standalone");
-      if(client!=="shell"&&this.options.machineMcpBinary&&this.options.machineDirectory&&this.options.machineNodeBinary&&this.options.machineRelay){
-        const business=await prepareBusinessContext({client,cwd:this.options.cwd,binary:this.options.machineMcpBinary,directory:this.options.machineDirectory,work:this.options.work,node:this.options.machineNodeBinary,relay:this.options.machineRelay,environment:command.env});
-        args.push(...business.args);Object.assign(command.env,business.env);
+      if(client!=="shell"){
+        command.env=externalEnvironment(command.env);
+        const previous=this.#snapshot.storage_binding;
+        if(this.options.machineMcpBinary&&this.options.machineDirectory&&this.options.machineNodeBinary&&this.options.machineRelay){
+          const launch=await prepareExternalLaunch({providerId:client,mode:"tui",directory:this.options.cwd,binding:{workspace:this.options.cwd,accessDirectory:this.options.machineDirectory,title:this.#snapshot.title??engineName(client),workRef:this.options.work,localSettings:!this.options.work},mcp:this.options.machineMcpBinary,cli:path.join(path.dirname(this.options.machineMcpBinary),process.platform==="win32"?"hetu.exe":"hetu"),node:this.options.machineNodeBinary,relay:this.options.machineRelay,binary:command.binary,codexBinary:command.binary,env:command.env,expectedStorage:previous,bindStorage:async storage=>{this.#snapshot.storage_binding=storage;await this.#save();},botContext:this.#snapshot.bot_context});
+          args.push(...launch.args);command.env=launch.env;
+        }else{
+          const storage=await resolveExternalStorageBinding(client,command.binary,command.env,previous?.profile);
+          if(previous&&!canBindExternalStorage(previous,storage))throw Error("原终端的引擎或存储目录已变化，未启动替代会话。");
+          this.#snapshot.storage_binding=storage;await this.#save();
+          args.push(...(externalProvider(client).args??[]));
+          if(storage.profile){command.env.HERMES_HOME=storage.profile.selected;args.push(...hermesProfileArgs(storage.profile));}
+        }
       }
+      if(this.#snapshot.model){const flags=client!=="shell"?externalProvider(client).modelArgs:undefined;if(!flags)throw Error("此引擎尚无固定模型的原生启动合同，请使用聊天会话。");args.push(...flags,this.#snapshot.model);}
+      if(client==="claude-agent-teams")command.env.CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS="1";
       const generation=this.#generation;
       this.#terminal.startProcess({...command,args,cwd:this.options.cwd,onData:data=>{if(generation===this.#generation)this.options.emit({type:"terminal",session_id:this.options.id,generation,sequence:this.#terminal.sequence,data});},onExit:()=>{if(generation===this.#generation){this.#set({state:"stopped",error:undefined});void this.#save();}}});
       await this.#lease.update(this.#terminal.pid);
@@ -61,11 +77,7 @@ export class ProcessSession {
   async interrupt(){this.#terminal.write("\u0003");return this.snapshot();}
   async stop(){if(this.#starting)await this.#starting.catch(()=>{});if(!this.#held&&!this.#terminal.connected&&this.#snapshot.state==="stopped")return this.snapshot();await this.#terminal.close();if(Number.isSafeInteger(this.#generation+1))++this.#generation;this.#set({state:"stopped"});await this.#save();if(this.#held){await this.#lease.release();this.#held=false;}return this.snapshot();}
   async recover(){return this.snapshot();}
-  async readTools(){
-    const file=path.join(this.options.cwd,"receipts.json");
-    try{if((await stat(file)).size>2_000_000)throw Error("成果回执超过预算，请在作品中核对。");const tools=JSON.parse(await readFile(file,"utf8"));if(!Array.isArray(tools)||tools.length>64)throw Error("成果回执无效。");return tools;}
-    catch(error){if((error as NodeJS.ErrnoException).code==="ENOENT")return [];throw error;}
-  }
+  readTools(){return readSessionToolReceipts(this.options.cwd);}
   async models(){return {data:[]};}
   async send():Promise<SessionSnapshot>{throw Error("请在原生终端中发送。");}
   async respond():Promise<void>{throw Error("请在原生终端中处理请求。");}

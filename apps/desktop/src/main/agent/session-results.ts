@@ -2,9 +2,28 @@ import {sameWork,type WorkRef} from "@hetu/plugin-sdk";
 import type {AgentTool} from "../../agent-session-contract.ts";
 import type {SessionResult,SessionResults} from "../../session-results.ts";
 import {executionPlanReference,recoverExecutionResults,type PlanQuery} from "./execution-results.ts";
+import {isDeepStrictEqual} from "node:util";
+import {validBotContext} from "./bot-context.ts";
 
 type Read=(action:string,input:Record<string,unknown>)=>Promise<any>;
 type Candidate={tool:AgentTool;kind:SessionResult["kind"];reference:Record<string,any>;recovered?:boolean};
+type BotResultIdentity={session_id:string;bot_ref:Record<string,unknown>;generation:number;client:string;work_ref?:WorkRef};
+
+/** Bot身份先由原Core描述核对，成果继续使用原引擎的作品资格。 */
+export async function readBotSessionResults(fixed:BotResultIdentity,readBot:(input:Record<string,unknown>)=>Promise<any>,verify:(tools:AgentTool[],provider:string)=>Promise<SessionResults>):Promise<SessionResults>{
+ if(typeof fixed.session_id!=="string"||!Number.isSafeInteger(fixed.generation)||fixed.generation<0)throw Error("原Bot会话身份或代次无效。");
+ const scope=fixed.work_ref?{work_ref:fixed.work_ref}:{};
+ const original=await readBot({method:"session_get",session_id:fixed.session_id,...scope});
+ const config=original.bot?.config;
+ if(original.session_id!==fixed.session_id||original.client!==fixed.client||!isDeepStrictEqual(original.bot_ref,fixed.bot_ref)||!validBotContext({bot_ref:original.bot_ref,name:config?.name,purpose:config?.purpose})||typeof config?.execution?.provider_id!=="string"||!isDeepStrictEqual(original.bot?.work_ref??null,fixed.work_ref??null))throw Error("原Bot配置、客户端或作品范围与成果请求不符。");
+ const value=await readBot({method:"session_read",session_id:fixed.session_id,generation:fixed.generation,format:"conversation",...scope});
+ if(value.session_id!==fixed.session_id||value.generation!==fixed.generation||value.client!==config.execution.provider_id||!isDeepStrictEqual(value.bot_ref,fixed.bot_ref)||!isDeepStrictEqual(value.work_ref??null,fixed.work_ref??null))throw Error("原Bot执行端已变化，成果尚未回读。");
+ const conversation=value.conversation;
+ if(!conversation||!Array.isArray(conversation.tools)||!Array.isArray(conversation.receipts))throw Error("原Bot会话成果投影无法核对。");
+ const results=await verify([...conversation.tools,...conversation.receipts],config.execution.provider_id);
+ const omitted=Math.max(0,(conversation.total_receipts??conversation.receipts.length)-conversation.receipts.length)+Math.max(0,(conversation.total_tools??conversation.tools.length)-conversation.tools.length);
+ return {...results,unread:results.unread+omitted};
+}
 /** 只展开已知回执合同；插件正文、聊天文本和读取结果不构成写入回执。 */
 function savedResults(receipt:any,tool:AgentTool,depth=0):Candidate[]{
  if(depth>4||receipt?.status!=="succeeded")return [];

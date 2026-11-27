@@ -109,5 +109,22 @@
 a { color: var(--jade); }
 ::selection { background: var(--jade-4); color: var(--ink); }
 
+/* 会话工作面采用Orca的中性表面；来源与实机版本见研究14的执行界面证据。 */
+:root {
+  --agent-workbench-background: light-dark(#fff, #0a0a0a);
+  --agent-workbench-foreground: light-dark(#0a0a0a, #f0f0f0);
+  --agent-workbench-popover: light-dark(#fff, #171717);
+  --agent-workbench-primary: light-dark(#171717, #e5e5e5);
+  --agent-workbench-primary-foreground: light-dark(#fff, #171717);
+  --agent-workbench-muted: light-dark(#f5f5f5, #262626);
+  --agent-workbench-muted-foreground: light-dark(#737373, #a3a3a3);
+  --agent-workbench-border: light-dark(#e5e5e5, rgb(255 255 255 / 0.07));
+  --agent-workbench-sidebar: light-dark(#f4f4f4, #171717);
+  --agent-workbench-focus: light-dark(#a1a1a1, #737373);
+  --agent-workbench-avatar: #b3dbf4;
+  --agent-workbench-avatar-foreground: #171717;
+  --agent-workbench-avatar-band: light-dark(color-mix(in srgb, var(--agent-workbench-avatar) 46%, transparent), color-mix(in srgb, var(--agent-workbench-avatar) 26%, transparent));
+}
+
 :root{font:14px/1.6 system-ui,sans-serif}body{margin:0;background:var(--page);color:var(--ink)}main{max-width:800px;margin:8vh auto;padding:24px}h1{font-size:20px}button{font:inherit;padding:8px 16px;border:.5px solid var(--line);border-radius:6px;background:var(--action);color:var(--action-ink);cursor:pointer}button:hover{background:var(--action-hover)}button:focus-visible{outline:2px solid var(--focus);outline-offset:2px}button:disabled{opacity:.55;cursor:default}code{font:600 20px/2 ui-monospace,monospace;letter-spacing:.15em}iframe{display:block;border:0;width:100%;min-height:100vh}body.paired main{max-width:none;margin:0;padding:0}body.paired #pairing{display:none}.note{color:var(--muted);font-size:12px}#connection{padding:8px 20px;margin:0}</style></head>
 <body><main><section id="pairing"><h1 id="title">河图洛书 任务页面</h1><p id="description">此页面只查看当前任务并记录选择和意见。请先在桌面软件确认配对。</p><button id="pair" type="button" disabled>请求配对</button><p id="code"></p><p id="status" role="status">正在连接… / Connecting…</p><p class="note" id="boundary">采纳正文、选用正式封面和定稿，请回桌面软件确认。</p></section><p id="connection" role="status"></p><div id="view"></div></main><script type="module" src="/host.js"></script></body></html>

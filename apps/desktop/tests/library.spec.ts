@@ -9,7 +9,7 @@ import { spawnSync } from "node:child_process";
 import path from "node:path";
 import os from "node:os";
 import { PluginPackage } from "../../../packages/plugin-host/src/package.ts";
-import { captureAgentDraft, navigate } from "./navigation.ts";
+import {captureAgentDraft, navigate, workspaceAction} from "./navigation.ts";
 const root = path.resolve(import.meta.dirname, "../../..");
 
 test(
@@ -64,7 +64,7 @@ test(
         await expect(page.getByRole("region",{name:"独立 Agent 会话",exact:true})).toBeVisible();
         const launch = page.getByRole("dialog", {name:"创建会话",exact:true});
         if (await launch.isVisible()) await launch.getByRole("button", {name:"关闭创建会话",exact:true}).click();
-        await page.getByRole("button", {name:"关闭终端面板",exact:true}).click();
+        await workspaceAction(page,"关闭终端面板");
         await navigate(page,"全部作品");
         await expect(page.getByRole("heading", { name: "还没有作品", exact: true })).toBeVisible();
       }

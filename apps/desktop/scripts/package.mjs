@@ -12,6 +12,7 @@ import {
 } from "node:fs/promises";
 import { spawn } from "node:child_process";
 import { createHash } from "node:crypto";
+import { createRequire } from "node:module";
 import { parseArgs } from "node:util";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -92,6 +93,7 @@ const sourceRoots = [
   "apps/app-server/examples",
   "apps/plugin-cli/src",
   "apps/desktop/src",
+  "apps/desktop/native",
   "apps/desktop/scripts",
   "packages/plugin-host/src",
   "packages/plugin-sdk/src",
@@ -180,8 +182,8 @@ await run(process.execPath,[path.join(root,"node_modules/typescript/bin/tsc"),"-
 await run(process.execPath,[path.join(root,"apps/task-view/scripts/build.mjs"),"--check"],path.join(root,"apps/task-view"));
 // Electron 42 按需安装二进制，直接装配也必须先取得同版运行时和许可。
 await run(process.execPath, [path.join(root, "node_modules/electron/install.js")]);
-// 本机覆盖复用已安装的锁定版本，避免装配器再次联网下载同一运行时。
-const electronZipDir = values["local-install"] ? path.join(stage, "electron-runtime") : undefined;
+// macOS装配复用已安装的锁定版本，避免装配器再次联网下载同一运行时。
+const electronZipDir = process.platform === "darwin" ? path.join(stage, "electron-runtime") : undefined;
 let electronRuntimeArchive;
 if (electronZipDir) {
   const distribution = path.join(root, "node_modules/electron/dist");
@@ -248,8 +250,15 @@ binaries["node" + extension] = digest(await readFile(runtime));
 await cp(path.join(desktop, "dist"), path.join(stageApp, "dist"), {
   recursive: true,
 });
-// node-pty保留原生模块及macOS专用spawn-helper的相对资源布局。
-await cp(path.join(root, "node_modules/node-pty"), path.join(stageApp, "node_modules/node-pty"), { recursive: true });
+// 按桌面实际解析位置复制依赖，保留node-pty原生模块及spawn-helper的相对布局。
+const runtimeRequire = createRequire(path.join(desktop, "package.json"));
+for (const name of ["node-pty", "ws"]) {
+  const directory = path.dirname(runtimeRequire.resolve(name + "/package.json"));
+  const dependency = JSON.parse(await readFile(path.join(directory, "package.json"), "utf8"));
+  if (dependency.version !== manifest.dependencies[name])
+    throw new Error("桌面运行时依赖与锁定版本不一致：" + name);
+  await cp(directory, path.join(stageApp, "node_modules", name), { recursive: true });
+}
 const integrations = path.join(stage, "integrations");
 await mkdir(integrations);
 await copyFile(path.join(root, "integrations/catalog.json"), path.join(integrations, "catalog.json"));

@@ -38,7 +38,7 @@ for (const appearance of ["light", "dark"] as const) test(`${appearance}会话�
     expect(error.unresolved).toEqual([]); expect(error.background[3]).toBe(255); expect(error.foreground[3]).toBe(255);
     expect.soft(error.contrast, "读取错误文字对比度").toBeGreaterThanOrEqual(4.5);
     await dialog.getByRole("button", {name: "重新读取模型", exact: true}).click(); await expect(alert).toHaveCount(0);
-    for (const node of [dialog.getByText("作品", {exact: true}), dialog.getByText("运行于", {exact: true}), dialog.locator(".agent-launch-name > span")]) {
+    for (const node of [dialog.getByText("作品", {exact: true}), dialog.getByText("电脑", {exact: true}), dialog.locator(".agent-launch-name > span")]) {
       const value = await sample("create-dialog", node); expect(value.unresolved).toEqual([]); expect.soft(value.contrast).toBeGreaterThanOrEqual(4.5);
     }
     const checkButton = async (button: Locator) => {

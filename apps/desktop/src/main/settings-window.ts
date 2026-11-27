@@ -1,4 +1,4 @@
-import { BrowserWindow, type IpcMainInvokeEvent } from "electron";
+import { BrowserWindow, screen, type IpcMainInvokeEvent } from "electron";
 import {windowChromeOptions, trackWindowChrome} from "./window-chrome.ts";
 
 /** 设置拥有独立窗口；精确核对窗口、主frame和URL，不扩大工作台作者通道。 */
@@ -20,10 +20,14 @@ export class SettingsWindow {
       if (this.#window.isMinimized()) this.#window.restore();
       this.#window.show(); this.#window.focus(); return;
     }
-    const bounds = parent.getContentBounds();
+    const bounds = parent.getBounds(), area = screen.getDisplayMatching(bounds).workArea;
+    const width = Math.min(bounds.width, area.width), height = Math.min(bounds.height, area.height);
     const view = new BrowserWindow({
       ...windowChromeOptions,
-      width: bounds.width, height: bounds.height, useContentSize: true, minWidth: 520, minHeight: 460,
+      width, height,
+      x: Math.max(area.x, Math.min(bounds.x, area.x + area.width - width)),
+      y: Math.max(area.y, Math.min(bounds.y, area.y + area.height - height)),
+      minWidth: Math.min(520, area.width), minHeight: Math.min(460, area.height),
       title: "设置", parent, show: false, minimizable: false, maximizable: true, fullscreenable: true,
       webPreferences: { preload: this.preload, nodeIntegration: false, contextIsolation: true, sandbox: true, webSecurity: true },
     });

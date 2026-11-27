@@ -20,13 +20,15 @@ Bring your chosen external Agent to organize material, create drafts and perform
 | CLI | Scoped capability discovery, read-only diagnostics, bounded result reads and task recovery |
 | Skills | Task methods and genre guidance for an external Agent |
 | MCP App | Authorized work reading, candidate comparison, feedback and contextual handoff within a compatible host |
-| Desktop app | Writing, source inspection, asset selection and author finalization |
+| Desktop app | Chat or terminal sessions with installed engines, fixed-role assistants, project review and author decisions |
 
 The stable MCP connection lists a compact set of tools and routes discovered actions through `hetu_call_action`. Use `hetu-mcp --client codex --all-tools` for the complete tool list. `hetu --client codex doctor` reports the running service and bundled method versions; it does not certify which methods the current Agent session has loaded. See the [machine contract](docs/13-内核ABI与CLI合同.md#机器发现诊断与有界恢复) for bounded reads and task checkpoints.
 
 Choose “Connect Codex MCP App” in Settings → AI Collaboration or the work’s collaboration page. Review the fixed installation target, register the connection package, then refresh or restart Codex Desktop as prompted. Connection and genre Skills install separately; work access is granted separately. Registration does not certify that the current GUI session has loaded the App.
 
 These entrances share the core, workspace permissions and revisions. Selected Agent engines handle reasoning, context management and tool execution; Hetu Core owns authorized workspace operations and durable creative material. See the [dual-entry design](docs/27-Agent与Codex插件集成设计.md#11-双入口协作) for external MCP Apps and independent desktop sessions. Installation, authentication, Skills, MCP, Apps and actual tasks are verified separately for each host.
+
+The local computer surface supports interface checks and operations in external software. Project creation, editing and author decisions continue through the shared CLI/MCP actions. See the [execution contract](docs/30-应用API详细设计.md#外部执行应用入口) for session, assistant and computer capabilities.
 
 Current genre-method packages are written in Chinese; the English catalog explains their scope. An English interface does not imply every installed method is localized for global markets.
 

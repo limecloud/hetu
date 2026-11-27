@@ -1446,6 +1446,33 @@
         "workspace",
         "stable"
       ]
+    },
+    {
+      "name": "hetu_sessions",
+      "action": "hetu.sessions.request",
+      "title": "管理固定外部会话与原生PTY",
+      "description": "管理固定外部会话与原生PTY；先发现实际Schema，固定原身份、代次与operation_key，未知只查询原操作。",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_bots",
+      "action": "hetu.bots.request",
+      "title": "管理固定Bot配置与独立会话",
+      "description": "管理固定Bot配置与独立会话；先发现实际Schema，固定原身份、代次与operation_key，未知只查询原操作。",
+      "profiles": [
+        "stable"
+      ]
+    },
+    {
+      "name": "hetu_computer",
+      "action": "hetu.computer.request",
+      "title": "观察本机电脑并执行固定目标动作",
+      "description": "观察本机电脑并执行固定目标动作；先发现实际Schema，固定原身份、代次与operation_key，未知只查询原操作。",
+      "profiles": [
+        "stable"
+      ]
     }
   ]
 }

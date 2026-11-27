@@ -1,0 +1,206 @@
+{
+  "date": "2026-11-27",
+  "workspace": "/Users/coso/Documents/dev/ai/limecloud/hetu",
+  "scope": "Multi-engine GUI/TUI, PTY, Bots and Computer Use runtime and documents",
+  "evidence_root": "output/verification/external-execution-2026-11-27",
+  "reference": "docs/research/evidence/orca-execution-ui-2026-11-27.json",
+  "reference_repositories_modified": false,
+  "implemented": [
+    "single provider catalog and existing native PTY host",
+    "Claude stream-json, ACP, Pi RPC and existing Codex host",
+    "public sessions, bots and computer request actions",
+    "headless session host with original operation keys and scope fences",
+    "fixed Bot configuration, lifecycle, GUI/TUI and bounded drafts",
+    "original MCP receipt projection and independent Core result verification",
+    "shared historical reading, comparison and result navigation",
+    "serialized scoped host writes and continuous lifecycle readback",
+    "Bot/chat selection clears old projections before loading new sessions",
+    "macOS fixed-window screenshots, explicit AX availability and takeover",
+    "Orca icon tabs, model picker, Bot workspace/form and computer settings"
+  ],
+  "verified": {
+    "core": {
+      "tests": 102,
+      "passed": true,
+      "log": "results-core-tests.log"
+    },
+    "protocol_input_and_results": {
+      "tests": 49,
+      "passed": true,
+      "log": "lifecycle-final-tests.log"
+    },
+    "source_bot_results": {
+      "passed": true,
+      "log": "ui-selection-source.log",
+      "paid_model_calls": 0
+    },
+    "source_ordinary_results": {
+      "passed": true,
+      "log": "ui-selection-source.log",
+      "model_turns": 0,
+      "actual_mcp": true
+    },
+    "source_gui_keyboard_and_screenshots": {
+      "passed_subset": true,
+      "log": "ui-lifecycle-source.log",
+      "covers": [
+        "provider keyboard/focus",
+        "Bot GUI/TUI and draft recovery",
+        "light/dark at 1200/520",
+        "screenshot-only takeover"
+      ],
+      "whole_run_passed": false
+    },
+    "public_cli_mcp": {
+      "passed": true,
+      "checks": 10,
+      "log": "machine-lifecycle-source.log",
+      "computer_mode": "image-only",
+      "full_ax_verified": false
+    },
+    "skills": {
+      "passed": true,
+      "suites": 45,
+      "reproduction_log": "final-method-reproduction.log",
+      "validation_log": "final-skills.log"
+    },
+    "method_navigation": {
+      "passed": true,
+      "tests": 8,
+      "log": "final-method-tests.log"
+    },
+    "docs": {
+      "passed": true,
+      "log": "delivery-final-docs.log"
+    },
+    "capability_map": {
+      "passed": true,
+      "log": "current-map-check.log"
+    },
+    "packaged_ui": {
+      "passed": true,
+      "tests": 6,
+      "log": "ui-final-package.log",
+      "covers": [
+        "provider keyboard and focus",
+        "Bot GUI/TUI original form, approval and draft",
+        "Bot real MCP result/historical comparison/return/paused reads",
+        "screenshot-only takeover and AX refusal",
+        "real packaged Shell PTY/resize/reopen",
+        "ordinary real CLI/MCP historical result/retry/comparison"
+      ],
+      "paid_model_calls": 0
+    },
+    "packaged_public_cli_mcp": {
+      "passed": true,
+      "checks": 10,
+      "log": "machine-final-package.log",
+      "report": "machine-final-package/machine-acceptance.json",
+      "computer_mode": "image-only",
+      "full_ax_verified": false,
+      "paid_model_calls": 0
+    },
+    "owned_fixture_cleanup": {
+      "public_bot_read_and_stop": true,
+      "returned_stopped": 14,
+      "report": "owned-fixture-cleanup-final.json",
+      "whole_orphan_matrix_verified": false
+    }
+  },
+  "package": {
+    "status": "verified",
+    "kind": "electron-development-package",
+    "manifest": "output/verification/external-execution-2026-11-27/package/hetu-dev-2HMsDj/manifest.json",
+    "source_sha256": "0583b153f4b4d546bb5ab36e223323a7dec9f7098752b491ff05ace8c59ff62d",
+    "source_files_checked": 3154,
+    "artifacts_checked": 3742,
+    "application_artifacts_checked": 3154,
+    "runtime": {
+      "node": "v25.0.0",
+      "abi": "141",
+      "platform": "darwin",
+      "arch": "arm64",
+      "node_pty": "1.1.0",
+      "ws": "8.22.0"
+    },
+    "electron": "42.11.18",
+    "codesign_deep_strict": true,
+    "verification": "package-final-verified.json",
+    "installed": false,
+    "published": false,
+    "post_test_verification": "package-after-tests-verified.json"
+  },
+  "clippy": {
+    "strict_repository_clean": false,
+    "new_changed_line_warnings": 0,
+    "evidence": "clippy-summary-ui-final.json"
+  },
+  "full_accessibility": {
+    "current_passed": false,
+    "cause_confirmed": false,
+    "observation": "Isolated AppKit window AX lookups return the application element without a trustworthy window identity.",
+    "failure_evidence": "ui-layout-results",
+    "screenshot_fallback_does_not_verify_ax_actions": true,
+    "system_permissions_changed": false
+  },
+  "not_verified": [
+    "all installed CLIs and real model generation",
+    "full Orca same-viewport visual/interaction scoring",
+    "actual VoiceOver and native input method matrix",
+    "Windows and Linux runtime",
+    "complete desktop/engine crash and orphan cleanup matrix",
+    "production signing, notarization, installation and release"
+  ],
+  "recover_boundary": "recover() reads the existing snapshot; it does not replay unknown requests or prove reconnection.",
+  "git_commit_or_push": false,
+  "previous_failures_retained": true,
+  "implementation_principles": {
+    "reuse": "existing Core, session host, chat, terminal and review navigation",
+    "single_owner": "provider catalog and Core remain authoritative",
+    "scope": "no new model loop or duplicated work store"
+  },
+  "preserved_failure_records": [
+    "ui-first-results",
+    "ui-focus-results",
+    "ui-escape-results",
+    "ui-queue-results",
+    "ui-layout-results",
+    "ui-serialized-results",
+    "ui-results-source-results",
+    "ui-results-source-retry-results",
+    "ui-results-recovery-results",
+    "ui-results-navigation-results",
+    "ui-final-source-results",
+    "ui-lifecycle-source-results",
+    "package-current-verification.json",
+    "package-final-verification.json",
+    "current-method-tests.log"
+  ],
+  "verification_script_corrections": [
+    "resolve manifest and result paths before running with a changed cwd",
+    "inspect renderer app.css for Bot styles; style.css is the shared stylesheet"
+  ],
+  "visual_review": {
+    "actual_package_screenshots_reviewed": [
+      "ui-final-package/bot-tui-520.png",
+      "ui-final-package/computer-image-only-520.png"
+    ],
+    "source_form_and_picker_reviewed": [
+      "ui-lifecycle-source/bot-create-orca.png",
+      "ui-lifecycle-source/bot-picker-orca.png"
+    ],
+    "full_orca_alignment_scored": false
+  },
+  "evidence_sha256": {
+    "results-core-tests.log": "995328b0421e567b42df88e0820d7b1705a1aa33203ddc08106e1c8b7e418b25",
+    "lifecycle-final-tests.log": "bc94f6db825fa3d102dec4021e386f42e35a12c1841f5e08d525f59b852fdb15",
+    "ui-selection-source.log": "aa153bc6e915056381de276f618b0cfe6bb547d8b50151ef062a858583428c3a",
+    "ui-final-package.log": "24070389ee04e0ac856a1854656fab751b218a2855e65a31f019266d28500ef2",
+    "machine-final-package/machine-acceptance.json": "ac185a4fd7d928173e003d05a4fb5d188c4edae36fa02e454b50def64a8d8b5a",
+    "package-after-tests-verified.json": "eb54f9cd1a3baa63ab7f8a2b0bf13e20ddf8295b87040cc18dd2fc0ee424bec2",
+    "final-skills.log": "50e8bbd21c890f6d45c58cca14d4e560a4241b657eccbe7b8925e942f08dbe82",
+    "final-method-tests.log": "a7083af566e86cbe22772151b6fca3f8ebd5e54b15b65a53b075122112189e1f",
+    "final-method-reproduction.log": "42eb2486f223188d7d09cc7ee354ab642cd34bd81657ced128b00a3af4825c86",
+    "delivery-final-docs.log": "bdd5d1ba7bde9678f75babf1bddb36bbfdb21c7b6a25759ab81a3d7ef45ab40a"
+  }
+}

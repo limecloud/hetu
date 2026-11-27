@@ -1,7 +1,7 @@
 import {test,expect,_electron as electron} from "@playwright/test";
 import {readFile,writeFile} from "node:fs/promises";
 import path from "node:path";
-import {navigate} from "./navigation.ts";
+import {navigate, workspaceAction} from "./navigation.ts";
 const root=path.resolve(import.meta.dirname,"../../.."),output=path.join(root,"output/codex-creation-validation");
 function result(snapshot:any,action:string){return snapshot.tools.flatMap((tool:any)=>{try{const r=JSON.parse(tool.output).structuredContent;return r?.action===action&&r.status==="succeeded"?[r.data]:[];}catch{return [];}}).at(-1);}
 test("真实TUI遵守confirm：先准备固定资料，经作者审阅后沿原方案执行",async()=>{
@@ -41,7 +41,7 @@ test("真实TUI遵守confirm：先准备固定资料，经作者审阅后沿原�
   expect(receipts.some((r:any)=>r.action==="hetu.resources.create"&&r.error?.code==="hetu.execution_confirmation_required")).toBe(true);
   if(!progress.executed){
    expect((await read("hetu.resources.list",{work_ref:work})).data.resources.length).toBe(progress.before);
-   const close=page.getByRole("button",{name:"关闭终端面板",exact:true});if(await close.isVisible())await close.click();
+   if(await page.getByLabel("工作区布局",{exact:true}).isVisible())await workspaceAction(page,"关闭终端面板");
    await navigate(page,"管理方案");await page.getByRole("combobox",{name:"当前管理方案",exact:true}).selectOption(progress.plan.proposal_id);
    await expect(page.getByRole("region",{name:"资料变更预览",exact:true})).toContainText("钟声三下，保留固定来源。");
    const current=await page.evaluate(id=>window.hetuDesktop.management("get",{proposal_id:id}),progress.plan.proposal_id);

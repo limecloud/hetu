@@ -1,3 +1,4 @@
+import {workspaceAction} from "./navigation.ts";
 import {test,expect,_electron as electron} from "@playwright/test";
 import {mkdtemp,mkdir,writeFile} from "node:fs/promises";
 import path from "node:path";
@@ -25,7 +26,7 @@ test("真实TUI从空创作库创建小说、章节和固定参考稿",async()=>
   const results=(snapshot.tools??[]).flatMap((tool:any)=>{try{const data=JSON.parse(tool.output??"").structuredContent;return data?[data]:[];}catch{return [];}});
   expect(results.some((value:any)=>value.action==="hetu.creation_projects.create_novel"&&value.status==="succeeded"),JSON.stringify(snapshot.messages.map((m:any)=>m.text))).toBe(true);
   expect(results.some((value:any)=>value.action==="hetu.creative_tasks.submit_result"&&value.status==="succeeded")).toBe(true);
-  await page.getByRole("button",{name:"关闭终端面板",exact:true}).click();
+  await workspaceAction(page,"关闭终端面板");
   await expect(page.getByRole("button",{name:"打开作品 TUI全流程验收",exact:true})).toBeVisible({timeout:30000});
   await page.screenshot({path:path.join(root,"output/codex-creation-validation/created-library.png")});
  }catch(error){const page=app.windows()[0];await mkdir(path.join(root,"output/codex-creation-validation"),{recursive:true});const snapshot=await page?.evaluate(()=>window.hetuDesktop.agentSession("get",{scope:"library"})).catch(()=>undefined);await writeFile(path.join(root,"output/codex-creation-validation/failure.json"),JSON.stringify({directory,snapshot},null,2),{mode:0o600});if(page)await page.screenshot({path:path.join(root,"output/codex-creation-validation/failure.png")}).catch(()=>{});throw error;}finally{await app.close();}

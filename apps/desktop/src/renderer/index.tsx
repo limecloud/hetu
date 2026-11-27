@@ -54,6 +54,7 @@ function App() {
   const [initializing, setInitializing] = useState(true);
   const [agentOpen,setAgentOpen]=useState(false),[agentExpanded,setAgentExpanded]=useState(true);
   const [agentMaximized,setAgentMaximized]=useState(false),[agentMaximizedNavigation,setAgentMaximizedNavigation]=useState(false);
+  const [agentRuntime,setAgentRuntime]=useState(false);
   const [windowFullscreen,setWindowFullscreen]=useState(false);
   const fullscreenReturn=useRef<boolean>();
   useEffect(()=>{void desktop.fullscreen?.("get").then(setWindowFullscreen).catch(error=>setNotice(error.message));return desktop.onWindowChrome?.(value=>{if(value.fullscreen!==undefined)setWindowFullscreen(value.fullscreen);});},[]);
@@ -345,12 +346,13 @@ function App() {
   const agentVisible=desktop.agentSessionHost!==false && (agentOpen || agentRoute);
   useEffect(()=>{if(agentVisible)void desktop.maximize?.().catch(error=>setNotice(error.message));},[agentVisible]);
   const agentAvailable=windowWidth-(navigationVisible&&!focus?sidebarWidth+8:0);
-  const agentFull=agentVisible && (agentRoute || agentExpanded || agentAvailable<960);
+  const agentFull=agentVisible && (agentRuntime || agentRoute || agentExpanded || agentAvailable<960);
   const shellNavigationVisible=agentFull&&agentMaximized?agentMaximizedNavigation:navigationVisible;
   const shellFocus=focus&&!agentFull;
-  const toggleAgentNavigation=()=>{
-    if(agentMaximized)setAgentMaximizedNavigation(value=>!value);else setNavigationVisible(value=>!value);
-    requestAnimationFrame(()=>[...document.querySelectorAll<HTMLButtonElement>('.terminal-project-header button[aria-label="折叠左侧栏"], .agent-workspace button[aria-label="展开左侧栏"]')].find(button=>button.checkVisibility())?.focus({preventScroll:true}));
+  useEffect(()=>{if(agentFull&&windowWidth<760){setNavigationVisible(false);setAgentMaximizedNavigation(false);}},[agentFull,windowWidth]);
+  const toggleAgentNavigation=(visible?:boolean)=>{
+    if(agentMaximized)setAgentMaximizedNavigation(value=>visible??!value);else setNavigationVisible(value=>visible??!value);
+    requestAnimationFrame(()=>[...document.querySelectorAll<HTMLButtonElement>('.execution-navigation-header button[aria-label="折叠左侧栏"], .agent-workspace button[aria-label="展开左侧栏"]')].find(button=>button.checkVisibility())?.focus({preventScroll:true}));
   };
   useEffect(()=>{void desktop.windowLayout?.(agentFull?"terminal":"default").catch(error=>setNotice(error.message));},[agentFull]);
   const agentNavigation=useRef<{active:string;layer:SidebarLayer}>();
@@ -460,9 +462,8 @@ function App() {
         </div>
       </WorkspaceHeader>}
       <div style={{"--navigation-width": `${sidebarWidth}px`} as React.CSSProperties} className={"layout" + (workMode ? " workspace-layout" : " library-layout") + (!shellNavigationVisible || shellFocus ? " navigation-hidden" : "") + (shellFocus ? " focus-mode" : "") + (agentVisible?" agent-open":"") + (agentFull?" agent-full":"")+(agentFull&&agentMaximized?" agent-immersive":"")}>
-        {!pluginActive && shellNavigationVisible && !shellFocus && <button className="navigation-backdrop" aria-label="关闭导航浮层" onClick={agentFull?toggleAgentNavigation:()=>setNavigationVisible(false)}/>}
-        {!pluginActive && <aside className="project-navigation" aria-label={workMode ? "项目导航" : "创作库导航"}>
-          {agentFull&&<header className="terminal-project-header"><span>河图洛书</span><IconButton icon="sidebar" label="折叠左侧栏" onClick={toggleAgentNavigation}/></header>}
+        {!pluginActive && !agentFull && shellNavigationVisible && !shellFocus && <button className="navigation-backdrop" aria-label="关闭导航浮层" onClick={()=>setNavigationVisible(false)}/>}
+        {!pluginActive && <aside className="project-navigation" hidden={agentFull} aria-label={workMode ? "项目导航" : "创作库导航"}>
           {workMode ? <WorkSidebar layer={sidebarLayer} panel={sidebarPanel} onLayer={setSidebarLayer} onPanel={panel => {setAttachment(undefined); setSidebarPanel(panel); setDirectoryVisible(true);}}
             title={selected?.title ?? "当前作品"} updatedAt={selected?.updated_at} subtitle={{novel:"小说",drama:"剧本",video:"视频"}[state.work.kind as "novel"]}
             cover={<WorkCover work={state.work} title={selected?.title ?? "当前作品"} compact/>} onProfile={() => void run(() => navigate("work.profile"))} profileActive={active === "work.profile"} project={<>
@@ -493,9 +494,8 @@ function App() {
             </div>
           </WorkSidebar> : <LibraryNavigation kind={kind} active={active} busy={busy} onKind={id => { setKind(id); void run(() => navigate("library")); }} onPlugins={() => void run(() => navigate("plugins"))}/>
           }
-          {agentFull&&<footer className="terminal-project-footer"><IconButton icon="settings" label="本机设置" onClick={()=>void desktop.settingsWindow("open")}/></footer>}
         </aside>}
-        {!pluginActive && shellNavigationVisible && !shellFocus && <NavigationResize width={sidebarWidth} onWidth={setSidebarWidth} onCollapse={() => {
+        {!pluginActive && !agentFull && shellNavigationVisible && !shellFocus && <NavigationResize width={sidebarWidth} onWidth={setSidebarWidth} onCollapse={() => {
           if(agentFull&&agentMaximized){setAgentMaximizedNavigation(false);return;}
           setNavigationVisible(false);
           document.querySelector<HTMLElement>('.sidebar-header-controls button, .library-navigation-toggle button')?.focus({preventScroll: true});
@@ -619,7 +619,7 @@ function App() {
         {attachment && <main className="attachment-main" aria-label="附件工作区" onKeyDown={event => {
           if (event.key === "Escape" && !event.defaultPrevented && !event.nativeEvent.isComposing && !document.querySelector("dialog[open]")) {event.preventDefault(); event.stopPropagation(); closeAttachment();}
         }}><ResourceReading key={attachment.resource_id + ":" + attachment.revision} selection={attachment} onClose={closeAttachment} onManage={() => void run(() => navigate("work.resources"))} onAI={() => void run(() => requestAgent("work.resources", {resource_id: attachment.resource_id, revision: attachment.revision}))}/></main>}
-        {desktop.agentSessionHost!==false && <AgentWorkspace works={works} onScope={target=>selectAgentWork(target)} onLaunch={async(launch,target)=>{try{await selectAgentWork(target,launch);return true;}catch(error){setNotice((error as Error).message);return false;}}} key={workMode?JSON.stringify(state.work):"library"} work={workMode?state.work:undefined} visible={agentVisible} full={agentFull} width={agentDockWidth} maxWidth={agentMaximum} onWidth={setAgentWidth} onClose={closeAgent} onExpand={expandAgent} notify={setNotice} maximized={agentMaximized&&agentFull} fullscreen={windowFullscreen} onMaximize={()=>{setAgentExpanded(true);setAgentMaximized(value=>!value);}} onFullscreen={desktop.fullscreen?()=>{void desktop.fullscreen!("set",!windowFullscreen).catch(error=>setNotice(error.message));}:undefined} navigationVisible={shellNavigationVisible&&!shellFocus} onNavigation={toggleAgentNavigation}/ >}
+        {desktop.agentSessionHost!==false && <AgentWorkspace onRuntimeChange={setAgentRuntime} works={works} onScope={target=>selectAgentWork(target)} onLaunch={async(launch,target)=>{try{await selectAgentWork(target,launch);return true;}catch(error){setNotice((error as Error).message);return false;}}} key={workMode?JSON.stringify(state.work):"library"} work={workMode?state.work:undefined} visible={agentVisible} full={agentFull} width={agentDockWidth} maxWidth={agentMaximum} onWidth={setAgentWidth} onClose={closeAgent} onExpand={expandAgent} notify={setNotice} maximized={agentMaximized&&agentFull} fullscreen={windowFullscreen} onMaximize={()=>{setAgentExpanded(true);setAgentMaximized(value=>!value);}} onFullscreen={desktop.fullscreen?()=>{void desktop.fullscreen!("set",!windowFullscreen).catch(error=>setNotice(error.message));}:undefined} navigationVisible={shellNavigationVisible&&!shellFocus} onNavigation={toggleAgentNavigation} navigationWidth={sidebarWidth} onNavigationWidth={setSidebarWidth} onLibrary={()=>void run(()=>navigate("library"))} onWorkSurface={page=>navigate(page)}/ >}
       </div>
       {settingsOpen && <dialog ref={embeddedSettings} className="embedded-settings" aria-label="设置" onCancel={event=>{if(event.target!==event.currentTarget)return;event.preventDefault();window.dispatchEvent(new Event("hetu:settings-close-request"));}}><SettingsApp embedded/></dialog>}
       {professional&&state.work&&<ProfessionalToolsDialog key={JSON.stringify(state.work)} work={state.work} target={{page:["work.profile","work.canon","novel.outlines","work.resources","work.tasks","work.images","work.media"].includes(active)?active:"work.profile",object:{}}} onClose={()=>setProfessional(false)}/>}

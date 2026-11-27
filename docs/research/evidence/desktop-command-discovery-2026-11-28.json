@@ -1,0 +1,52 @@
+{
+  "date": "2026-11-28",
+  "version": "0.16.0",
+  "sources": [
+    {
+      "project": "orca",
+      "commit": "34e4ec6f5a723c1998f98a897880b90a86369954",
+      "files": {
+        "src/main/startup/shell-environment/hydrate-shell-path.ts": "716f94e8874d244b09e3a8ddbe39b775f1008d88605118d3fe678c7b75435ffc",
+        "src/main/startup/shell-environment/shell-path-probe.ts": "252f56edb4579fd893acb6960c5b68e19ce9e37f53c07af36da91463b26d9b50",
+        "src/shared/shell/command-resolution/system-cli-install-dirs.ts": "8dc24ef277ea8c0833384ffbe7a377cc56f41c1541c329769ac219181b4bbdd0",
+        "src/shared/shell/command-resolution/node-cli-command-resolution.ts": "9a8374e7492589a095f29f4b099caefc788c367fcce044e44a18735fc1e1e06b"
+      }
+    },
+    {
+      "project": "t3code",
+      "commit": "f9f34aab7807168a0fdae1c9d447eb271ec5f229",
+      "files": {
+        "apps/server/src/os-jank.ts": "85542172765899811b863f072b5a872ff58f6b4ac36e9601d1a64e1b365651d7",
+        "packages/shared/src/shell.ts": "e35f8b8be4f99178de75f169b392159fc660395a829af5e51f891f974305a7fc",
+        "packages/shared/src/nodeRuntime.ts": "e0eff93b3d9e6cec27bf174a2d9a2924f68dd0367ebe6e52728d6d2da1a7ca22"
+      }
+    }
+  ],
+  "negative": {
+    "finder_path": "未找到可执行的Codex CLI",
+    "installed_codex_version": "0.172.0",
+    "settings_y": -31,
+    "screen_work_area_y": 25,
+    "settings_trace": "../../../output/local-install-20261127/settings-bounds-negative/"
+  },
+  "implementation": {
+    "login_shell": "异步5秒预算，共享并发探测，刷新重新读取",
+    "captured_variables": [
+      "PATH",
+      "__MISE_DIFF"
+    ],
+    "fallback": "继承路径、已知用户安装和随包Node",
+    "system_configuration_changed": false,
+    "settings": "屏幕可用区域内的外框与位置"
+  },
+  "validation": {
+    "discovery_and_engine_tests": {
+      "passed": 8
+    },
+    "real_cli_under_finder_path": {
+      "passed": true,
+      "version": "0.172.0"
+    },
+    "installation_status": "pending"
+  }
+}

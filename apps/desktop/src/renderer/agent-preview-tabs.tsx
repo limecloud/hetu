@@ -2,11 +2,11 @@ import React, {useLayoutEffect,useRef} from "react";
 import {IconButton, type DocumentTab} from "@hetu/workbench-ui";
 import {useObjectContextMenu} from "./text-context-menus.tsx";
 
-/** 标签只管理视图；当前引擎主标签始终保留，关闭预览不触及线程或内容。 */
-export function AgentPreviewTabs({sessionTitle,tabs,activeId,onSelect,onClose,onKeep,onReveal,notify,children}:{
+/** 预览标签只管理视图，关闭预览不触及线程或内容。 */
+export function AgentPreviewTabs({sessionTitle,tabs,activeId,onSelect,onClose,onKeep,onReveal,notify,children,includeSession=true}:{
   sessionTitle:string;
   tabs:DocumentTab[];activeId?:string;onSelect(id?:string):void;onClose(ids:string[]):string|undefined;onKeep(id:string):void;onReveal(id:string):void;
-  notify(message:string):void;children?:React.ReactNode;
+  notify(message:string):void;children?:React.ReactNode;includeSession?:boolean;
 }) {
   const host=useRef<HTMLDivElement>(null),context=useObjectContextMenu(notify);
   const tabLayout=JSON.stringify(tabs.map(({id,title})=>[id,title]));
@@ -25,7 +25,7 @@ export function AgentPreviewTabs({sessionTitle,tabs,activeId,onSelect,onClose,on
   const close=(ids:string[])=>focus(onClose(ids));
   function key(event:React.KeyboardEvent,id?:string){
     if(event.nativeEvent.isComposing)return;
-    const ids=[undefined,...tabs.map(tab=>tab.id)],index=ids.indexOf(id);
+    const ids=[...(includeSession?[undefined]:[]),...tabs.map(tab=>tab.id)],index=ids.indexOf(id);
     if(["ArrowLeft","ArrowRight","Home","End"].includes(event.key)){
       event.preventDefault();const next=event.key==="Home"?0:event.key==="End"?ids.length-1:(index+(event.key==="ArrowLeft"?-1:1)+ids.length)%ids.length;
       onSelect(ids[next]);focus(ids[next]);
@@ -33,8 +33,8 @@ export function AgentPreviewTabs({sessionTitle,tabs,activeId,onSelect,onClose,on
       event.preventDefault();event.stopPropagation();close([id]);
     }
   }
-  return <div className="agent-content-tabs" ref={host} role="tablist" aria-label="会话与预览">
-    <button type="button" role="tab" data-preview-id="" tabIndex={activeId?-1:0} aria-selected={!activeId} onClick={()=>onSelect()} onKeyDown={event=>key(event)}>{sessionTitle}</button>
+  return <div className="agent-content-tabs" ref={host} role={includeSession?"tablist":"presentation"} aria-label={includeSession?"会话与预览":undefined}>
+    {includeSession&&<button type="button" role="tab" data-preview-id="" tabIndex={activeId?-1:0} aria-selected={!activeId} onClick={()=>onSelect()} onKeyDown={event=>key(event)}>{sessionTitle}</button>}
     {tabs.map((tab,index)=><div key={tab.id} className={tab.preview?"agent-content-temporary":""}
       {...context(tab.title,[
         {id:"keep",label:"保留标签",disabled:!tab.preview,action:()=>onKeep(tab.id)},

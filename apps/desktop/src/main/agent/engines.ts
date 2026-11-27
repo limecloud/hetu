@@ -1,34 +1,39 @@
 import {mkdir} from "node:fs/promises";
 import path from "node:path";
-import {engineSearchPaths,runnableCommand,executableCandidates} from "./command-resolution.ts";
+import {engineSearchEnvironment,runnableCommand,executableCandidates} from "./command-resolution.ts";
+import {readLoginShellEnvironment} from "./shell-environment.ts";
 import type {AgentEngine,AgentEngineId,AgentModel,SessionLaunch} from "../../agent-session-contract.ts";
 import {resolveCodexCommand} from "./codex-command.ts";
 import {CodexRpc} from "./codex-rpc.ts";
 import desktopPackage from "../../../package.json" with {type:"json"};
+import {externalProviders,externalProvider} from "../../shared/external-ai.ts";
+import {hasExternalProtocol} from "./external-conversation-registry.ts";
 
 const definitions:AgentEngine[]=[
   {id:"shell",name:"终端",available:false,chat:false,models:false},
-  {id:"codex",name:"Codex",available:false,chat:true,models:true},
-  {id:"claude-code",name:"Claude Code",available:false,chat:false,models:false},
-  {id:"gemini",name:"Gemini CLI",available:false,chat:false,models:false},
-  {id:"opencode",name:"OpenCode",available:false,chat:false,models:false},
+  ...externalProviders.map(provider=>({id:provider.id,name:provider.label,available:false,chat:provider.id==="codex"||hasExternalProtocol(provider.structured?.protocol),models:provider.id==="codex",...(provider.structured?{protocol:provider.structured.protocol,minimum_versions:provider.structured.minimumVersions?[...provider.structured.minimumVersions]:undefined}:{})})),
 ];
+export function validEngineId(id:unknown):id is AgentEngineId{return typeof id==="string"&&definitions.some(item=>item.id===id);}
 export const engineName=(id:string)=>definitions.find(item=>item.id===id)?.name??"终端";
-export const machineClient=(id:string)=>id==="codex"?"codex":id==="claude-code"?"claude-code":"generic";
+export const machineClient=(id:string)=>id==="codex"?"codex":["claude-code","claude-agent-teams"].includes(id)?"claude-code":"generic";
 
-/** 只解析已安装入口，不运行登录Shell、修改全局配置或自动安装。 */
+/** 复用登录Shell寻址，只解析已安装入口，不修改全局配置或自动安装。 */
 export async function resolveEngine(id:AgentEngineId,runtimeDirectory?:string){
   if(!definitions.some(item=>item.id===id))throw Error("请选择有效的终端引擎。");
   if(id==="codex")return resolveCodexCommand(runtimeDirectory);
-  const paths=await engineSearchPaths(runtimeDirectory);
-  const command=id==="shell"?(process.platform==="win32"?process.env.COMSPEC??"powershell.exe":process.env.SHELL??"/bin/zsh"):id==="claude-code"?"claude":id;
+  const {paths,env}=await engineSearchEnvironment(runtimeDirectory);
+  const commands=id==="shell"?[process.platform==="win32"?process.env.COMSPEC??"powershell.exe":process.env.SHELL??"/bin/zsh"]:[...externalProvider(id).commands];
   const override=process.env["HETU_"+id.replaceAll("-","_").toUpperCase()+"_BIN"];
-  for(const candidate of executableCandidates(override??command,paths)){
-    if(await runnableCommand(candidate))return {binary:candidate,env:{...process.env,PATH:[path.dirname(candidate),...paths].join(path.delimiter)}};
+  for(const command of override?[override]:commands)for(const candidate of executableCandidates(command,paths)){
+    if(await runnableCommand(candidate)){
+      if(id!=="shell")for(const required of externalProvider(id).requiredCommands??[])if(!(await Promise.all(executableCandidates(required,paths).map(candidate=>runnableCommand(candidate)))).some(Boolean))throw Error(engineName(id)+"缺少必需命令。");
+      return {binary:candidate,env:{...env,PATH:[path.dirname(candidate),...paths].join(path.delimiter)}};
+    }
   }
   throw Error("未找到"+engineName(id)+"，请先安装对应客户端。");
 }
 export async function discoverEngines(runtimeDirectory?:string):Promise<AgentEngine[]>{
+  await readLoginShellEnvironment(true);
   return Promise.all(definitions.map(async definition=>{try{await resolveEngine(definition.id,runtimeDirectory);return {...definition,available:true};}catch{return {...definition};}}));
 }
 
@@ -64,13 +69,16 @@ export class EngineCatalog {
   async validate(input:unknown):Promise<SessionLaunch>{
     const value=input as SessionLaunch;
     if(!value||!definitions.some(item=>item.id===value.client)||!["gui","tui"].includes(value.surface))throw Error("会话配置无效。");
-    if(value.surface==="gui"&&value.client!=="codex")throw Error("此引擎使用原生终端。");
+    if(value.surface==="gui"&&!definitions.find(item=>item.id===value.client)?.chat)throw Error("此引擎使用原生终端。");
     if(value.title!==undefined&&(typeof value.title!=="string"||value.title.trim().length>100))throw Error("会话名称最多100字。");
     await resolveEngine(value.client,this.options.runtimeDirectory);
     if(value.model){
-      const model=(await this.models(value.client)).find(item=>item.id===value.model);
-      if(!model)throw Error("模型已不可用，请重新选择。");
-      if(value.reasoning_effort&&!model.efforts.includes(value.reasoning_effort))throw Error("该模型不支持所选推理档位。");
+      if(typeof value.model!=="string"||value.model.length>255||/[\u0000-\u001f\u007f]/.test(value.model))throw Error("模型标识无效。");
+      if(value.client==="codex"){
+        const model=(await this.models(value.client)).find(item=>item.id===value.model);
+        if(!model)throw Error("模型已不可用，请重新选择。");
+        if(value.reasoning_effort&&!model.efforts.includes(value.reasoning_effort))throw Error("该模型不支持所选推理档位。");
+      }else if(value.surface!=="gui")throw Error("此引擎在创建时模型选择不可用，请使用原生终端。");
     }else if(value.reasoning_effort)throw Error("请先选择对应模型。");
     return {client:value.client,surface:value.surface,...(value.title?.trim()?{title:value.title.trim()}:{}),...(value.model?{model:value.model}:{}),...(value.reasoning_effort?{reasoning_effort:value.reasoning_effort}:{})};
   }

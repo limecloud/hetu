@@ -1,0 +1,296 @@
+{
+  "date": "2026-11-27",
+  "source_repo": "/Users/coso/Documents/dev/ai/limecloud/gewu",
+  "source_head": "ffb211acf4260d0ae1359a6d2bb2b391cb30b735",
+  "source_worktree": "uncommitted; fixed bytes recorded",
+  "purpose": "external conversation adapters; Hetu work binding will use existing Core and session application",
+  "files": [
+    {
+      "source": "apps/desktop/src/main/agent/acp-conversation-driver.ts",
+      "source_sha256": "e239b810826609181fa8302e0d6f8480870fb47fc87ea57c3428fef92caab37f",
+      "target": "apps/desktop/src/main/agent/acp-conversation-driver.ts",
+      "initial_target_sha256": "f772b3ad900a82a3511b9755f9db4561986ef83b8ee708c0ff9625d39c6c5d99"
+    },
+    {
+      "source": "apps/desktop/src/main/agent/acp-elicitation-requests.ts",
+      "source_sha256": "bcb5f207650fe5160c03ed6bedfaa4a603deacd1e9be006b764fcbd9b2b4e76a",
+      "target": "apps/desktop/src/main/agent/acp-elicitation-requests.ts",
+      "initial_target_sha256": "bcb5f207650fe5160c03ed6bedfaa4a603deacd1e9be006b764fcbd9b2b4e76a"
+    },
+    {
+      "source": "apps/desktop/src/main/agent/acp-launch-preparation.ts",
+      "source_sha256": "98095297d0bbb7ca4d476d8b152987e4a070344669b82b5154d0747f842dda9d",
+      "target": "apps/desktop/src/main/agent/acp-launch-preparation.ts",
+      "initial_target_sha256": "14928df5bcc9b19f191a80f86465d3170f600b4a5bcf5b7980ee8d143ca51cb1"
+    },
+    {
+      "source": "apps/desktop/src/main/agent/acp-model-configuration.ts",
+      "source_sha256": "ed41cb8f85e86c72f4a08081488dabb7a78e16a5d8c65f8797786d06208477b1",
+      "target": "apps/desktop/src/main/agent/acp-model-configuration.ts",
+      "initial_target_sha256": "ed41cb8f85e86c72f4a08081488dabb7a78e16a5d8c65f8797786d06208477b1"
+    },
+    {
+      "source": "apps/desktop/src/main/agent/acp-protocol-dialect.ts",
+      "source_sha256": "f54cdeac07dff80d23527225693961ff770f8e97acdbe9456fc5a4d27d5449ba",
+      "target": "apps/desktop/src/main/agent/acp-protocol-dialect.ts",
+      "initial_target_sha256": "f54cdeac07dff80d23527225693961ff770f8e97acdbe9456fc5a4d27d5449ba"
+    },
+    {
+      "source": "apps/desktop/src/main/agent/acp-session-projection.ts",
+      "source_sha256": "9dd2d59e2000ac5c346aa9b075e61bf2185c7726548e64540dbd989e85ddbdb2",
+      "target": "apps/desktop/src/main/agent/acp-session-projection.ts",
+      "initial_target_sha256": "9dd2d59e2000ac5c346aa9b075e61bf2185c7726548e64540dbd989e85ddbdb2"
+    },
+    {
+      "source": "apps/desktop/src/main/agent/acp-turn-report.ts",
+      "source_sha256": "ae724eb6eee6d6a070d21ccbba508aea76caffb047f17e6d18f8a481228b1c15",
+      "target": "apps/desktop/src/main/agent/acp-turn-report.ts",
+      "initial_target_sha256": "ae724eb6eee6d6a070d21ccbba508aea76caffb047f17e6d18f8a481228b1c15"
+    },
+    {
+      "source": "apps/desktop/src/main/agent/claude-conversation-driver.ts",
+      "source_sha256": "be43b1e9aee2673cf59684239f80258a49b58ff7bae9a6cdf51028d29ceaf1da",
+      "target": "apps/desktop/src/main/agent/claude-conversation-driver.ts",
+      "initial_target_sha256": "be43b1e9aee2673cf59684239f80258a49b58ff7bae9a6cdf51028d29ceaf1da"
+    },
+    {
+      "source": "apps/desktop/src/main/agent/claude-transcript-history.ts",
+      "source_sha256": "4ac2e30939c105782e177aa333be97e30f516748a0c4a76662d61104d490a1f2",
+      "target": "apps/desktop/src/main/agent/claude-transcript-history.ts",
+      "initial_target_sha256": "4ac2e30939c105782e177aa333be97e30f516748a0c4a76662d61104d490a1f2"
+    },
+    {
+      "source": "apps/desktop/src/main/agent/codex-session-identity.ts",
+      "source_sha256": "b222ef227be039a215403bd12f6dff02d8fbd27dd17e1fe217afe05c35f5584c",
+      "target": "apps/desktop/src/main/agent/codex-session-identity.ts",
+      "initial_target_sha256": "b222ef227be039a215403bd12f6dff02d8fbd27dd17e1fe217afe05c35f5584c"
+    },
+    {
+      "source": "apps/desktop/src/main/agent/external-ai-launch.ts",
+      "source_sha256": "96dc08b3783e69ab594badd27d93dee1b15f857174e83760efba7dbe2e16dce8",
+      "target": "apps/desktop/src/main/agent/external-ai-launch.ts",
+      "initial_target_sha256": "f0f6c24527d194a5b1782183302d2c3aee034b46a9da4cab4b211112b26cd54f"
+    },
+    {
+      "source": "apps/desktop/src/main/agent/external-child-lifecycle.ts",
+      "source_sha256": "b04f00b4407c831fb7985ff2444c63be5a395fbcd21df0f3087f09498a0c48e4",
+      "target": "apps/desktop/src/main/agent/external-child-lifecycle.ts",
+      "initial_target_sha256": "b04f00b4407c831fb7985ff2444c63be5a395fbcd21df0f3087f09498a0c48e4"
+    },
+    {
+      "source": "apps/desktop/src/main/agent/external-cli-version.ts",
+      "source_sha256": "fdc28e0b9402e6186ef5ea0e6803f7cbad434a713d350f9a9c8be7c58c2b3c65",
+      "target": "apps/desktop/src/main/agent/external-cli-version.ts",
+      "initial_target_sha256": "fdc28e0b9402e6186ef5ea0e6803f7cbad434a713d350f9a9c8be7c58c2b3c65"
+    },
+    {
+      "source": "apps/desktop/src/main/agent/external-conversation-driver.ts",
+      "source_sha256": "73fdbde8d446a7d08879750cdfaf6c3e9a8968641b4d8203e1accdf9d3b5b4fc",
+      "target": "apps/desktop/src/main/agent/external-conversation-driver.ts",
+      "initial_target_sha256": "73fdbde8d446a7d08879750cdfaf6c3e9a8968641b4d8203e1accdf9d3b5b4fc"
+    },
+    {
+      "source": "apps/desktop/src/main/agent/external-conversation-registry.ts",
+      "source_sha256": "cd2553b52d5d5676bd00f5a314181834ff4992a279ff4d958a7244d9517356ad",
+      "target": "apps/desktop/src/main/agent/external-conversation-registry.ts",
+      "initial_target_sha256": "220171291ec4367f94d24da7f1cfc5e3b2751f4d1b2c2af78093c50c4c0e9851"
+    },
+    {
+      "source": "apps/desktop/src/main/agent/external-form-schema.ts",
+      "source_sha256": "ee19df629c49d4254fa9ab0cf958161036786e04281dce65b6370fcee461524e",
+      "target": "apps/desktop/src/main/agent/external-form-schema.ts",
+      "initial_target_sha256": "ee19df629c49d4254fa9ab0cf958161036786e04281dce65b6370fcee461524e"
+    },
+    {
+      "source": "apps/desktop/src/main/agent/external-history.ts",
+      "source_sha256": "3de9bd647c8746d58c52eba4b5a68c690a43d353394361cdb985b070cf3852b2",
+      "target": "apps/desktop/src/main/agent/external-history.ts",
+      "initial_target_sha256": "3de9bd647c8746d58c52eba4b5a68c690a43d353394361cdb985b070cf3852b2"
+    },
+    {
+      "source": "apps/desktop/src/main/agent/external-machine-bridge.ts",
+      "source_sha256": "6208d515899e2fe70e214296e860864a7dfce626b6b1061b9893aa6f6e0d550e",
+      "target": "apps/desktop/src/main/agent/external-machine-bridge.ts",
+      "initial_target_sha256": "af1703a70028c99be4371a7322b5b21d6d99d25a479d5faba44c0cc442aff00d"
+    },
+    {
+      "source": "apps/desktop/src/main/agent/external-storage-binding.ts",
+      "source_sha256": "17ce0f524847353eec9c0ceb9dc245d4a4cfb75cd9d2841028ec464578b6ccf9",
+      "target": "apps/desktop/src/main/agent/external-storage-binding.ts",
+      "initial_target_sha256": "17ce0f524847353eec9c0ceb9dc245d4a4cfb75cd9d2841028ec464578b6ccf9"
+    },
+    {
+      "source": "apps/desktop/src/main/agent/external-storage-paths.ts",
+      "source_sha256": "b99d7c3501aacc74872397c774600f20f6cad73276442baddf91d2459af45f3c",
+      "target": "apps/desktop/src/main/agent/external-storage-paths.ts",
+      "initial_target_sha256": "b99d7c3501aacc74872397c774600f20f6cad73276442baddf91d2459af45f3c"
+    },
+    {
+      "source": "apps/desktop/src/main/agent/hermes-profile.ts",
+      "source_sha256": "4881ba2145496ae1cede4b8ef813d0e97e0a3bb068f5bfacc4856a578f37fb4e",
+      "target": "apps/desktop/src/main/agent/hermes-profile.ts",
+      "initial_target_sha256": "4881ba2145496ae1cede4b8ef813d0e97e0a3bb068f5bfacc4856a578f37fb4e"
+    },
+    {
+      "source": "apps/desktop/src/main/agent/json-line-process.ts",
+      "source_sha256": "34c77d3b7f62d0cc770d0425df47fe7aa3bb6f7031cbf5fc9e51d1da492412fb",
+      "target": "apps/desktop/src/main/agent/json-line-process.ts",
+      "initial_target_sha256": "934a1d22f4c5567c07fb0032441593e1ca64b3a2dffc314305c130c44678176c"
+    },
+    {
+      "source": "apps/desktop/src/main/agent/pi-conversation-driver.ts",
+      "source_sha256": "e9d910078ade065b6c6846cad7fa92cbf67a1ca5fb23e06251f3f9e14857cc21",
+      "target": "apps/desktop/src/main/agent/pi-conversation-driver.ts",
+      "initial_target_sha256": "e9d910078ade065b6c6846cad7fa92cbf67a1ca5fb23e06251f3f9e14857cc21"
+    },
+    {
+      "source": "apps/desktop/src/main/agent/structured-external-session.ts",
+      "source_sha256": "7fb5f7a4ec68ab6e5a0fbce163fee02bd9098bbf988a611ef6fdccf8b9c59bca",
+      "target": "apps/desktop/src/main/agent/structured-external-session.ts",
+      "initial_target_sha256": "945a0c2ee7f7fc434de8a9d5f0f7667505cf28c09db9656397148aab57e87c8c"
+    },
+    {
+      "source": "apps/desktop/src/main/agent/terminal-workspace-state.ts",
+      "source_sha256": "0557dc4cc1fcf8c6631f9a748fa92471b17fc74fd893285a322b22a4b09b9e2b",
+      "target": "apps/desktop/src/main/agent/terminal-workspace-state.ts",
+      "initial_target_sha256": "0557dc4cc1fcf8c6631f9a748fa92471b17fc74fd893285a322b22a4b09b9e2b"
+    },
+    {
+      "source": "apps/desktop/src/shared/codex-terminal.ts",
+      "source_sha256": "244e97ddaf64928358207bf06c57e0db9b82746624df298bc60d17b6ae64b8db",
+      "target": "apps/desktop/src/shared/codex-terminal.ts",
+      "initial_target_sha256": "244e97ddaf64928358207bf06c57e0db9b82746624df298bc60d17b6ae64b8db"
+    },
+    {
+      "source": "apps/desktop/src/shared/external-ai.ts",
+      "source_sha256": "8176fac6c3c37a9d6004d3c4398c0f9fa4af7f516abafa6185defd28daa22e37",
+      "target": "apps/desktop/src/shared/external-ai.ts",
+      "initial_target_sha256": "8176fac6c3c37a9d6004d3c4398c0f9fa4af7f516abafa6185defd28daa22e37"
+    },
+    {
+      "source": "apps/desktop/src/shared/external-attachment.ts",
+      "source_sha256": "1e98054be531846e8ddc7960f070721cd2ddae868c904d222abf19ccd9106ca0",
+      "target": "apps/desktop/src/shared/external-attachment.ts",
+      "initial_target_sha256": "1e98054be531846e8ddc7960f070721cd2ddae868c904d222abf19ccd9106ca0"
+    },
+    {
+      "source": "apps/desktop/src/shared/external-background.ts",
+      "source_sha256": "81778d69df83a7e99ecaa4e4b395dcd78808bbdeb787764970415aa5f198ee42",
+      "target": "apps/desktop/src/shared/external-background.ts",
+      "initial_target_sha256": "81778d69df83a7e99ecaa4e4b395dcd78808bbdeb787764970415aa5f198ee42"
+    },
+    {
+      "source": "apps/desktop/src/shared/external-command.ts",
+      "source_sha256": "6b672b69a68f4d5dba62f7ba6b97d31d930962a45fd81b183af6a55d827f0fd6",
+      "target": "apps/desktop/src/shared/external-command.ts",
+      "initial_target_sha256": "6b672b69a68f4d5dba62f7ba6b97d31d930962a45fd81b183af6a55d827f0fd6"
+    },
+    {
+      "source": "apps/desktop/src/shared/external-elicitation.ts",
+      "source_sha256": "7a4d2225c685d928f10ae860c0143cca0e3314bbe2f0884c2e652f12e59fcbf8",
+      "target": "apps/desktop/src/shared/external-elicitation.ts",
+      "initial_target_sha256": "7a4d2225c685d928f10ae860c0143cca0e3314bbe2f0884c2e652f12e59fcbf8"
+    },
+    {
+      "source": "apps/desktop/src/shared/external-installation.ts",
+      "source_sha256": "abf5f386fad4f8f0153da7fc907c87f63dd60a642881f2d4c8942981d55642d3",
+      "target": "apps/desktop/src/shared/external-installation.ts",
+      "initial_target_sha256": "abf5f386fad4f8f0153da7fc907c87f63dd60a642881f2d4c8942981d55642d3"
+    },
+    {
+      "source": "apps/desktop/src/shared/external-message.ts",
+      "source_sha256": "a0f1e5213722200f9ae90a276213c087754cbd16ac165e7ea494ea35cea431ca",
+      "target": "apps/desktop/src/shared/external-message.ts",
+      "initial_target_sha256": "a0f1e5213722200f9ae90a276213c087754cbd16ac165e7ea494ea35cea431ca"
+    },
+    {
+      "source": "apps/desktop/src/shared/external-session.ts",
+      "source_sha256": "523794f6a55d189e4171bd6f370441dc9a92dcbbf0ab2a961276d15acddf8f2c",
+      "target": "apps/desktop/src/shared/external-session.ts",
+      "initial_target_sha256": "523794f6a55d189e4171bd6f370441dc9a92dcbbf0ab2a961276d15acddf8f2c"
+    },
+    {
+      "source": "apps/desktop/src/shared/external-storage-binding.ts",
+      "source_sha256": "2ac1b55517ef4b74027f49c159e1dfde682e0e0b2ca16cc7f2f06d62a29e7be1",
+      "target": "apps/desktop/src/shared/external-storage-binding.ts",
+      "initial_target_sha256": "2ac1b55517ef4b74027f49c159e1dfde682e0e0b2ca16cc7f2f06d62a29e7be1"
+    },
+    {
+      "source": "apps/desktop/src/shared/external-team.ts",
+      "source_sha256": "b0f33afdb761dfa4f95feaad2133e499183d602a59734fd55b3d0466f4a6a9d4",
+      "target": "apps/desktop/src/shared/external-team.ts",
+      "initial_target_sha256": "b0f33afdb761dfa4f95feaad2133e499183d602a59734fd55b3d0466f4a6a9d4"
+    },
+    {
+      "source": "contracts/external-ai/providers.json",
+      "source_sha256": "a1dbe715882b2c7480f7e76c09a723ea496559bed111610a37e38ba589520d9c",
+      "target": "contracts/external-ai/providers.json",
+      "initial_target_sha256": "33ec8987b3740556e9b006c1b57641556c53c599bba66d71eb664da1d33f716b"
+    },
+    {
+      "source": "apps/runtime/src/computer.rs",
+      "source_sha256": "0c1f2d42cb1ffd905bd8aaa538c1eb2691ae54b76b7719bc1bea66e74b0dc248",
+      "target": "core/src/external_execution/computer.rs",
+      "initial_target_sha256": "da0bd3e125eb27d76cc2351912f11205105b1bb5609ef837f59266c8afc56ae4"
+    },
+    {
+      "source": "apps/runtime/src/computer_actions.rs",
+      "source_sha256": "84d0f0450de0fdd411478f7390c644781575d51d6d6b5e4bc99a3c0af8d1ed52",
+      "target": "core/src/external_execution/computer_actions.rs",
+      "initial_target_sha256": "306858d164cd120dc99b67b40a6cbf1bd30de932fee24ae595a2016451a53b42"
+    },
+    {
+      "source": "apps/runtime/src/computer_operations.rs",
+      "source_sha256": "881fb07d8c6973666b51f599d29eb90b8326923a71458239e606400a1bdeabe5",
+      "target": "core/src/external_execution/computer_operations.rs",
+      "initial_target_sha256": "0942753cd155952d23e22e290cffdb78a3971ddf1ba7bfb8cd8b940de8141735"
+    },
+    {
+      "source": "apps/runtime/src/computer_snapshots.rs",
+      "source_sha256": "a511e2d37e47cf53cf2ff130b2511252c5f79e924492596a4df7894d9170df97",
+      "target": "core/src/external_execution/computer_snapshots.rs",
+      "initial_target_sha256": "e47046367432ca5c502c895081696a5fd860e08a5ef30ba03994ed1898799ee6"
+    },
+    {
+      "source": "apps/desktop/native/computer-helper.swift",
+      "source_sha256": "72692bbe138a96c7c9944e2158db67ff4954b000732d7dbcf02e651a3a63a6af",
+      "target": "apps/desktop/native/computer-helper.swift",
+      "initial_target_sha256": "72692bbe138a96c7c9944e2158db67ff4954b000732d7dbcf02e651a3a63a6af"
+    },
+    {
+      "source": "apps/desktop/native/computer-actions.swift",
+      "source_sha256": "b5113de1152d31130b4e780a8882da1919341b6d99ef179956f0540702668ef2",
+      "target": "apps/desktop/native/computer-actions.swift",
+      "initial_target_sha256": "f879530183c2bd8c6f64f878bdff1b30246c1f8cb640262c185a24d5789ea717"
+    },
+    {
+      "source": "apps/desktop/scripts/computer-helper.mjs",
+      "source_sha256": "4eedeaa58c883b0cadd2915100d2bdc9a1921aa43d44667193c898e5780ca73a",
+      "target": "apps/desktop/scripts/computer-helper.mjs",
+      "initial_target_sha256": "9e5049aeb4c9b8ae227f26769a32f4a629d957c9a41d00f8a802079bc054bf70"
+    }
+  ],
+  "orca_review": {
+    "date": "2026-11-27",
+    "head": "34e4ec6f5a723c1998f98a897880b90a86369954",
+    "decision": "comparison-only",
+    "files": [
+      {
+        "path": "src/shared/agent-launch/catalog/tui-agent-config.ts",
+        "sha256": "04c0810be04e44b0443415d21b033106bd4af64e8d3286de581cbe18eea89a75"
+      },
+      {
+        "path": "src/shared/bot-types.ts",
+        "sha256": "bb0b7303b53f5471e3ff74cb9907de3aad658d01aebabe5aa10070be54eed5cd"
+      },
+      {
+        "path": "src/shared/bots/bot-group-schema.ts",
+        "sha256": "162549320bdbae510e66c262ee9369ae5a8fe93635ee5aaaa46baa89b9947a5b"
+      },
+      {
+        "path": "src/shared/computer/computer-use-runtime-types.ts",
+        "sha256": "284918b94b9623cc6f6ae3fbaa93fae0c8ce7ed59daffa6004d38bcfe9076845"
+      }
+    ]
+  }
+}

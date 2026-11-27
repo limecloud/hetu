@@ -12,6 +12,20 @@
 
 无作品和无额外创作插件时，可经稳定CLI的`hetu --client codex call hetu.baseline.inspect --input -`提交空JSON对象核对随包基础合同；`doctor`同时返回基础合同状态。读取或修改作品仍须精确管理或任务引用。
 
+### 会话、助手与本机电脑
+
+稳定CLI的 `session request`、`bot request`、`computer request`分别调用 `hetu.sessions.request`、`hetu.bots.request`、`hetu.computer.request`，与通用call共用输入、结果及恢复。源码构建后可直接发现三套实际Schema：
+
+```bash
+printf '%s\n' '{"method":"capabilities"}' | "target/debug/hetu" --client generic session request --input -
+printf '%s\n' '{"method":"capabilities"}' | "target/debug/hetu" --client generic bot request --input -
+printf '%s\n' '{"method":"capabilities"}' | "target/debug/hetu" --client generic computer request --input -
+```
+
+会话宿主通过随包Node运行，不依赖Electron窗口；CLI/MCP退出保留原PTY，显式stop才停止确切会话。会话读写固定客户端、WorkRef、session_id及输入代次；原键绑定完整请求摘要。`restore`要求原生线程身份与已接通的恢复协议，普通PTY标签或屏幕回放不能代替它。Bot派发回执的 `result`包含会话身份与代次，原 `operation_key`可独立查询。
+
+电脑观察不需要作品管理引用，使用实际应用PID及系统window_id。截图返回真实PNG/JPEG字节，原树查询绑定短期snapshot_ref；动作重新核对原窗口及元素，接管跨客户端冻结窗口输入。恢复前后均须新观察，不清除未知动作围栏。读取、系统权限、外部工具许可及作者决定分别处理。精确方法、预算及当前平台限制见[30外部执行合同](30-应用API详细设计.md#外部执行应用入口)。
+
 ## 1. 共享应用边界
 
 Rust Core以library供App Server、CLI、MCP和插件CLI静态复用。桌面通过私有stdio传递固定JSON请求；不提供Swift桥接、C ABI、裸指针或动态Core加载入口。公开动作由 `contracts/actions.json` 和对应Schema维护。

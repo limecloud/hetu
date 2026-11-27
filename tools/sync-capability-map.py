@@ -12,6 +12,9 @@ MAP = ROOT / "contracts/capability-map.json"
 SKILL_MAP = ROOT / "tools/hetu-skills/base/references/capability-map.json"
 
 ROUTES = {
+    "sessions": ("外部会话与PTY", "hetu-setup"),
+    "bots": ("固定助手与会话", "hetu-manage"),
+    "computer": ("本机电脑操作", "hetu-manage"),
     "execution": ("统一执行模式与集中确认", "hetu-setup"),
     "capabilities": ("能力导航与Review", "hetu-setup"),
     "baseline": ("随包基础能力", "hetu-setup"),

@@ -6,6 +6,7 @@ mod domain;
 mod infrastructure;
 pub mod local_settings;
 pub mod execution;
+pub mod external_execution;
 pub mod machine;
 pub mod methods;
 pub mod model_service;

@@ -1,5 +1,35 @@
 # 应用 API 详细设计
 
+## 外部执行应用入口
+
+下列稳定动作由独立应用服务装配，精确Schema位于 `contracts/schemas/external-execution.schema.json`，提供方目录位于 `contracts/external-ai/providers.json`。它们不进入作品聚合，不使用作者句柄；作品绑定通过原Core资格核验。此处定义接入合同，源码与运行证据分别归38与20。
+
+| 动作 | 发现与读取 | 固定写入与恢复 |
+| --- | --- | --- |
+| `hetu.sessions.request` | capabilities、providers、list、read、models、interaction、history、commands及原operation | create/start/restore、draft/send、PTY input/paste/resize、原请求答复、interrupt/stop；固定session_id、generation、operation_key |
+| `hetu.bots.request` | capabilities、providers、templates、list/get、sessions及原operation | create/update、pause/resume/archive/restore、session_create/start/send/read/stop；配置固定bot_ref，会话固定原配置与WorkRef |
+| `hetu.computer.request` | capabilities、permissions、apps/windows、snapshot/query/wait及原operation | act/launch、takeover/resume；固定客户端、电脑会话、原快照摘要、窗口身份与operation_key |
+
+会话输入原键绑定完整请求摘要，派发前落盘，结果未知只查询原账本和提供方身份；停止不证明原输入没有执行。读取超时返回 `session_read_timeout`，可重试原读取；写入回执超时、破损或超预算仍返回 `hetu.outcome_unknown` 并查询原键，不把读取失败包装成空操作键恢复。私密宿主仅监听本机，连接Secret不进入Prompt、日志或renderer。CLI/MCP退出保留仍运行的PTY，显式停止仅控制已核验的原执行端。读结果有界分页，不复制提供方凭据。
+
+Bot配置固定名称、角色、WorkRef与 `execution:{provider_id,surface,model_id}`，不接受任意argv、环境或权限字段。更新使用完整 `bot_ref:{bot_id,revision,sha256}`，原键、配置与目录同事务保存。归档恢复到paused，明确resume才启用；配置变动限制新派发，原会话仍可读取与停止。创建会话固定原Bot修订，不自动启动或发送，不使用提供方默认模型替代明确选择。
+
+Bot会话写入返回原操作的 `state` 与 `result`，`result`包含实际会话身份和代次；`session_read`返回会话本身的状态及原 `bot_ref`。两种状态不能混用。所有Bot派发，包括停止和原请求答复，均能通过 `operation`查询原键；配置变化不使旧回执失效。只有PTY启动合同提供固定模型参数的引擎才能创建TUI Bot。
+
+`sessions.read`与 `bots.session_read`的 `format`默认为 `text`，按原输出分页；`conversation`返回有界消息与工具投影，保留原身份、角色、状态和显示文字，并回读原草稿。`complete`、总消息/工具数与原文本读取入口明确省略范围。BotGUI复用普通聊天组件，只通过Bot动作发送及答复；投影不复制原生存储、授权或作品事实。
+
+`conversation.tools`保留原协议的`server/name`；`conversation.receipts`读取同一会话MCP中继保存的完整回执，`total_receipts/receipts_complete`标记预算省略，不从任意协议文本生成回执。Bot读取与派发均由宿主核对Core交付的原角色及WorkRef。桌面的Bot成果适配只读取原`session_id/bot_ref/generation`，再复用普通会话的Core成果核验与领域导航；它不是新的作品存储或公开写入口。
+
+Bot的 `session_draft`沿原会话、代次和operation_key保存草稿，停用或配置变化仍允许本客户端保留草稿，原工作区范围及执行策略继续核验。草稿保存不发送、不启动引擎，关闭及切换会话先核对本次保存；读取原草稿不变成新投递。
+
+较长草稿通过 `draft_read`／`session_draft_read`按原版本和代次分页读取，默认每页4000个UTF-16单位，最多16000；跨页版本变化拒绝拼接。`conversation`的 `draft_read`入口标明完整读取方法，不把截断或省略的文字当完整恢复。
+
+电脑观察固定PID、进程启动身份和系统window_id；树与OCR有界，安全输入不回读值，截图通过MCP image块返回。快照引用固定客户端、session_id、摘要和TTL，冻结查询不能证明当前窗口。动作前重新读取目标，变化时拒绝。派发前记录意图，原生接受、输入事件投递和观察匹配分开；未知目标围栏跨客户端生效，接管只冻结新动作，不把未知改为成功。恢复重新观察并保留原操作，不能自动重放。
+
+本机auto/confirm复用设置Owner的策略锁；引擎审批、系统权限、费用和作者决定保持独立。准确动作及参数以当前安装版发现为准，未接通的能力明确失败关闭。MCP工具为 `hetu_sessions`、`hetu_bots`、`hetu_computer`；CLI的session/bot/computer request只是同一动作的简写。
+
+当前外部执行的confirm写入缺少可信决定交付通道，因此拒绝新配置、启动、发送和电脑动作；读取、查询原操作、停止与交给作者接管仍可执行。不能通过自报批准或切换执行模式代替所需决定。电脑动作适配当前为macOS，其他平台按实际能力返回不可用。
+
 ## API组合的停止条件
 
 只读目标在得到所需内容和覆盖后停止；管理、创作及交付按实际需要组合，不自动串成全生命周期。保存与原操作回读构成完成证据，模型末句、返回HTTP成功或新建对象本身不代表任务完成。

@@ -1,0 +1,617 @@
+[
+  {
+    "id": "codex",
+    "label": "Codex",
+    "commands": [
+      "codex"
+    ],
+    "context": "codex",
+    "historyArgs": [
+      "resume"
+    ],
+    "structured": {
+      "protocol": "codex-app-server",
+      "args": [
+        "app-server"
+      ]
+    }
+  },
+  {
+    "id": "claude-code",
+    "label": "Claude Code",
+    "commands": [
+      "claude"
+    ],
+    "context": "claude",
+    "historyArgs": [
+      "--resume"
+    ],
+    "structured": {
+      "protocol": "claude-stream-json",
+      "args": [
+        "--print",
+        "--input-format",
+        "stream-json",
+        "--output-format",
+        "stream-json",
+        "--verbose",
+        "--include-partial-messages",
+        "--permission-prompt-tool",
+        "stdio"
+      ]
+    },
+    "modelArgs": [
+      "--model"
+    ]
+  },
+  {
+    "id": "claude-agent-teams",
+    "label": "Claude Agent Teams",
+    "commands": [
+      "claude"
+    ],
+    "context": "claude",
+    "modelArgs": [
+      "--model"
+    ],
+    "args": [
+      "--teammate-mode",
+      "in-process"
+    ]
+  },
+  {
+    "id": "codebuddy",
+    "label": "CodeBuddy",
+    "commands": [
+      "codebuddy",
+      "cbc"
+    ],
+    "context": "instructions",
+    "structured": {
+      "protocol": "acp",
+      "args": [
+        "--acp"
+      ],
+      "minimumVersions": [
+        "2.121.0"
+      ]
+    }
+  },
+  {
+    "id": "openclaude",
+    "label": "OpenClaude",
+    "commands": [
+      "openclaude"
+    ],
+    "context": "instructions"
+  },
+  {
+    "id": "autohand",
+    "label": "Autohand Code",
+    "commands": [
+      "autohand"
+    ],
+    "context": "instructions"
+  },
+  {
+    "id": "opencode",
+    "label": "OpenCode",
+    "commands": [
+      "opencode"
+    ],
+    "context": "opencode",
+    "structured": {
+      "protocol": "acp",
+      "args": [
+        "acp"
+      ],
+      "minimumVersions": [
+        "1.18.31",
+        "2.0.14"
+      ]
+    },
+    "modelArgs": [
+      "--model"
+    ]
+  },
+  {
+    "id": "opencode2",
+    "label": "OpenCode 2",
+    "commands": [
+      "opencode2"
+    ],
+    "args": [
+      "--standalone"
+    ],
+    "context": "opencode",
+    "structured": {
+      "protocol": "acp",
+      "args": [
+        "acp"
+      ],
+      "minimumVersions": [
+        "2.0.14"
+      ]
+    },
+    "modelArgs": [
+      "--model"
+    ]
+  },
+  {
+    "id": "mimo-code",
+    "label": "MiMo Code",
+    "commands": [
+      "mimo"
+    ],
+    "context": "instructions",
+    "structured": {
+      "protocol": "acp",
+      "args": [
+        "acp"
+      ]
+    }
+  },
+  {
+    "id": "pi",
+    "label": "Pi",
+    "commands": [
+      "pi"
+    ],
+    "context": "instructions",
+    "structured": {
+      "protocol": "pi-rpc",
+      "args": [
+        "--mode",
+        "rpc"
+      ]
+    },
+    "modelArgs": [
+      "--model"
+    ]
+  },
+  {
+    "id": "omp",
+    "label": "OMP",
+    "commands": [
+      "omp"
+    ],
+    "context": "instructions",
+    "structured": {
+      "protocol": "acp",
+      "args": [
+        "acp"
+      ],
+      "minimumVersions": [
+        "17.0.5"
+      ]
+    }
+  },
+  {
+    "id": "qoder",
+    "label": "Qoder CLI",
+    "commands": [
+      "qodercli",
+      "qoder"
+    ],
+    "context": "instructions"
+  },
+  {
+    "id": "qoder-cn",
+    "label": "Qoder CLI China",
+    "commands": [
+      "qoderclicn",
+      "qodercn"
+    ],
+    "context": "instructions"
+  },
+  {
+    "id": "gemini",
+    "label": "Gemini",
+    "commands": [
+      "gemini"
+    ],
+    "context": "gemini",
+    "modelArgs": [
+      "--model"
+    ]
+  },
+  {
+    "id": "antigravity",
+    "label": "Antigravity",
+    "commands": [
+      "agy"
+    ],
+    "context": "instructions",
+    "structured": {
+      "protocol": "acp",
+      "args": [
+        "acp"
+      ]
+    }
+  },
+  {
+    "id": "aider",
+    "label": "Aider",
+    "commands": [
+      "aider"
+    ],
+    "context": "instructions"
+  },
+  {
+    "id": "goose",
+    "label": "Goose",
+    "commands": [
+      "goose"
+    ],
+    "context": "instructions",
+    "structured": {
+      "protocol": "acp",
+      "args": [
+        "acp"
+      ],
+      "minimumVersions": [
+        "1.42.0"
+      ]
+    }
+  },
+  {
+    "id": "amp",
+    "label": "Amp",
+    "commands": [
+      "amp"
+    ],
+    "context": "instructions"
+  },
+  {
+    "id": "kilo",
+    "label": "Kilocode",
+    "commands": [
+      "kilo"
+    ],
+    "context": "instructions",
+    "structured": {
+      "protocol": "acp",
+      "args": [
+        "acp"
+      ]
+    }
+  },
+  {
+    "id": "kiro",
+    "label": "Kiro",
+    "commands": [
+      "kiro-cli"
+    ],
+    "args": [
+      "chat",
+      "--tui"
+    ],
+    "context": "instructions",
+    "structured": {
+      "protocol": "acp",
+      "args": [
+        "acp",
+        "--agent-engine",
+        "v3",
+        "--auth-method",
+        "cli"
+      ],
+      "minimumVersions": [
+        "3.1.0"
+      ]
+    }
+  },
+  {
+    "id": "crush",
+    "label": "Charm",
+    "commands": [
+      "crush"
+    ],
+    "context": "instructions"
+  },
+  {
+    "id": "aug",
+    "label": "Auggie",
+    "commands": [
+      "auggie"
+    ],
+    "context": "instructions",
+    "structured": {
+      "protocol": "acp",
+      "args": [
+        "--acp"
+      ],
+      "minimumVersions": [
+        "1.2.0"
+      ]
+    }
+  },
+  {
+    "id": "cline",
+    "label": "Cline",
+    "commands": [
+      "cline"
+    ],
+    "context": "instructions",
+    "structured": {
+      "protocol": "acp",
+      "args": [
+        "--acp"
+      ],
+      "minimumVersions": [
+        "3.0.66"
+      ]
+    }
+  },
+  {
+    "id": "codebuff",
+    "label": "Codebuff",
+    "commands": [
+      "codebuff"
+    ],
+    "context": "instructions"
+  },
+  {
+    "id": "freebuff",
+    "label": "Freebuff",
+    "commands": [
+      "freebuff"
+    ],
+    "context": "instructions"
+  },
+  {
+    "id": "command-code",
+    "label": "Command Code",
+    "commands": [
+      "command-code"
+    ],
+    "context": "instructions"
+  },
+  {
+    "id": "continue",
+    "label": "Continue",
+    "commands": [
+      "cn"
+    ],
+    "context": "instructions"
+  },
+  {
+    "id": "cursor",
+    "label": "Cursor",
+    "commands": [
+      "cursor-agent"
+    ],
+    "context": "instructions",
+    "structured": {
+      "protocol": "acp",
+      "args": [
+        "--disable-auto-update",
+        "acp"
+      ],
+      "minimumVersions": [
+        "2026.10.21"
+      ]
+    }
+  },
+  {
+    "id": "droid",
+    "label": "Droid",
+    "commands": [
+      "droid"
+    ],
+    "context": "instructions",
+    "structured": {
+      "protocol": "acp",
+      "args": [
+        "exec",
+        "--output-format",
+        "acp"
+      ],
+      "minimumVersions": [
+        "0.236.0"
+      ]
+    }
+  },
+  {
+    "id": "kimi",
+    "label": "Kimi",
+    "commands": [
+      "kimi",
+      "kimi-code"
+    ],
+    "context": "instructions",
+    "structured": {
+      "protocol": "acp",
+      "args": [
+        "acp"
+      ],
+      "minimumVersions": [
+        "2.5.0"
+      ]
+    }
+  },
+  {
+    "id": "mistral-vibe",
+    "label": "Mistral Vibe",
+    "commands": [
+      "vibe",
+      "mistral-vibe"
+    ],
+    "context": "instructions"
+  },
+  {
+    "id": "qwen-code",
+    "label": "Qwen Code",
+    "commands": [
+      "qwen"
+    ],
+    "context": "instructions",
+    "structured": {
+      "protocol": "acp",
+      "args": [
+        "--acp"
+      ],
+      "minimumVersions": [
+        "0.16.0"
+      ]
+    }
+  },
+  {
+    "id": "rovo",
+    "label": "Rovo Dev",
+    "commands": [
+      "acli"
+    ],
+    "args": [
+      "rovodev",
+      "run"
+    ],
+    "context": "instructions"
+  },
+  {
+    "id": "hermes",
+    "label": "Hermes",
+    "commands": [
+      "hermes"
+    ],
+    "args": [
+      "--tui"
+    ],
+    "context": "instructions",
+    "structured": {
+      "protocol": "acp",
+      "args": [
+        "acp"
+      ],
+      "minimumVersions": [
+        "0.23.0"
+      ],
+      "versionArgs": [
+        "acp",
+        "--version"
+      ]
+    }
+  },
+  {
+    "id": "openclaw",
+    "label": "OpenClaw",
+    "commands": [
+      "openclaw"
+    ],
+    "context": "instructions"
+  },
+  {
+    "id": "copilot",
+    "label": "GitHub Copilot",
+    "commands": [
+      "copilot"
+    ],
+    "context": "instructions",
+    "structured": {
+      "protocol": "acp",
+      "args": [
+        "--acp"
+      ],
+      "minimumVersions": [
+        "1.0.88"
+      ]
+    }
+  },
+  {
+    "id": "grok",
+    "label": "Grok",
+    "commands": [
+      "grok"
+    ],
+    "context": "instructions",
+    "structured": {
+      "protocol": "acp",
+      "args": [
+        "agent",
+        "stdio"
+      ]
+    }
+  },
+  {
+    "id": "devin",
+    "label": "Devin",
+    "commands": [
+      "devin"
+    ],
+    "context": "instructions",
+    "structured": {
+      "protocol": "acp",
+      "args": [
+        "acp",
+        "--process-model",
+        "in-process"
+      ],
+      "minimumVersions": [
+        "3000.14.30821"
+      ]
+    }
+  },
+  {
+    "id": "ante",
+    "label": "Ante",
+    "commands": [
+      "ante"
+    ],
+    "context": "instructions"
+  },
+  {
+    "id": "trae",
+    "label": "Trae",
+    "commands": [
+      "traecli"
+    ],
+    "context": "instructions"
+  },
+  {
+    "id": "muse",
+    "label": "Muse",
+    "commands": [
+      "muse"
+    ],
+    "context": "instructions"
+  },
+  {
+    "id": "zcode",
+    "label": "ZCode",
+    "commands": [
+      "zcode"
+    ],
+    "context": "instructions"
+  },
+  {
+    "id": "prime-agent",
+    "label": "Prime Agent",
+    "commands": [
+      "prime-agent"
+    ],
+    "context": "instructions"
+  },
+  {
+    "id": "dsh",
+    "label": "DeepSeek Harness",
+    "commands": [
+      "dsh-tui",
+      "dst"
+    ],
+    "args": [
+      "."
+    ],
+    "requiredCommands": [
+      "dsh"
+    ],
+    "context": "instructions"
+  },
+  {
+    "id": "jcode",
+    "label": "Jcode",
+    "commands": [
+      "jcode"
+    ],
+    "context": "instructions"
+  }
+]

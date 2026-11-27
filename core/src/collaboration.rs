@@ -20,6 +20,13 @@ pub struct CollaborationHub {
 }
 
 impl CollaborationHub {
+    pub(crate) fn verify_external_work(&self, work: &Value) -> Result<()> {
+        if work.is_null() { return Ok(()); }
+        let reference = self.management_ref_for_work(work)?.ok_or_else(|| Error::new("forbidden", "当前Agent没有此作品的有效连接。"))?;
+        let (kernel, _, _) = self.open_management_reference(&reference)?;
+        kernel.work_record(work, None)?;
+        Ok(())
+    }
     /// 按受管连接中的精确作品引用解析当前客户端的有效管理授权。
     /// 管理引用只留在本机授权目录，不进入 Agent 消息或普通结果。
     pub fn management_ref_for_work(&self, work: &Value) -> Result<Option<Value>> {
@@ -344,6 +351,9 @@ impl CollaborationHub {
         }
         if action == "hetu.baseline.inspect" {
             return Ok(domain::success(action, "collaboration", crate::baseline::inspect()?));
+        }
+        if matches!(action, "hetu.sessions.request" | "hetu.bots.request" | "hetu.computer.request") {
+            return Ok(crate::external_execution::request_for(&self.client, &self.directory, action, request["input"].clone()));
         }
         if action == "hetu.runtime.inspect" {
             return Ok(domain::success(

@@ -142,17 +142,20 @@ export function LocalSettings({
     [preview, setPreview] = useState<any>(),
     [textDrafts, setTextDrafts] = useState<Record<string, string>>({}),
     [pendingPreferences, setPendingPreferences] = useState<Record<string, unknown>>({}),
-    [tab, setTab] = useState<Tab>("general");
+    [tab, setTab] = useState<Tab>("general"), [search, setSearch] = useState("");
   const panel = useRef<HTMLDivElement>(null);
   const [pageActionsTarget, setPageActionsTarget] = useState<HTMLDivElement | null>(null);
   const [readingKind, setReadingKind] = useState<ReadingKind>("novel");
   const returnTab = useRef<Tab>("general");
-  const [horizontalTabs, setHorizontalTabs] = useState(() => matchMedia("(max-width:440px)").matches);
+  const [horizontalTabs, setHorizontalTabs] = useState(() => matchMedia("(max-width:760px)").matches);
+  const settingsSearch = useRef<HTMLInputElement>(null);
+  const visibleTabs = tabs.filter(item => item.title.toLocaleLowerCase().includes(search.toLocaleLowerCase()));
   useEffect(() => {
-    const query = matchMedia("(max-width:440px)"), update = () => setHorizontalTabs(query.matches);
+    const query = matchMedia("(max-width:760px)"), update = () => setHorizontalTabs(query.matches);
     query.addEventListener("change", update);
     return () => query.removeEventListener("change", update);
   }, []);
+  useEffect(() => {const find = (event: KeyboardEvent) => {if((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "f" && !document.querySelector("dialog[open]:not(.embedded-settings)")){event.preventDefault();settingsSearch.current?.focus();}};window.addEventListener("keydown",find);return()=>window.removeEventListener("keydown",find);},[]);
   const saves = useRef<Promise<void>>(Promise.resolve());
   const currentState = useRef<any>();
   const drafts = useRef(textDrafts), closing = useRef(false), closeReady = useRef(false);
@@ -208,18 +211,18 @@ export function LocalSettings({
   ) {
     const next =
       event.key === "ArrowRight" || event.key === "ArrowDown"
-        ? (index + 1) % tabs.length
+        ? (index + 1) % visibleTabs.length
         : event.key === "ArrowLeft" || event.key === "ArrowUp"
-          ? (index + tabs.length - 1) % tabs.length
+          ? (index + visibleTabs.length - 1) % visibleTabs.length
           : event.key === "Home"
             ? 0
             : event.key === "End"
-              ? tabs.length - 1
+              ? visibleTabs.length - 1
               : -1;
     if (next < 0) return;
     event.preventDefault();
-    chooseTab(tabs[next].id);
-    document.getElementById("settings-tab-" + tabs[next].id)?.focus();
+    chooseTab(visibleTabs[next].id);
+    document.getElementById("settings-tab-" + visibleTabs[next].id)?.focus();
   }
   function savePreference(key: string, value: unknown) {
     if (!["git_author_name", "git_author_email"].includes(key)) setPendingPreferences(current => ({ ...current, [key]: value }));
@@ -313,35 +316,26 @@ export function LocalSettings({
   const current = state && { ...mergeReadingPreferences(state.preferences, pendingPreferences), agent_session: { ...state.preferences.agent_session, ...(pendingPreferences.agent_session as object ?? {}) } };
   return (
     <PageActionsTarget.Provider value={pageActionsTarget}><section className="local-settings" aria-label="本机设置">
-      <header className="settings-titlebar"><span className="settings-window-title">设置</span><div className="settings-global-actions">
+      <header className="settings-titlebar" aria-label="设置窗口"/>
+      <aside className="settings-navigation" aria-label="设置导航"><header><button type="button" onClick={()=>window.dispatchEvent(new Event("hetu:settings-close-request"))}><Icon name="back" size={14}/>返回应用</button></header><div className="settings-search"><Icon name="search" size={14}/><input ref={settingsSearch} type="search" aria-label="搜索设置" placeholder="搜索设置" value={search} onChange={event=>setSearch(event.target.value)} onKeyDown={event=>{if(event.key==="Escape"&&search&&!event.nativeEvent.isComposing){event.preventDefault();event.stopPropagation();setSearch("");}}}/><kbd aria-hidden>{navigator.platform.includes("Mac")?"⌘":"Ctrl"} F</kbd></div>
+      <div className="settings-tabs" role="tablist" aria-label="设置分类" aria-orientation={horizontalTabs ? "horizontal" : "vertical"}>
+        {categories.filter(category=>visibleTabs.some(item=>category.ids.includes(item.id))).map(category => <div className="settings-category" role="presentation" key={category.title}><span className="settings-category-title">{category.title}</span>{visibleTabs.filter(item => category.ids.includes(item.id)).map(item => (
+          <button key={item.id} id={"settings-tab-"+item.id} type="button" role="tab" aria-selected={tab===item.id} aria-controls={"settings-panel-"+item.id} tabIndex={tab===item.id||!visibleTabs.some(item=>item.id===tab)&&item.id===visibleTabs[0]?.id?0:-1} onClick={()=>chooseTab(item.id)} onKeyDown={event=>tabKey(event,visibleTabs.indexOf(item))}><Icon name={item.icon} size={16}/><span>{item.title}</span></button>
+        ))}</div>)}
+        {!visibleTabs.length&&<p className="settings-search-empty">没有匹配的设置</p>}
+      </div></aside>
+      <div className="settings-body">
+      <div className="settings-tools">
+        {tab==="plans"&&<IconButton icon="back" label="返回设置" onClick={()=>chooseTab(returnTab.current)}/>}
+        <nav aria-label="设置导航路径"><span>设置</span><span>/</span><h1>{tab === "plans" ? "本机操作审阅" : tabs.find(item => item.id === tab)?.title}</h1></nav>
+        <div className="settings-global-actions">
         {tab === "plans" ? <><button disabled={busy} onClick={() => void run(async () => { await desktop.settings("handoff", { section: returnTab.current }); notify("已复制本机设置协作请求。"); })}><Icon name="sparkles"/>让 AI 调整设置</button>
           <IconButton icon="refresh" label="刷新本机设置" disabled={busy} onClick={() => void run(() => refresh())}/></>
           : tab === "storage" ? <button disabled={busy} onClick={() => void run(async () => { await desktop.settings("handoff", { section: "storage" }); notify("已复制存储整理请求。"); })}><Icon name="sparkles"/>让 AI 整理</button>
           : <button disabled={busy} onClick={() => { returnTab.current = tab; chooseTab("plans"); void run(() => refresh()); }}><Icon name="sparkles"/>让 AI 处理与审阅{plans.some(p => p.state === "pending") && <span className="settings-pending" aria-label="有待审方案"/>}</button>}
-      </div></header>
-      <div className="settings-tabs" role="tablist" aria-label="设置分类" aria-orientation={horizontalTabs ? "horizontal" : "vertical"}>
-        {categories.map(category => <div className="settings-category" role="presentation" key={category.title}><span className="settings-category-title">{category.title}</span>{tabs.filter(item => category.ids.includes(item.id)).map(item => (
-          <button
-            key={item.id}
-            id={"settings-tab-" + item.id}
-            type="button"
-            role="tab"
-            aria-selected={tab === item.id}
-            aria-controls={"settings-panel-" + item.id}
-            tabIndex={tab === item.id ? 0 : -1}
-            onClick={() => chooseTab(item.id)}
-            onKeyDown={(event) => tabKey(event, tabs.indexOf(item))}
-          >
-            <Icon name={item.icon} size={18} />
-            <span>{item.title}</span>
-          </button>
-        ))}</div>)}
       </div>
-      <div className="settings-body">
-      <div className="settings-tools">
-        <IconButton icon={tab === "plans" ? "back" : "close"} label={tab === "plans" ? "返回设置" : "关闭设置"} onClick={() => tab === "plans" ? chooseTab(returnTab.current) : window.dispatchEvent(new Event("hetu:settings-close-request"))}/>
-        <h1>{tab === "plans" ? "本机操作审阅" : tabs.find(item => item.id === tab)?.title}</h1>
         <div className="settings-page-actions" ref={setPageActionsTarget}/>
+        <IconButton icon="close" label="关闭设置" onClick={()=>window.dispatchEvent(new Event("hetu:settings-close-request"))}/>
       </div>
       {error && (
         <p role="alert" className="settings-feedback">

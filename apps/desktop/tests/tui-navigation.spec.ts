@@ -3,7 +3,7 @@ import {mkdtemp,mkdir,writeFile} from "node:fs/promises";
 import {spawnSync} from "node:child_process";
 import os from "node:os";
 import path from "node:path";
-import {navigate,closeApplication} from "./navigation.ts";
+import {navigate,closeApplication, workspaceAction} from "./navigation.ts";
 import {AppServer} from "../src/main/rpc.ts";
 
 const root=path.resolve(import.meta.dirname,"../../..");
@@ -42,34 +42,34 @@ for(const [client,width] of [["codex",2560],["shell",980]] as const)test(`${clie
   const identity=(s:any)=>({session_id:s.session_id,thread_id:s.thread_id,generation:s.generation});
   const typeDraft=async(text:string)=>{await page.locator(".xterm-helper-textarea").focus();await page.keyboard.type(text);await expect(page.locator(".xterm-accessibility-tree")).toContainText(text);};
   const reopenLibrary=async()=>{await page.getByLabel("更多操作",{exact:true}).click();await page.getByRole("button",{name:"打开终端工作区",exact:true}).click();};
-  const library=page.locator("main:has(.library-content)"),terminal=page.getByRole("main",{name:"终端工作区",exact:true});
+  const library=page.locator("main:has(.library-content)"),terminal=page.getByRole("main",{name:"终端工作区",exact:true}),sessionNavigation=page.getByRole("complementary",{name:"会话导航",exact:true});
   await expect(page.getByRole("button",{name:"刷新创作库",exact:true})).toBeEnabled();await reopenLibrary();await create();
   const librarySession=await connected();await typeDraft("library-navigation-draft");
   // 经作品范围选择返回创作库会话，覆盖真实会话入口置为展开状态的路径。
-  await page.getByRole("combobox",{name:"会话作品",exact:true}).selectOption({label:"默认小说"});
+  await sessionNavigation.getByRole("button",{name:"默认小说",exact:true}).click();
   await page.getByRole("button",{name:"关闭创建会话",exact:true}).click();
-  await page.getByRole("combobox",{name:"会话作品",exact:true}).selectOption("library");expect(identity(await connected())).toEqual(identity(librarySession));
-  await page.getByRole("complementary",{name:"创作库导航",exact:true}).getByRole("button",{name:"小说",exact:true}).click();
+  await sessionNavigation.getByRole("button",{name:"创作库筹备",exact:true}).click();expect(identity(await connected())).toEqual(identity(librarySession));
+  await sessionNavigation.getByRole("button",{name:"创作库",exact:true}).click();await page.getByRole("complementary",{name:"创作库导航",exact:true}).getByRole("button",{name:"小说",exact:true}).click();
   await expect(terminal).toBeHidden();await expect(library).toBeVisible();await expect(page.getByRole("button",{name:"打开作品 默认小说",exact:true})).toBeVisible();await expect(page.getByRole("button",{name:"打开作品 默认剧本",exact:true})).toHaveCount(0);
   await page.screenshot({path:info.outputPath("library-restored.png")});
   if(client==="shell")for(const label of ["全部作品","剧本","视频","小说"]){
    await reopenLibrary();await connected();
-   await page.getByRole("complementary",{name:"创作库导航",exact:true}).getByRole("button",{name:label,exact:true}).click();
+   await sessionNavigation.getByRole("button",{name:"创作库",exact:true}).click();await page.getByRole("complementary",{name:"创作库导航",exact:true}).getByRole("button",{name:label,exact:true}).click();
    await expect(terminal).toBeHidden();await expect(library).toBeVisible();await expect(library.getByRole("heading",{name:label==="全部作品"?"创作库":label,exact:true})).toBeVisible();
   }
   await reopenLibrary();expect(identity(await connected())).toEqual(identity(librarySession));await expect(page.locator(".xterm-accessibility-tree")).toContainText("library-navigation-draft");
-  await page.getByRole("button",{name:"关闭终端面板",exact:true}).click();await expect(library).toBeVisible();
+  await workspaceAction(page,"关闭终端面板");await expect(library).toBeVisible();
   await page.getByRole("button",{name:"打开作品 默认小说",exact:true}).click();await expect(page.getByRole("region",{name:"当前作品资料",exact:true})).toBeVisible();
   await navigate(page,"小说");const reader=page.getByRole("region",{name:"正文工作区",exact:true});await expect(reader).toContainText("灯塔在黎明前亮起");
   await page.getByRole("button",{name:"打开终端会话",exact:true}).click();await create();const workSession=await connected(true);await typeDraft("work-navigation-draft");
-  await page.getByRole("complementary",{name:"项目导航",exact:true}).getByRole("button",{name:"小说",exact:true}).click();
+  await sessionNavigation.getByRole("button",{name:"小说",exact:true}).click();
   await expect(terminal).toBeHidden();await expect(reader).toBeVisible();await expect(reader).toContainText("灯塔在黎明前亮起");
   await page.getByRole("button",{name:"打开终端会话",exact:true}).click();expect(identity(await connected(true))).toEqual(identity(workSession));await expect(page.locator(".xterm-accessibility-tree")).toContainText("work-navigation-draft");
-  await page.getByRole("complementary",{name:"项目导航",exact:true}).getByRole("button",{name:"返回创作库",exact:true}).click();await expect(library).toBeVisible();await expect(terminal).toBeHidden();
+  await sessionNavigation.getByRole("button",{name:"创作库",exact:true}).click();await expect(library).toBeVisible();await expect(terminal).toBeHidden();
   await reopenLibrary();expect(identity(await connected())).toEqual(identity(librarySession));await expect(page.locator(".xterm-accessibility-tree")).toContainText("library-navigation-draft");
-  await page.getByRole("button",{name:"关闭终端面板",exact:true}).click();await page.getByRole("button",{name:"打开作品 默认小说",exact:true}).click();await navigate(page,"小说");await expect(reader).toBeVisible();
+  await workspaceAction(page,"关闭终端面板");await page.getByRole("button",{name:"打开作品 默认小说",exact:true}).click();await navigate(page,"小说");await expect(reader).toBeVisible();
   await navigate(page,"Agent 协作");expect(identity(await connected(true))).toEqual(identity(workSession));
-  await page.setViewportSize({width:1600,height:900});await page.getByRole("button",{name:"并排查看作品",exact:true}).click();
+  await page.setViewportSize({width:1600,height:900});await workspaceAction(page,"并排查看作品");
   await expect(reader).toBeVisible();await expect(page.getByRole("complementary",{name:"终端工作区",exact:true})).toBeVisible();
   expect(identity(await get(true))).toEqual(identity(workSession));await expect(page.locator(".xterm-accessibility-tree")).toContainText("work-navigation-draft");
   await page.screenshot({path:info.outputPath("novel-and-original-terminal.png")});

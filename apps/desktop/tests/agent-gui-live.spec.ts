@@ -4,7 +4,7 @@ import {spawnSync} from "node:child_process";
 import {createHash} from "node:crypto";
 import os from "node:os";
 import path from "node:path";
-import {navigate} from "./navigation.ts";
+import {navigate, workspaceAction} from "./navigation.ts";
 
 const root=path.resolve(import.meta.dirname,"../../.."),output=path.join(root,"output/gui-lifecycle-20261125");
 const receipts=(snapshot:any)=>(snapshot?.tools??[]).flatMap((tool:any)=>{try{const receipt=JSON.parse(tool.output).structuredContent;return receipt?[receipt]:[];}catch{return [];}});
@@ -117,7 +117,7 @@ test("真实GUI沿原任务反馈返工、比较采纳并交付固定文稿",asy
   }else expect(progress.adopted).toBeFalsy();
   if(!progress.adopted){
    expect((await read("hetu.documents.get",{document_id:state.baseline.document_id})).revision.sha256).toBe(state.baseline.revision.sha256);
-   await page.getByRole("button",{name:"关闭终端面板",exact:true}).click();await page.getByRole("button",{name:"刷新任务目录",exact:true}).click();await page.getByRole("combobox",{name:"当前审阅任务",exact:true}).selectOption(task.task_id);frame=page.frameLocator('iframe[title="任务候选审阅"]');await frame.getByRole("button",{name:"读取最新结果",exact:true}).click();await expect(frame.locator("body")).toContainText("钟声三下");
+   await workspaceAction(page,"关闭终端面板");await page.getByRole("button",{name:"刷新任务目录",exact:true}).click();await page.getByRole("combobox",{name:"当前审阅任务",exact:true}).selectOption(task.task_id);frame=page.frameLocator('iframe[title="任务候选审阅"]');await frame.getByRole("button",{name:"读取最新结果",exact:true}).click();await expect(frame.locator("body")).toContainText("钟声三下");
    await page.getByText("采纳到作者正文",{exact:true}).click();await page.getByRole("combobox",{name:"采纳参考方案",exact:true}).selectOption(revised.submission.candidates[0].candidate_id);await page.getByRole("button",{name:"预览采纳变化",exact:true}).click();
    const preview=page.getByRole("region",{name:"作者决定预览",exact:true});await expect(preview).toContainText("钟声三下");expect((await read("hetu.documents.get",{document_id:state.baseline.document_id})).revision.sha256).toBe(state.baseline.revision.sha256);await page.screenshot({path:path.join(output,"gui-adoption-preview.png")});await page.getByRole("button",{name:"确认此预览",exact:true}).click();
    await expect(page.locator(".notice[role=status]")).toContainText("已采纳为新的作者修订",{timeout:30000});

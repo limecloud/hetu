@@ -66,6 +66,16 @@ Node单元测试与Playwright E2E分别收集，后者使用`*.spec.ts`，避免
 | 空库GUI与稳定接续 | `agent-creation-live.spec.ts`、Core的`execution_modes.rs` | 零作品讨论不写入；实际初始化／筹备创建均按原回执核验，原客户端新建登记和独立任务locator可到达；原键恢复、跨客户端、撤销不复活及confirm执行后才登记；原任务返工、确切QA采纳、固定交付和原线程重开分别取证 |
 | 真实专业模型组合 | `agent-professional-live.spec.ts`、`fixtures/live-agent-round.ts` | 模型实际读取同包方法、精修及审校；同任务同副本接收QA意见并返工，字节／覆盖与旧记录分别核对；停用后Core固定读取及界面打开，包内新轮次真实核对相同插件Owner |
 
+## 多引擎与外部执行验证
+
+源码协议与原键测试使用桌面的 `test:external`；实际无窗口CLI/MCP及后台原生窗口验证使用 `python3 tools/accept-external-execution.py`。脚本只创建隔离资料和窗口，不请求系统权限或调用付费模型；macOS原生检查依赖已有辅助功能及屏幕录制授权。GUI问题/表单、Bot与电脑接管使用 `external-runtime.spec.ts`，保存实际浅暗与窄窗截图；截图和协议夹具不证明真实模型或正式安装版。
+
+先核对三工具的实际 `tools/call`和输出Schema，仅检查 `tools/list`会漏掉错误scope封装。截图通过真实MCP image块解码，JSON不重复带像素；后台AX设值回读原元素，人工接管跨客户端拒绝动作，恢复前后旧快照仍拒绝。原键、原线程、独立草稿和配置/生命周期负例分别验证。
+
+BotGUI沿公开 `session_draft`保存原草稿，`conversation`回读原消息身份和作者显示文字，较长草稿沿 `session_draft_read`的固定版本分页；停用、旧配置、跨客户端与普通会话绕过分别测试。界面复用AgentChat，写入仍调用Bot动作；关闭先核对保存，不把面板内缓存当持久恢复。读超时重试原读取，写回包丢失或损坏仍查原键。
+
+Orca对齐按实际版本取证：图标标签、模型弹层、480px表单、Bots侧栏／聊天／详情以及计算机控制设置。保留原生标签键盘及焦点、浅暗与窄窗断言；引擎数量增加用横向滚动，不改成另一种控件。包内Node路径含空格时，夹具以临时链接保留同一二进制的shebang入口。
+
 ## 实机检查重点
 
 异步重连须等待本次请求结束，再改变账号或渠道夹具。鼠标click返回及原有`changed`状态均不能证明本次IPC已完成：旧测试曾提前恢复账号，导致第一次重连合法进入ready，第二次点击等待已消失的按钮而失败。复用`codex-authentication.spec.ts`对实际`desktop:agent-session/start`的settled观察；先挂起一次调用，核对控件禁用和夹具未变，再释放并等待本次回包。夹具JSON使用同目录临时文件原子rename，避免读取半截；仅记录完成与返回／拒绝，不保存账号、令牌或登录URL。该方法适用于这个并发边界，不给所有测试加sleep或全局IPC桩。

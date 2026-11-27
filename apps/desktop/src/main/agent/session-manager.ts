@@ -6,18 +6,20 @@ import type { AgentSessionEvent, AgentSurface,SessionLaunch } from "../../agent-
 import { agentSessionSandbox } from "./context.ts";
 import { CodexSession } from "./codex-session.ts";
 import {ProcessSession} from "./process-session.ts";
+import {ExternalAgentSession} from "./external-agent-session.ts";
 import { atomicJson, recordPath, defaultSessionId, sessionDirectory } from "./session-storage.ts";
 
 const scopeKey = (work?: WorkRef) => work ? [work.workspace_id, work.kind, work.object_id].join("/") : "library";
 export class AgentSessions {
-  #sessions = new Map<string, CodexSession|ProcessSession>();
+  #sessions = new Map<string, CodexSession|ProcessSession|ExternalAgentSession>();
   #selected = new Map<string, string>();
   #loaded?: Promise<void>;
-  #loading = new Map<string, Promise<CodexSession|ProcessSession>>();
+  #loading = new Map<string, Promise<CodexSession|ProcessSession|ExternalAgentSession>>();
   #saving = Promise.resolve();
   constructor(privateOptions: { profile: string; machineDirectory?: string; machineMcpBinary?: string; machineNodeBinary?:string;machineRelay?:string;engineGuard?:string; emit: (event: AgentSessionEvent) => void }) { this.options = privateOptions; }
   private options: { profile: string; machineDirectory?: string; machineMcpBinary?: string; machineNodeBinary?:string;machineRelay?:string;engineGuard?:string; emit: (event: AgentSessionEvent) => void };
-  isSelected(session:CodexSession|ProcessSession,work?:WorkRef) {return this.#selected.get(scopeKey(work))===session.snapshot(false).session_id;}
+  get connected(){return [...this.#sessions.values()].some(session=>{const value=session.snapshot(false);return value.terminal_connected||["starting","ready","running","switching","stopping"].includes(value.state);});}
+  isSelected(session:CodexSession|ProcessSession|ExternalAgentSession,work?:WorkRef) {return this.#selected.get(scopeKey(work))===session.snapshot(false).session_id;}
   async get(work?: WorkRef, defaultSurface: AgentSurface = "tui", selectedId?: string, choose = false, launch?:SessionLaunch) {
     await this.#load();
     const key = scopeKey(work), id = selectedId ?? this.#selected.get(key) ?? defaultSessionId(work);
@@ -29,9 +31,9 @@ export class AgentSessions {
         loading = (async () => {
           let saved:any;
           try{saved=JSON.parse(await readFile(recordPath(this.options.profile,work,id),"utf8"));}catch(error){if((error as NodeJS.ErrnoException).code!=="ENOENT")throw error;}
-          const config=launch??{client:saved?.client??"codex",surface:saved?.surface??defaultSurface};
+          const config=launch??{client:saved?.client??"codex",surface:saved?.surface??defaultSurface,model:saved?.model,reasoning_effort:saved?.reasoning_effort,title:saved?.title,bot_context:saved?.bot_context};
           const base=work?agentSessionSandbox(this.options.profile,work):path.join(this.options.profile,"agent-sessions","sandbox","library");
-          const created=config.client==="codex"?new CodexSession({...this.options,client:"codex",id,work,defaultSurface:config.surface,cwd:base,launch:config}):new ProcessSession({...this.options,id,work,launch:config,cwd:path.join(base,id)});
+          const created=config.client==="codex"?new CodexSession({...this.options,client:"codex",id,work,defaultSurface:config.surface,cwd:base,launch:config}):config.surface==="gui"?new ExternalAgentSession({...this.options,id,work,launch:config,cwd:path.join(base,id)}):new ProcessSession({...this.options,id,work,launch:config,cwd:path.join(base,id)});
           await created.load(); this.#sessions.set(id,created);return created;
         })();
         this.#loading.set(id,loading);

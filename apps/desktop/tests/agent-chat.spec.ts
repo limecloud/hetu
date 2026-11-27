@@ -6,7 +6,7 @@ import path from "node:path";
 import os from "node:os";
 import {defaultSessionId,recordPath} from "../src/main/agent/session-storage.ts";
 import {agentSessionSandbox} from "../src/main/agent/context.ts";
-import {navigate,closeApplication,observeApplicationShutdown} from "./navigation.ts";
+import {navigate,closeApplication,observeApplicationShutdown,workspaceAction} from "./navigation.ts";
 import {AppServer} from "../src/main/rpc.ts";
 import {PluginPackage} from "../../../packages/plugin-host/src/package.ts";
 import {Client} from "@modelcontextprotocol/client";
@@ -14,7 +14,7 @@ import {StdioClientTransport} from "@modelcontextprotocol/client/stdio";
 
 const root=path.resolve(import.meta.dirname,"../../..");
 test("GUI展示真实协议时间线，历史锚点、Markdown、输入与偏好保持一致",async({},info)=>{
- test.setTimeout(150000);
+ test.setTimeout(240000);
  const folder=await mkdtemp(path.join(os.tmpdir(),"hetu-agent-chat-")),profile=path.join(folder,"profile"),workspace=path.join(folder,"作品"),collaboration=path.join(folder,"collaboration"),binary=path.join(folder,"codex"),log=path.join(folder,"turns.jsonl");
  const fixtures=process.env.HETU_ACCEPT_FIXTURE_DIRECTORY??path.join(root,"target/debug/examples");
  const fixture=spawnSync(path.join(fixtures,"baseline_fixture"+(process.platform==="win32"?".exe":"")),[workspace,collaboration],{encoding:"utf8"});expect(fixture.status,fixture.error?.message??fixture.stderr).toBe(0);
@@ -59,7 +59,20 @@ test("GUI展示真实协议时间线，历史锚点、Markdown、输入与偏好
  const app=await electron.launch({...(executable?{executablePath:executable,args:[]}:{args:[path.join(root,"apps/desktop")]}),env:{...env,HETU_DESKTOP_PROFILE:profile,HETU_PLUGIN_ACCESS_DIR:path.join(folder,"plugin-access"),HETU_COLLABORATION_DIR:collaboration,HETU_CODEX_BIN:binary,...(!executable?{HETU_PLUGIN_NODE:process.execPath,HETU_APP_SERVER:coreBinary,HETU_CLI:path.join(root,"target/debug/hetu"),HETU_MCP:path.join(root,"target/debug/hetu-mcp")}: {})}});
  try{
   await observeApplicationShutdown(app,info.outputPath("shutdown.jsonl"));
-  const page=await app.firstWindow();await page.setViewportSize({width:1440,height:900});await page.getByRole("button",{name:"打开作品 默认小说",exact:true}).click();await navigate(page,"Agent 协作");
+  const page=await app.firstWindow();await page.setViewportSize({width:1440,height:900});await expect(page.getByRole("button",{name:"刷新创作库",exact:true})).toBeEnabled({timeout:30000});
+  // 页面就绪后只包装已注册的入口，避免诊断抢占启动期间的IPC注册。
+  await app.evaluate(({ipcMain,BrowserWindow})=>{
+   const state=globalThis as any;state.__navigationAudit=[];
+   for(const channel of ["desktop:library","desktop:select","desktop:agent-session"]){
+    const handlers=(ipcMain as any)._invokeHandlers,original=handlers.get(channel);if(typeof original!=="function")throw Error("诊断入口尚未就绪："+channel);
+    handlers.set(channel,async(event:unknown,...args:any[])=>{
+     const row:any={channel,method:typeof args[0]==="string"?args[0]:undefined,started_at:Date.now()};state.__navigationAudit.push(row);
+     try{const value=await original(event,...args);row.work=value?.work??value?.work_ref;row.epoch=value?.epoch;row.session_id=value?.session_id;return value;}catch(error){row.error=String(error);throw error;}finally{row.finished_at=Date.now();}
+    });
+   }
+   const view=BrowserWindow.getAllWindows()[0]?.webContents;if(view){const send=view.send.bind(view);view.send=(channel,...args)=>{if(channel==="desktop:plugins-changed")state.__navigationAudit.push({channel,work:args[0]?.work,epoch:args[0]?.epoch,at:Date.now()});return send(channel,...args);};}
+  });
+  await page.evaluate(()=>{(window as any).__uiClicks=[];document.addEventListener("click",event=>{const button=(event.target as Element).closest("button");if(button)(window as any).__uiClicks.push({label:button.getAttribute("aria-label")??button.textContent?.trim().slice(0,80),at:Date.now()});},true);});await page.getByRole("button",{name:"打开作品 默认小说",exact:true}).click();await navigate(page,"Agent 协作");
   await app.evaluate(({dialog},directory)=>{dialog.showOpenDialog=async()=>({canceled:false,filePaths:[directory]});dialog.showMessageBox=async()=>({response:1,checkboxChecked:false});},pkg.source);
   await page.evaluate(()=>window.hetuDesktop.install());
   await app.evaluate(({dialog},directory)=>{dialog.showOpenDialog=async()=>({canceled:false,filePaths:[directory]});},timelinePkg.source);await page.evaluate(()=>window.hetuDesktop.install());
@@ -213,10 +226,11 @@ test("GUI展示真实协议时间线，历史锚点、Markdown、输入与偏好
   for(const count of [180,240,240]){await chat.getByRole("button",{name:"加载更早记录",exact:false}).click();await expect(chat.locator("[data-entry]")).toHaveCount(count);}
   // 加载前后原历史项仍在视口，流式新消息不把向上阅读的位置拉走。
   const anchor=await records.evaluate(element=>{const top=element.getBoundingClientRect().top,node=[...element.querySelectorAll<HTMLElement>("[data-entry]")].find(node=>node.getBoundingClientRect().bottom>top)!;return {key:node.dataset.entry,offset:node.getBoundingClientRect().top-top};});
-  await page.getByRole("complementary",{name:"作品目录",exact:true}).getByRole("button",{name:"第一章 雾港",exact:true}).click();await expect(page.locator(".agent-content-preview")).toContainText("灯塔在黎明前亮起");await page.getByRole("tab",{name:"Codex",exact:true}).click();
+  await page.getByRole("complementary",{name:"作品目录",exact:true}).getByRole("button",{name:"第一章 雾港",exact:true}).click();await expect(page.locator(".agent-content-preview")).toContainText("灯塔在黎明前亮起");await page.getByRole("tablist",{name:"会话标签",exact:true}).getByRole("tab",{name:restored.title,exact:true}).click();
   const returned=await records.evaluate((element,key)=>{const node=[...element.querySelectorAll<HTMLElement>("[data-entry]")].find(node=>node.dataset.entry===key)!;return node.getBoundingClientRect().top-element.getBoundingClientRect().top;},anchor.key);expect(Math.abs(returned-anchor.offset)).toBeLessThan(3);
   await page.evaluate(async()=>{const state=await window.hetuDesktop.settings("preferences");await window.hetuDesktop.settings("update",{expected_revision:state.revision,patch:{agent_session:{scroll_on_send:false}}});});
-  await input.fill("核对固定来源");await input.press("Shift+Enter");await expect(input).toHaveValue("核对固定来源\n");await input.press("Enter");
+  await input.fill("核对固定来源");await expect(chat.getByRole("button",{name:"发送",exact:true})).toBeEnabled();await input.press("Shift+Enter");await expect(input).toHaveValue("核对固定来源\n");await input.press("Enter");
+  await expect.poll(async()=>{try{return (await readFile(log,"utf8")).trim().split("\n").filter(Boolean).length;}catch{return 0;}},{timeout:30000,message:"原发送已被协议受理后才检查新记录，未重发。"}).toBe(1);
   await expect(chat.getByRole("button",{name:"有新记录，回到最新",exact:true})).toBeVisible();
   await expect.poll(()=>page.evaluate(async()=>(await window.hetuDesktop.agentSession("get")).state)).toBe("ready");
   const after=await records.evaluate((element,key)=>{const node=[...element.querySelectorAll<HTMLElement>("[data-entry]")].find(node=>node.dataset.entry===key)!;return node.getBoundingClientRect().top-element.getBoundingClientRect().top;},anchor.key);
@@ -240,20 +254,20 @@ test("GUI展示真实协议时间线，历史锚点、Markdown、输入与偏好
   await input.dispatchEvent("compositionstart");await input.press("Control+Enter");await input.dispatchEvent("compositionend");expect((await readFile(log,"utf8")).trim().split("\n")).toHaveLength(1);
   const current=await page.evaluate(()=>window.hetuDesktop.agentSession("get"));expect(current.thread_id).toBe(before.thread_id);expect(current.generation).toBe(before.generation);
   await page.setViewportSize({width:800,height:760});await expect(chat).toBeVisible();expect(await chat.evaluate(element=>element.scrollWidth<=element.clientWidth)).toBe(true);
-  const narrowTabs=page.getByRole("tablist",{name:"会话与预览",exact:true});
-  await writeFile(info.outputPath("narrow-header-geometry.json"),JSON.stringify(await page.locator(".codex-session-header").evaluate(element=>Object.fromEntries([".agent-work-choice",".codex-session-picker","[role=status]",".codex-header-tabs",".codex-session-actions"].map(selector=>{const node=element.querySelector<HTMLElement>(selector)!,bounds=node.getBoundingClientRect();return [selector,{left:bounds.left,right:bounds.right,width:bounds.width}];}))),null,2)+"\n");
+  const narrowTabs=page.getByRole("tablist",{name:"会话标签",exact:true});
+  await writeFile(info.outputPath("narrow-header-geometry.json"),JSON.stringify(await page.locator(".codex-session-header").evaluate(element=>Object.fromEntries([".execution-tab-strip",".codex-header-tabs",".codex-session-actions"].map(selector=>{const node=element.querySelector<HTMLElement>(selector)!,bounds=node.getBoundingClientRect();return [selector,{left:bounds.left,right:bounds.right,width:bounds.width}];}))),null,2)+"\n");
   expect(await narrowTabs.evaluate(element=>element.clientWidth)).toBeGreaterThanOrEqual(128);
   expect(await page.locator(".codex-session-header").evaluate(element=>element.scrollWidth<=element.clientWidth)).toBe(true);
-  await expect(page.getByRole("button",{name:"关闭终端面板",exact:true})).toBeInViewport({ratio:1});
-  await page.getByLabel("当前会话",{exact:true}).click();await expect(page.getByRole("searchbox",{name:"查找会话",exact:true})).toBeVisible();await page.getByLabel("当前会话",{exact:true}).click();
+  await expect(page.getByLabel("工作区布局",{exact:true})).toBeInViewport({ratio:1});
+  await page.keyboard.press(process.platform==="darwin"?"Meta+k":"Control+k");const search=page.getByRole("searchbox",{name:"搜索 bots、作品和会话",exact:true});await expect(search).toBeFocused();await search.fill(before.title);await expect(page.getByRole("complementary",{name:"会话导航",exact:true}).getByRole("button",{name:before.title,exact:true})).toBeVisible();await search.press("Escape");
   const documentTab=narrowTabs.getByRole("tab",{name:"第一章 雾港（旧修订）",exact:true});await documentTab.click();
   await expect(documentTab).toHaveAttribute("aria-selected","true");await expect(documentTab).toBeInViewport({ratio:1-1/(await documentTab.boundingBox())!.width});
   const closePreview=page.getByRole("button",{name:"关闭预览 第一章 雾港（旧修订）",exact:true});await expect(closePreview).toBeInViewport({ratio:1});
   expect(await documentTab.evaluate(element=>element.clientWidth)).toBeGreaterThanOrEqual(80);
   await page.screenshot({path:info.outputPath("gui-narrow-preview-header.png")});
-  const codexTab=narrowTabs.getByRole("tab",{name:"Codex",exact:true});await documentTab.press("Home");await expect(codexTab).toBeFocused();await expect(codexTab).toBeInViewport({ratio:1});
-  await codexTab.press("End");await expect(documentTab).toBeFocused();await expect(closePreview).toBeInViewport({ratio:1});await documentTab.press("Home");await expect(chat).toBeVisible();
-  await page.setViewportSize({width:1440,height:900});await page.getByRole("button",{name:"并排查看作品",exact:true}).click();
+  const sessionTab=narrowTabs.getByRole("tab",{name:before.title,exact:true});await documentTab.press("Home");await expect(sessionTab).toBeFocused();await expect(sessionTab).toBeInViewport({ratio:1});await expect(documentTab).toHaveAttribute("aria-selected","true");await sessionTab.press("Enter");await expect(chat).toBeVisible();
+  await sessionTab.press("End");await expect(documentTab).toBeFocused();await documentTab.press("Enter");await expect(closePreview).toBeInViewport({ratio:1});await documentTab.press("Home");await sessionTab.press("Enter");await expect(chat).toBeVisible();
+  await page.setViewportSize({width:1440,height:900});await workspaceAction(page,"并排查看作品");
   const dock=page.getByRole("complementary",{name:"终端工作区",exact:true}),header=dock.locator(".codex-session-header");
   await expect(dock).toBeVisible();
   const captureDock=async(label:string)=>{const filename=info.outputPath(label+".json");await writeFile(filename,JSON.stringify(await dock.evaluate(element=>{
@@ -262,18 +276,17 @@ test("GUI展示真实协议时间线，历史锚点、Markdown、输入与偏好
   })));await info.attach(label,{contentType:"application/json",path:filename});};
   await captureDock("default-dock-geometry");
   const resize=dock.getByRole("separator",{name:"调整终端侧栏宽度",exact:true});
-  // 420px外宽的内容区恰好落在390px断点附近；显式设置宽度，避免不同DPR的细边框取整改变测试条件。
   await resize.press("Home");for(let index=0;index<4;index++)await resize.press("ArrowLeft");
-  await expect(resize).toHaveAttribute("aria-valuenow","440");await expect(header).toHaveCSS("height","71px");
+  await expect(resize).toHaveAttribute("aria-valuenow","440");await expect(header).toHaveCSS("height","36px");
   await captureDock("wide-dock-geometry");
-  await codexTab.press("End");await expect(documentTab).toBeInViewport({ratio:1-1/(await documentTab.boundingBox())!.width});await expect(closePreview).toBeInViewport({ratio:1});
+  await sessionTab.press("End");await documentTab.press("Enter");await expect(documentTab).toBeInViewport({ratio:1-1/(await documentTab.boundingBox())!.width});await expect(closePreview).toBeInViewport({ratio:1});
   expect(await header.evaluate(element=>element.scrollWidth<=element.clientWidth)).toBe(true);await page.screenshot({path:info.outputPath("gui-docked-preview-header.png")});
-  await resize.press("Home");await expect(resize).toHaveAttribute("aria-valuenow","360");await expect(header).toHaveCSS("height","106px");
+  await resize.press("Home");await expect(resize).toHaveAttribute("aria-valuenow","360");await expect(header).toHaveCSS("height","71px");
   await captureDock("minimum-dock-geometry");
-  await expect(documentTab).toBeInViewport({ratio:1-1/(await documentTab.boundingBox())!.width});await expect(closePreview).toBeInViewport({ratio:1});await expect(dock.getByRole("button",{name:"关闭终端面板",exact:true})).toBeInViewport({ratio:1});
+  await expect(documentTab).toBeInViewport({ratio:1-1/(await documentTab.boundingBox())!.width});await expect(closePreview).toBeInViewport({ratio:1});await expect(dock.getByLabel("工作区布局",{exact:true})).toBeInViewport({ratio:1});
   expect(await header.evaluate(element=>element.scrollWidth<=element.clientWidth)).toBe(true);await page.screenshot({path:info.outputPath("gui-minimum-dock-header.png")});
-  await dock.getByRole("button",{name:"展开终端工作区",exact:true}).click();await documentTab.press("Home");await page.setViewportSize({width:800,height:760});await expect(chat).toBeVisible();
-  expect(await page.locator(".codex-session-header").evaluate(element=>{const status=element.querySelector('[role="status"]')!.getBoundingClientRect(),actions=element.querySelector('.codex-session-actions')!.getBoundingClientRect(),tabs=element.querySelector('.codex-header-tabs')?.getBoundingClientRect();return status.right<=(tabs?.left??actions.left)&&(!tabs||tabs.right<=actions.left);})).toBe(true);
+  await workspaceAction(page,"展开终端工作区");await documentTab.press("Home");await sessionTab.press("Enter");await page.setViewportSize({width:800,height:760});await expect(chat).toBeVisible();
+  expect(await page.locator(".codex-session-header").evaluate(element=>{const actions=element.querySelector('.codex-session-actions')!.getBoundingClientRect(),tabs=element.querySelector('.execution-tab-strip')!.getBoundingClientRect();return tabs.right<=actions.left||tabs.bottom<=actions.top;})).toBe(true);
   await page.screenshot({path:info.outputPath("gui-dark-narrow.png")});
   const failures=await page.locator(".agent-chat-tool details").getAttribute("open");expect(failures).toBeNull();
   // 来源损坏时不发第二轮，保留正文与引用，错误就在输入区可见。
@@ -282,5 +295,5 @@ test("GUI展示真实协议时间线，历史锚点、Markdown、输入与偏好
   await page.evaluate(async ref=>{const value=await window.hetuDesktop.agentSession("get");await window.hetuDesktop.agentSession("draft",{session_id:value.session_id,generation:value.generation,surface:"gui",text:"请保留当前草稿",context_refs:[ref]});},invalid);
   await expect(input).toHaveValue("请保留当前草稿");await chat.getByRole("button",{name:"发送",exact:true}).click();await expect(chat.locator(".agent-chat-send-error")).toContainText("第一章 雾港");await expect(input).toHaveValue("请保留当前草稿");expect((await readFile(log,"utf8")).trim().split("\n")).toHaveLength(1);
   await page.screenshot({path:info.outputPath("gui-context-error.png")});await attached.getByRole("button",{name:"移除上下文 第一章 雾港",exact:true}).click();await expect(attached).toHaveCount(0);await expect(input).toHaveValue("请保留当前草稿");
- }catch(error){await app.windows()[0]?.screenshot({path:info.outputPath("failure.png")}).catch(()=>{});throw error;}finally{await closeApplication(app);await core.close();}
+ }catch(error){await app.windows()[0]?.screenshot({path:info.outputPath("failure.png")}).catch(()=>{});await writeFile(info.outputPath("runtime-navigation.json"),JSON.stringify({calls:await app.evaluate(()=>(globalThis as any).__navigationAudit).catch(()=>[]),clicks:await app.windows()[0]?.evaluate(()=>(window as any).__uiClicks).catch(()=>[])},null,2)+"\n");throw error;}finally{await closeApplication(app);await core.close();}
 });

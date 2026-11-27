@@ -40,6 +40,12 @@ description: "作者选择河图洛书宫斗宅斗套件时，在河图洛书任
 | 任务读取与授权 | 原任务读取回执及固定输入，不能由插件安装状态推断 |
 | 局部视图与图像 | 宿主实际暴露的 Apps、浏览器或图像能力，分别报告 |
 
+## 外部会话与执行能力
+
+作者明确要使用本机引擎、固定助手或外部软件时，先发现 `hetu.sessions.request`、`hetu.bots.request`、`hetu.computer.request`的实际Schema；MCP对应 `hetu_sessions`、`hetu_bots`、`hetu_computer`。检查引擎安装、结构化协议、模型、原会话与实际系统权限，不能从提供方目录推定全部可用。仅检查或读取时不创建作品、任务或会话。
+
+会话写入沿原session_id、generation和operation_key；恢复须核对原生线程，不将PTY回放当模型上下文。Bot和电脑管理交给[管理Skill](../hetu-manage/SKILL.md)。作品任务继续用原Core动作；Computer Use只用于界面检查或确认没有机器入口的外部软件操作。未知结果查询所属动作的原operation，不换键发送。当前外部执行confirm新写入失败关闭，不能自行切换模式或代报批准。
+
 ## 已知任务恢复
 
 作者选择河图文字或图片模型服务时，按[模型服务](../../references/model-service.md)发现目录、准备固定输入、等待作者批准，并沿原计划恢复。连接不阻断其他获权本地工作，不索取供应商密钥。

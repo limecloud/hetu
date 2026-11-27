@@ -131,6 +131,16 @@ pub(crate) fn bounded(mut result: Value, action: &str, input: &Value, budget: us
         return result;
     }
     let actual = result["action"].as_str().unwrap_or(action).to_owned();
+    if actual=="hetu.computer.request"&&result.get("error").is_none()&&result["data"]["snapshot_ref"].is_object()&&result["data"]["elements"].is_array(){
+        let original=if action=="hetu.collaboration.invoke"{&input["input"]}else{input};
+        let mut next=json!({"method":"query","session_id":result["data"]["session_id"],"snapshot_ref":result["data"]["snapshot_ref"],"offset":result["data"]["offset"].as_u64().unwrap_or(0),"limit":1});
+        for key in ["query","root_index"]{if original.get(key).is_some(){next[key]=original[key].clone();}}
+        let count=result["data"]["elements"].as_array().unwrap().len();
+        result["data"]["elements"]=json!([]);
+        if result["data"]["ocr"].is_object(){result["data"]["ocr"]=json!({"state":"omitted","reason":"transport_budget"});}
+        result["data"]["response"]=json!({"complete":false,"reason":"transport_budget","omitted_elements":count,"read":{"action":"hetu.computer.request","input":next},"pixels_delivered_separately":true});
+        if size(&result)<=budget{return result;}
+    }
     if actual == "hetu.plugins.invoke"
         && result.get("error").is_none()
         && result["data"]["invocation"]["effect"] == "managed_write"
@@ -305,6 +315,17 @@ pub(crate) fn bounded(mut result: Value, action: &str, input: &Value, budget: us
 mod tests {
     use super::*;
 
+    #[test]
+    fn oversized_computer_tree_keeps_fixed_ref_and_freezes_the_next_read(){
+        let reference=json!({"id":"fixed-snapshot","sha256":"a".repeat(64)});
+        let input=json!({"method":"query","session_id":"computer-test","snapshot_ref":reference,"query":"原文","root_index":1,"offset":3,"limit":64});
+        let raw=json!({"spec_version":"0.2.1","kind":"result","action":"hetu.computer.request","status":"succeeded","context":{"scope_id":"collaboration"},"data":{"session_id":"computer-test","snapshot_ref":reference,"offset":3,"elements":[{"index":4,"value":"外部观察".repeat(20000)}],"screenshot":{"format":"png","delivered_as":"mcp_image"}}});
+        let limited=bounded(raw,"hetu.computer.request",&input,MAX_RESULT_BYTES);
+        assert_eq!(limited["status"],"succeeded");assert_eq!(limited["data"]["snapshot_ref"],reference);assert_eq!(limited["data"]["elements"],json!([]));
+        let next=&limited["data"]["response"]["read"]["input"];
+        assert_eq!(next,&json!({"method":"query","session_id":"computer-test","snapshot_ref":reference,"query":"原文","root_index":1,"offset":3,"limit":1}));
+        assert!(size(&limited)<=MAX_RESULT_BYTES);
+    }
     #[test]
     fn feedback_budget_recovery_keeps_the_original_task_filter_and_cursor() {
         let task = json!({"scope_ref":{"kind":"workspace","id":"fixed-scope"},"task_id":"original-task","request_revision":1});

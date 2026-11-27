@@ -75,6 +75,9 @@
 | 任务接续与交接 | hetu-setup | 2 | 0 | 0 |
 | 随包基础能力 | hetu-setup | 1 | 0 | 0 |
 | 统一执行模式与集中确认 | hetu-setup | 7 | 0 | 0 |
+| 外部会话与PTY | hetu-setup | 1 | 0 | 0 |
+| 固定助手与会话 | hetu-manage | 1 | 0 | 0 |
+| 本机电脑操作 | hetu-manage | 1 | 0 | 0 |
 
 ## AI 按需查询
 
@@ -102,7 +105,7 @@ MCP 对应调用 `hetu_get_capability_map`，参数同上。具体动作查询�
 | `hetu-drama` | 作者通过河图洛书复盘、规划、创作或返工剧本，组织全剧、分集和场次，或将已授权原著改编为 Fountain 参考稿时使用。 | [SKILL.md](../tools/hetu-skills/base/skills/hetu-drama/SKILL.md) |
 | `hetu-resources` | 作者通过河图洛书资料任务整理人物资料、场景参考、道具说明或考据笔记时使用。 | [SKILL.md](../tools/hetu-skills/base/skills/hetu-resources/SKILL.md) |
 | `hetu-artwork` | 为河图洛书角色、场景、道具及插图任务设计图片候选，通过实际发现的图像工具生成并回写固定任务，供作者预览。 | [SKILL.md](../tools/hetu-skills/base/skills/hetu-artwork/SKILL.md) |
-| `hetu-manage` | 作者需要在河图洛书整理作品资料、卷章大纲、设定、短剧场次、资料关联、导入交付、版本或本机设置时使用。按共享auto或confirm模式执行；正文创作和改稿使用对应写作 Skill。 | [SKILL.md](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) |
+| `hetu-manage` | 作者需要在河图洛书整理作品资料、卷章大纲、设定、短剧场次、资料关联、导入交付、版本、本机设置或固定助手时使用。按共享auto或confirm模式执行；正文创作和改稿使用对应写作 Skill。 | [SKILL.md](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) |
 | `hetu-import` | 作者要求将已有小说导入河图洛书，或从 TXT、Markdown、Word、EPUB 整理分卷章节并接续改编时使用。保留原稿、核对目录和来源，通过 CLI/MCP 固定方案导入，支持中断恢复。 | [SKILL.md](../tools/hetu-skills/base/skills/hetu-import/SKILL.md) |
 | `hetu-video` | 在河图洛书复盘、规划或推进短剧视频项目，组织全季分集、分镜、预演、生成、剪辑音画、媒体返工及工程交付时使用。 | [SKILL.md](../tools/hetu-skills/base/skills/hetu-video/SKILL.md) |
 
@@ -549,6 +552,24 @@ MCP 对应调用 `hetu_get_capability_map`，参数同上。具体动作查询�
 | 登记当前用户对同一固定变更计划的集中决定<br>`hetu.execution.record_confirmation` | `hetu_record_execution_confirmation` (workspace/stable) | [hetu-setup](../tools/hetu-skills/base/skills/hetu-setup/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
 | 执行或沿原操作恢复固定计划，不重复已完成动作<br>`hetu.execution.execute` | `hetu_execute_plan` (workspace/stable) | [hetu-setup](../tools/hetu-skills/base/skills/hetu-setup/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
 | 回读固定计划、集中决定和逐项真实回执<br>`hetu.execution.get_plan` | `hetu_read_execution_plan` (workspace/stable) | [hetu-setup](../tools/hetu-skills/base/skills/hetu-setup/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
+
+### 外部会话与PTY
+
+| 功能／CLI 动作 | MCP 入口 | Skill | 范围／决定 | 状态 |
+| --- | --- | --- | --- | --- |
+| 管理固定外部会话与原生PTY<br>`hetu.sessions.request` | `hetu_sessions` (stable) | [hetu-setup](../tools/hetu-skills/base/skills/hetu-setup/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
+
+### 固定助手与会话
+
+| 功能／CLI 动作 | MCP 入口 | Skill | 范围／决定 | 状态 |
+| --- | --- | --- | --- | --- |
+| 管理固定Bot配置与独立会话<br>`hetu.bots.request` | `hetu_bots` (stable) | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
+
+### 本机电脑操作
+
+| 功能／CLI 动作 | MCP 入口 | Skill | 范围／决定 | 状态 |
+| --- | --- | --- | --- | --- |
+| 观察本机电脑并执行固定目标动作<br>`hetu.computer.request` | `hetu_computer` (stable) | [hetu-manage](../tools/hetu-skills/base/skills/hetu-manage/SKILL.md) | 按任务或读取范围执行 | 源码已连线；安装待核对 |
 
 ## 插件发现入口
 

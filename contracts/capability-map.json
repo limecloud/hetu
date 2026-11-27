@@ -3,8 +3,8 @@
   "generated_by": "tools/sync-capability-map.py",
   "meaning": "source_wired仅表示源码合同和入口已连线；不证明安装、运行、跨平台或端到端通过。执行时先inspect实际能力。",
   "sources": {
-    "contracts/actions.json": "3a8dfc3050f9ce3ee6bac068e2ad3ece94cabd8f9a049af68a352915b0321537",
-    "contracts/tools/catalog.json": "b27cddc5c0f2434015d5e93b94a7751a26b0d3b2c0b15ffae27e610deeb742a7",
+    "contracts/actions.json": "0323b1fbd5a10baf72bdb839c5f0d3d57ecdd687ffb3851ed555b33544209de9",
+    "contracts/tools/catalog.json": "a1100dc64123b433d7dd69019d245264abab3027be25db639ef5cbaf90066dd6",
     "core/src/application/agent_operations.rs": "21cceeca50ce1e332223649a66fcbe971b3ad2a5ea7d27051655b723978ba247",
     "core/src/application/creative_tasks.rs": "101bbc0730f7947b04b9d923e8763e3d7d265fa4603140f31a90cc5c7af9970e",
     "core/src/application/mod.rs": "6a8bde3196c0231089bbbcb2fd5f8a6087739e4f8b9787c188f91fb4cf61ba57",
@@ -20,11 +20,11 @@
     "tools/hetu-skills/base/skills/hetu-draft/SKILL.md": "5512787ab6d8c5adcf3198ab9b86ac62dfa87f8493d975125040bc8743366bc6",
     "tools/hetu-skills/base/skills/hetu-drama/SKILL.md": "4b6e9e54da4ad340135ed13be517592cff32e2618d6d4f2665f60761bf7d1227",
     "tools/hetu-skills/base/skills/hetu-import/SKILL.md": "06b645d541d52c16ae0bbb3a3ba8e3502e54d015d0fdefb964ce777e7bd60cfd",
-    "tools/hetu-skills/base/skills/hetu-manage/SKILL.md": "aeac59b920835feef7561486e5083a7f7b69716f5f8f70ddd676c8e7e789b6e2",
+    "tools/hetu-skills/base/skills/hetu-manage/SKILL.md": "af6e744e67beab53dade14e9b7b6eb4fde66e0674c3717960dbe5f4ac9dd0a17",
     "tools/hetu-skills/base/skills/hetu-outline/SKILL.md": "bcbc5c66aee7ec6db81e99fb1c71ff3aeb3e63783ba326238666b2744fd05ecc",
     "tools/hetu-skills/base/skills/hetu-resources/SKILL.md": "fe17742a95a99b45874f510609d41fdf83689070473e63489aba26447d1e2fde",
     "tools/hetu-skills/base/skills/hetu-revise/SKILL.md": "8ff54e108036c68d84eed37c342268810828d2091ec1f46ebd1522738fa9a5e1",
-    "tools/hetu-skills/base/skills/hetu-setup/SKILL.md": "379cb048919507e41b976a98ef4a849fdd184e6ecb2db0cc7eea952a6e0b7824",
+    "tools/hetu-skills/base/skills/hetu-setup/SKILL.md": "b5675e022657086c1db256004f5e21abc872cc3d7cb2bc469ed07d03db6cf0fe",
     "tools/hetu-skills/base/skills/hetu-video/SKILL.md": "ef85e1d8e4531325e2a32f639d53f0954c452770971cadb460d821fa05128717"
   },
   "verification_evidence": "docs/research/evidence/2026-11-16-agent-capabilities.json",
@@ -87,7 +87,8 @@
         "hetu.execution.prepare",
         "hetu.execution.record_confirmation",
         "hetu.execution.execute",
-        "hetu.execution.get_plan"
+        "hetu.execution.get_plan",
+        "hetu.sessions.request"
       ]
     },
     {
@@ -247,7 +248,7 @@
     },
     {
       "name": "hetu-manage",
-      "description": "作者需要在河图洛书整理作品资料、卷章大纲、设定、短剧场次、资料关联、导入交付、版本或本机设置时使用。按共享auto或confirm模式执行；正文创作和改稿使用对应写作 Skill。",
+      "description": "作者需要在河图洛书整理作品资料、卷章大纲、设定、短剧场次、资料关联、导入交付、版本、本机设置或固定助手时使用。按共享auto或confirm模式执行；正文创作和改稿使用对应写作 Skill。",
       "source": "tools/hetu-skills/base/skills/hetu-manage/SKILL.md",
       "actions": [
         "hetu.documents.create",
@@ -330,7 +331,9 @@
         "hetu.plugin_results.list",
         "hetu.plugin_results.get",
         "hetu.plugins.capabilities",
-        "hetu.plugins.invoke"
+        "hetu.plugins.invoke",
+        "hetu.bots.request",
+        "hetu.computer.request"
       ]
     },
     {
@@ -13129,6 +13132,102 @@
         "required": [
           "plan_ref"
         ]
+      },
+      "decision": "按任务或读取范围执行",
+      "recover": "hetu.operations.get",
+      "equivalent_machine_actions": [],
+      "host_boundary": null,
+      "installed_evidence": false,
+      "verification": [],
+      "status": "source_wired"
+    },
+    {
+      "action": "hetu.sessions.request",
+      "purpose": "管理固定外部会话与原生PTY",
+      "group": "外部会话与PTY",
+      "effect": "write",
+      "routes": [
+        "client_local"
+      ],
+      "cli": "hetu --client <client> call hetu.sessions.request --input -",
+      "proposal_target": null,
+      "mcp": [
+        {
+          "name": "hetu_sessions",
+          "profiles": [
+            "stable"
+          ]
+        }
+      ],
+      "mcp_via_proposal": false,
+      "skill": "hetu-setup",
+      "skill_source": "tools/hetu-skills/base/skills/hetu-setup/SKILL.md",
+      "input_schema": {
+        "$ref": "schemas/external-execution.schema.json#/$defs/sessions"
+      },
+      "decision": "按任务或读取范围执行",
+      "recover": "hetu.operations.get",
+      "equivalent_machine_actions": [],
+      "host_boundary": null,
+      "installed_evidence": false,
+      "verification": [],
+      "status": "source_wired"
+    },
+    {
+      "action": "hetu.bots.request",
+      "purpose": "管理固定Bot配置与独立会话",
+      "group": "固定助手与会话",
+      "effect": "write",
+      "routes": [
+        "client_local"
+      ],
+      "cli": "hetu --client <client> call hetu.bots.request --input -",
+      "proposal_target": null,
+      "mcp": [
+        {
+          "name": "hetu_bots",
+          "profiles": [
+            "stable"
+          ]
+        }
+      ],
+      "mcp_via_proposal": false,
+      "skill": "hetu-manage",
+      "skill_source": "tools/hetu-skills/base/skills/hetu-manage/SKILL.md",
+      "input_schema": {
+        "$ref": "schemas/external-execution.schema.json#/$defs/bots"
+      },
+      "decision": "按任务或读取范围执行",
+      "recover": "hetu.operations.get",
+      "equivalent_machine_actions": [],
+      "host_boundary": null,
+      "installed_evidence": false,
+      "verification": [],
+      "status": "source_wired"
+    },
+    {
+      "action": "hetu.computer.request",
+      "purpose": "观察本机电脑并执行固定目标动作",
+      "group": "本机电脑操作",
+      "effect": "write",
+      "routes": [
+        "client_local"
+      ],
+      "cli": "hetu --client <client> call hetu.computer.request --input -",
+      "proposal_target": null,
+      "mcp": [
+        {
+          "name": "hetu_computer",
+          "profiles": [
+            "stable"
+          ]
+        }
+      ],
+      "mcp_via_proposal": false,
+      "skill": "hetu-manage",
+      "skill_source": "tools/hetu-skills/base/skills/hetu-manage/SKILL.md",
+      "input_schema": {
+        "$ref": "schemas/external-execution.schema.json#/$defs/computer"
       },
       "decision": "按任务或读取范围执行",
       "recover": "hetu.operations.get",

@@ -3,7 +3,7 @@ import {mkdir,mkdtemp,readFile,writeFile,rename,access} from "node:fs/promises";
 import {spawnSync} from "node:child_process";
 import {createHash} from "node:crypto";
 import path from "node:path";
-import {navigate,closeApplication} from "./navigation.ts";
+import {navigate,closeApplication, workspaceAction} from "./navigation.ts";
 import {liveAgentRound} from "./fixtures/live-agent-round.ts";
 
 const root=path.resolve(import.meta.dirname,"../../.."),output=path.join(root,"output/gui-creation-20261126");
@@ -41,7 +41,7 @@ test("真实GUI从空创作库讨论、创建作品、原任务返工、确切QA
   const result=await page.evaluate(({task,submission_id})=>window.hetuDesktop.tasks("call",task,{name:"hetu_open_task_view",arguments:{task_ref:task,...submission_id?{submission_id}:{}}}),{task,submission_id});expect(result.structuredContent.status,JSON.stringify(result)).toBe("succeeded");return result.structuredContent.data;
  };
  async function openLibraryChat(){
-  if(await page.getByRole("button",{name:"关闭终端面板",exact:true}).isVisible())await page.getByRole("button",{name:"关闭终端面板",exact:true}).click();
+  if(await page.getByLabel("工作区布局",{exact:true}).isVisible())await workspaceAction(page,"关闭终端面板");
   const projectLayer=page.getByRole("button",{name:"显示项目导航",exact:true});if(await projectLayer.isVisible())await projectLayer.click();
   const back=page.getByRole("button",{name:"返回创作库",exact:true}).first();if(await back.isVisible())await back.click();
   await expect(page.getByRole("button",{name:"刷新创作库",exact:true})).toBeEnabled();
@@ -53,7 +53,7 @@ test("真实GUI从空创作库讨论、创建作品、原任务返工、确切QA
   if(state.thread_id){expect(snapshot.thread_id).toBe(state.thread_id);expect(snapshot.session_id).toBe(state.session_id);}else{state.thread_id=snapshot.thread_id;state.session_id=snapshot.session_id;await save();}
  }
  async function openWork(){
-  if(await page.getByRole("button",{name:"关闭终端面板",exact:true}).isVisible())await page.getByRole("button",{name:"关闭终端面板",exact:true}).click();
+  if(await page.getByLabel("工作区布局",{exact:true}).isVisible())await workspaceAction(page,"关闭终端面板");
   await page.getByRole("button",{name:"刷新创作库",exact:true}).click();
   await page.getByRole("button",{name:"打开作品 "+title,exact:true}).click();await expect.poll(()=>page.evaluate(async()=>(await window.hetuDesktop.state()).work)).toEqual(state.work);
   await navigate(page,"作品资料");

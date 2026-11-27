@@ -34,6 +34,11 @@ pub(super) fn descriptor(name: &str) -> Option<&'static Value> {
         let mut catalog = json!({"actions":[action]});
         for action in catalog["actions"].as_array_mut().unwrap() {
             if let Some(reference) = action["input_schema_ref"].as_str() {
+                if let Some(definition) = reference.strip_prefix("schemas/external-execution.schema.json#/$defs/") {
+                    action["input_schema"] = crate::external_execution::definition(definition);
+                    action.as_object_mut().unwrap().remove("input_schema_ref");
+                    continue;
+                }
                 if let Some(definition) = reference.strip_prefix("schemas/video-review.schema.json#/$defs/") {
                     action["input_schema"] = video_review::definition(definition);
                     action.as_object_mut().unwrap().remove("input_schema_ref");

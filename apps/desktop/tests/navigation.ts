@@ -10,6 +10,25 @@ export async function switchAgentSurface(page:Page,surface:"gui"|"tui"){
   await page.getByRole("button",{name:surface==="gui"?"切换到聊天":"切换到终端",exact:true}).click();
   if(await menu.evaluate(element=>(element.closest("details") as HTMLDetailsElement).open))await menu.click();
 }
+export async function workspaceAction(page:Page,name:string) {
+  const menu=page.getByLabel("工作区布局",{exact:true});
+  if(!await menu.evaluate(element=>(element.closest("details") as HTMLDetailsElement).open))await menu.click();
+  await page.getByRole("button",{name,exact:true}).click();
+}
+
+/** 按实际可见的页头、状态、查找和诊断行核验终端占满剩余主区。 */
+export async function terminalHeightUsage(page:Page) {
+  const value=await page.locator(".codex-session-main:visible .codex-terminal:visible").evaluate(element=>{
+    const main=element.closest(".codex-session-main")!,bounds=main.getBoundingClientRect(),terminal=element.getBoundingClientRect();
+    const rows=[...main.querySelectorAll<HTMLElement>(".codex-session-header,.agent-session-location,.notice,.agent-draft-bar,.codex-session-inline,.codex-terminal-toolbar,.codex-terminal-search,.codex-terminal-rendering,.codex-terminal-offline")].filter(row=>row.checkVisibility({visibilityProperty:true})).map(row=>{
+      const style=getComputedStyle(row);return {class:row.className,height:row.getBoundingClientRect().height+parseFloat(style.marginTop)+parseFloat(style.marginBottom)};
+    });
+    const remaining=bounds.height-rows.reduce((height,row)=>height+row.height,0);
+    return {main_height:bounds.height,terminal_height:terminal.height,remaining_height:remaining,height_difference:Math.abs(remaining-terminal.height),viewport_share:terminal.height/innerHeight,rows};
+  });
+  expect(value.terminal_height).toBeGreaterThan(300);expect(value.height_difference,JSON.stringify(value)).toBeLessThanOrEqual(1);
+  return value;
+}
 
 /** 资料专项只检查真实固定请求；引擎与导航由会话E2E及真实TUI专项验证。 */
 export async function captureAgentDraft(application: ElectronApplication, page: Page) {

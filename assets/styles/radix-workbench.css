@@ -106,3 +106,20 @@
 
 a { color: var(--jade); }
 ::selection { background: var(--jade-4); color: var(--ink); }
+
+/* 会话工作面采用Orca的中性表面；来源与实机版本见研究14的执行界面证据。 */
+:root {
+  --agent-workbench-background: light-dark(#fff, #0a0a0a);
+  --agent-workbench-foreground: light-dark(#0a0a0a, #f0f0f0);
+  --agent-workbench-popover: light-dark(#fff, #171717);
+  --agent-workbench-primary: light-dark(#171717, #e5e5e5);
+  --agent-workbench-primary-foreground: light-dark(#fff, #171717);
+  --agent-workbench-muted: light-dark(#f5f5f5, #262626);
+  --agent-workbench-muted-foreground: light-dark(#737373, #a3a3a3);
+  --agent-workbench-border: light-dark(#e5e5e5, rgb(255 255 255 / 0.07));
+  --agent-workbench-sidebar: light-dark(#f4f4f4, #171717);
+  --agent-workbench-focus: light-dark(#a1a1a1, #737373);
+  --agent-workbench-avatar: #b3dbf4;
+  --agent-workbench-avatar-foreground: #171717;
+  --agent-workbench-avatar-band: light-dark(color-mix(in srgb, var(--agent-workbench-avatar) 46%, transparent), color-mix(in srgb, var(--agent-workbench-avatar) 26%, transparent));
+}

@@ -16,7 +16,7 @@
     "licenses/webnovel-MIT.txt": "52c71355258924a967927780245f70677b38ff7d073c03f9096df33888f34653",
     "licenses/webnovel-master-MIT.txt": "6ad9f25b48146e8c2ed94807eea0c410d5f27f7b6ce280de1093e46dcd73b7ab",
     "plugin.json": "705a81fb19b402f8e026124e4653fe891d55dd9e2568da1508fe2d0549b93b70",
-    "references/capability-map.json": "879b0e81028a24942837ca6b601454cc7908fab2afb06c3163f45c6bf5af273b",
+    "references/capability-map.json": "05d7fb64053ceab05c2e0910c55afb4b111003b1cfcfcf342d467e6f623e9045",
     "references/execution-modes.md": "a813591a63d6e874b463cae3170c92e9cdedfa9f15868e81669b5691a560ecc4",
     "references/formats/fountain.md": "1c40a4922ca2675f2360ecabb94f2ee4ce7d5067a8ebe4b206c65546f49111a1",
     "references/genre.md": "133020233b4111a3465e46d3496ca369543543fea4d11a61c0e812c62bbb520d",
@@ -39,7 +39,7 @@
     "references/workflows/outline.md": "0de9ebff649bad2fddd8ea8ea436ff194098098898dbf1885a5a850e6256c547",
     "references/workflows/profile.md": "e8313c1ef1cc5545863e6ba928a18913ab4921c58941fab10e48533be4952dd3",
     "references/workflows/revision.md": "03ca45e45d56a5a61799013fe72680f5535370e87a2f80a6b80b6c05464a63c2",
-    "references/workflows/video-operations.md": "5c8418c0a0dd1eeb9087812394687c23e29308db4bf508ed70c6b373644791d1",
+    "references/workflows/video-operations.md": "81d31fc591e2acf1ac3acbe80be3a6f330c98e18b60c470532608318d19fd3bb",
     "references/workflows/video-planning.md": "cabb7bc3aa5e54eb7a75c3fca7186bc3f87a31c16f7c7750f60f35fefa0bac6d",
     "references/workflows/video.md": "aa9f7fdc717baaff0d0ae7d17d0b186c72e1f7b8e3fc342fc19d52ac911d2b33",
     "references/writing-methods.md": "80118fd8ca5212e94ddb60de6f8471dfdba29b509866cef08f2024575f1098dd",
@@ -53,11 +53,11 @@
     "skills/hetu-drama/scripts/verify_delivery.py": "69ff631f451edb9c2f5a3e68dda9119a2e6612cb4f505c1c1d3e948e0cbda79e",
     "skills/hetu-import/SKILL.md": "b963cad162da972a05dc9d235c118be3888b7e43b8afd9b81b3b79c61310da3d",
     "skills/hetu-import/scripts/import_novel.py": "ce8634fec35e4c3ec6b8b3fa68046a98b5b2c98ad5e50ece7287d41bc92ad29e",
-    "skills/hetu-manage/SKILL.md": "dbd43d3329572c5272678ebfdcf93691ffff70ae212e0afce7deb6f0552f8169",
+    "skills/hetu-manage/SKILL.md": "f40e90b9c597f755d2f1539ad5a0cc3a14ca2776fb0a08e1b975a161309592da",
     "skills/hetu-outline/SKILL.md": "2b85c751563ecef16f7259f35ca54b1dd65e4768fd7913ca1a582af8495406ca",
     "skills/hetu-resources/SKILL.md": "78d3accdfe5202a4213471e9accea40a1037a0ad7abea7a113df060e233f79a4",
     "skills/hetu-revise/SKILL.md": "942b354cf56abfbf3e89a7ba49b12d72140986317d58c3b8b353922ed05e3e86",
-    "skills/hetu-setup/SKILL.md": "19e784d8c47c467b58d0df7e41543dce25e77668a3f994daf16d3acf98cacfe4",
+    "skills/hetu-setup/SKILL.md": "369ea9d617364b613e2fbb46b99f7a8390fb45136766745f11e9cde55ab7e32c",
     "skills/hetu-video/SKILL.md": "d209bc6e5dab164db4d8bb7fcdfbc2cc01c35fdc14725c25c757594f378e062a"
   }
 }

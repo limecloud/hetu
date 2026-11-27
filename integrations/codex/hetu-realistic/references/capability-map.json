@@ -229,7 +229,8 @@
         "hetu.execution.prepare",
         "hetu.execution.record_confirmation",
         "hetu.execution.execute",
-        "hetu.execution.get_plan"
+        "hetu.execution.get_plan",
+        "hetu.sessions.request"
       ],
       "entry": "../skills/hetu-setup/SKILL.md"
     },
@@ -390,7 +391,7 @@
     },
     {
       "name": "hetu-manage",
-      "description": "作者需要在河图洛书整理作品资料、卷章大纲、设定、短剧场次、资料关联、导入交付、版本或本机设置时使用。按共享auto或confirm模式执行；正文创作和改稿使用对应写作 Skill。",
+      "description": "作者需要在河图洛书整理作品资料、卷章大纲、设定、短剧场次、资料关联、导入交付、版本、本机设置或固定助手时使用。按共享auto或confirm模式执行；正文创作和改稿使用对应写作 Skill。",
       "actions": [
         "hetu.documents.create",
         "hetu.documents.list",
@@ -472,7 +473,9 @@
         "hetu.plugin_results.list",
         "hetu.plugin_results.get",
         "hetu.plugins.capabilities",
-        "hetu.plugins.invoke"
+        "hetu.plugins.invoke",
+        "hetu.bots.request",
+        "hetu.computer.request"
       ],
       "entry": "../skills/hetu-manage/SKILL.md"
     },

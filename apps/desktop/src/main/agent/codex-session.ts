@@ -16,6 +16,7 @@ import { atomicJson, defaultSessionId, loadRecord, recordPath, validateContextRe
 import { SessionLease } from "./session-lease.ts";
 import {toolOutput as limited} from "./tool-output.ts";
 import {isDeepStrictEqual} from "node:util";
+import {botContextInstructions} from "./bot-context.ts";
 import {CodexIdentityError,verifyCodexIdentity,type CodexIdentityBinding} from "./codex-identity.ts";
 
 export type CodexSessionOptions = {
@@ -65,7 +66,7 @@ export class CodexSession implements AgentSessionAdapter {
     const id = options.id ?? defaultSessionId(options.work);
     this.#record = recordPath(options.profile, options.work, id);
     this.#lease = new SessionLease(options.profile, this.#record);
-    this.#snapshot = { session_id: id, client: "codex", work_ref: options.work && structuredClone(options.work), title: options.launch?.title??"新对话", model:options.launch?.model,reasoning_effort:options.launch?.reasoning_effort,state: "idle", surface: options.defaultSurface ?? "gui", messages: [], tools: [], requests: [], updated_at: now(), draft: "", context_refs: [], capabilities: { terminal: options.transport !== "stdio", steer: false, models: true,chat:true } };
+    this.#snapshot = { session_id: id, client: "codex", work_ref: options.work && structuredClone(options.work), title: options.launch?.title??"新对话", model:options.launch?.model,bot_context:options.launch?.bot_context,reasoning_effort:options.launch?.reasoning_effort,state: "idle", surface: options.defaultSurface ?? "gui", messages: [], tools: [], requests: [], updated_at: now(), draft: "", context_refs: [], capabilities: { terminal: options.transport !== "stdio", steer: false, models: true,chat:true } };
   }
   get #terminalConnected() { return this.#terminal.connected && !!this.#rpc?.connected&&this.#snapshot.authentication?.state==="ready"; }
   snapshot(includeReplay=true): SessionSnapshot { return { ...structuredClone(this.#snapshot),state:this.#transition&&this.#snapshot.state==="ready"?"switching":this.#snapshot.state, terminal_connected: this.#terminalConnected,terminal_sequence:this.#terminal.sequence,...(includeReplay?{terminal_replay:this.#terminal.replay}:{}),generation: this.#ownerGeneration }; }
@@ -149,7 +150,7 @@ export class CodexSession implements AgentSessionAdapter {
         approvalPolicy: "on-request", sandbox: "workspace-write",
         ...(this.#snapshot.model?{model:this.#snapshot.model}:{}),
         ...(this.#snapshot.reasoning_effort?{config:{model_reasoning_effort:this.#snapshot.reasoning_effort}}:{}),
-        developerInstructions: "你正在河图洛书工作台中协助作者。"+creativeParticipation+"需要作品能力时，通过已连接的hetu MCP和已安装Skills发现并操作；读取固定来源，保存后回读真实成果，不直接读写作品私有文件。当前公开范围：" + JSON.stringify(this.#options.work ?? { scope: "creation_preparation" }) + "。默认按Core的auto/confirm策略执行，采纳、定稿及费用决定保持独立。",
+        developerInstructions: "你正在河图洛书工作台中协助作者。"+creativeParticipation+"需要作品能力时，通过已连接的hetu MCP和已安装Skills发现并操作；读取固定来源，保存后回读真实成果，不直接读写作品私有文件。当前公开范围：" + JSON.stringify(this.#options.work ?? { scope: "creation_preparation" }) + "。默认按Core的auto/confirm策略执行，采纳、定稿及费用决定保持独立。"+botContextInstructions(this.#snapshot.bot_context),
       });
       const thread = result?.thread;
       const id = thread?.id ?? result?.threadId;
@@ -433,6 +434,14 @@ export class CodexSession implements AgentSessionAdapter {
   }
   async rename(title: string) { if (typeof title !== "string" || !title.trim() || title.length > 100) throw new Error("会话名称需为1～100字。"); this.#snapshot.title = title.trim(); await this.#save(); this.#emit(); return this.snapshot(); }
   async models() { await this.start(); return this.#rpc!.request("model/list", { includeHidden: false }); }
+  async selectModel(model:string,effort?:string){
+    await this.start();const generation=this.#ownerGeneration;
+    if(this.#snapshot.surface!=="gui"||this.#snapshot.state!=="ready"||this.#transition)throw Error("请在空闲聊天会话中选择模型。");
+    const listing=await this.models();const choice=(listing.data??[]).find((item:any)=>item.model===model);
+    if(!choice||effort&&!choice.supportedReasoningEfforts?.some((item:any)=>item.reasoningEffort===effort))throw Error("模型或推理选项已不可用。");
+    if(generation!==this.#ownerGeneration||this.#snapshot.state!=="ready")throw Error("会话已变化，未修改原配置。");
+    this.#snapshot.model=model;this.#snapshot.reasoning_effort=effort;await this.#save();this.#emit();return this.snapshot();
+  }
   async stop() {
     if (this.#starting) await this.#starting.catch(() => undefined);
     if(this.#transition)await this.#transition.catch(()=>undefined);

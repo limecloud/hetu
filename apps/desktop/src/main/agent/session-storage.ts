@@ -2,10 +2,13 @@ import { mkdir, readFile, rename, writeFile, unlink, readdir } from "node:fs/pro
 import { randomUUID, createHash } from "node:crypto";
 import path from "node:path";
 import type { WorkRef } from "@hetu/plugin-sdk";
+import {externalProviders} from "../../shared/external-ai.ts";
 import type { SessionSnapshot } from "../../agent-session-contract.ts";
 import { agentSessionPersistPath } from "./context.ts";
 import {validateContextRefs} from "../../agent-context.ts";
 import {validIdentityBinding,type CodexIdentityBinding} from "./codex-identity.ts";
+import {validExternalStorageBinding} from "../../shared/external-storage-binding.ts";
+import {validBotContext} from "./bot-context.ts";
 export {validateContextRefs} from "../../agent-context.ts";
 
 export type ThreadProjection = Pick<SessionSnapshot, "title" | "messages" | "tools" | "draft" | "gui_draft" | "tui_draft" | "context_refs" | "model" | "reasoning_effort">;
@@ -29,10 +32,12 @@ export async function loadRecord(file: string, work: WorkRef | undefined, cwd: s
   try { value = JSON.parse(await readFile(file, "utf8")); }
   catch (error) { if ((error as NodeJS.ErrnoException).code === "ENOENT") return; throw new Error("本机会话记录无法读取，已保留原文件，请检查后恢复。"); }
   if (value.cwd !== cwd || !sameWork(value.work_ref, work) || !Array.isArray(value.messages)
-    || value.client!==undefined&&!["codex","shell","claude-code","gemini","opencode"].includes(value.client)
+    || value.client!==undefined&&value.client!=="shell"&&!externalProviders.some(provider=>provider.id===value.client)
     || value.draft_version!==undefined&&(!Number.isSafeInteger(value.draft_version)||value.draft_version<0)
     || ["input_generation","request_generation"].some(key=>value[key]!==undefined&&(!Number.isSafeInteger(value[key])||value[key]<0))
     || value.engine_identity!==undefined&&!validIdentityBinding(value.engine_identity)
+    || value.storage_binding!==undefined&&!validExternalStorageBinding(value.storage_binding,value.client)
+    || value.bot_context!==undefined&&!validBotContext(value.bot_context)
     || (value.surface!==undefined && !["gui","tui"].includes(value.surface))
     || ["draft","gui_draft","tui_draft"].some(key=>value[key]!==undefined && (typeof value[key]!=="string" || value[key].length>512_000))
     || value.messages.some((message: any) => !message || !["user", "assistant", "system"].includes(message.role) || typeof message.text !== "string")

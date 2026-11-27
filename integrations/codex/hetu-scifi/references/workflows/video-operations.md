@@ -27,7 +27,7 @@
 | 查询成果与前版 | `hetu.video.media.list`、`hetu.video.media.get` | 返回固定media_ref；分页沿原游标，目录变化重新读取；不能以文件名或最新顺序猜前版 |
 | 保存公开意见 | `hetu.video.feedback.save` | 固定media_ref和原话；局部范围按同一流时基传start_tick/end_tick半开区间，整版意见无需区间。作者确切意见经固定方案执行 |
 | 继续返工 | `hetu.video.feedback.list` | 回读固定旧成果及意见，修改后登记新成果和前版；不把旧意见坐标套到新版 |
-| 认可、选用或确认成片 | `hetu.video.decisions.get`、`hetu.video.decisions.preview`、`hetu.video.decisions.save` | 先读取本集用途当前决定，按作者确切原话固定media_ref、purpose、confirmed／withdrawn及expected_decision_ref；预览后保存同一版本，unknown查原键，不因auto或生成成功自作认可 |
+| 认可、选用或确认成片 | `hetu.video.decisions.get`、`hetu.video.decisions.preview`、`hetu.video.decisions.save` | 先读取本集用途当前决定，按作者确切原话固定media_ref、purpose、confirmed／withdrawn及expected_decision_ref；预览后通过固定方案保存同一版本，unknown查原键，不因auto或生成成功自作认可 |
 | 查看认可历史 | `hetu.video.decisions.history` | 固定作品、分集、用途，按原游标读取；旧媒体认可与被替换决定保留，不能撤回另一当前媒体 |
 | 基础文件交付 | `hetu.video.delivery.preview` | 明确选择media_refs，核对清单及当前权利；`hetu.assets.read_blob`按固定asset_ref连续读取，重组后核对完整blob_sha256 |
 

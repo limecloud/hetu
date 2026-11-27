@@ -1,10 +1,13 @@
 import type { WorkRef } from "@hetu/plugin-sdk";
+import type {ExternalConversationSnapshot,ExternalSessionState} from "./shared/external-session.ts";
+import type {ExternalStorageBinding} from "./shared/external-storage-binding.ts";
 
 export type AgentSurface = "gui" | "tui";
-export type AgentEngineId = "shell" | "codex" | "claude-code" | "gemini" | "opencode";
-export type SessionLaunch = { client: AgentEngineId; surface: AgentSurface; title?: string; model?: string; reasoning_effort?: string };
+export type AgentEngineId = string;
+export type AgentBotContext={bot_ref:Record<string,unknown>;name:string;purpose:string};
+export type SessionLaunch = { client: AgentEngineId; surface: AgentSurface; title?: string; model?: string; reasoning_effort?: string;bot_context?:AgentBotContext };
 export type AgentModel = { id: string; name: string; efforts: string[]; default_effort?: string };
-export type AgentEngine = { id: AgentEngineId; name: string; available: boolean; chat: boolean; models: boolean };
+export type AgentEngine = { id: AgentEngineId; name: string; available: boolean; chat: boolean; models: boolean; protocol?:string; minimum_versions?:string[] };
 export type SessionState = "idle" | "starting" | "ready" | "running" | "stopping" | "switching" | "uncertain" | "disconnected" | "stopped" | "failed";
 export type DeliveryState = "prepared" | "written" | "accepted" | "rejected" | "unknown";
 export type CodexAuthentication={state:"ready"|"required"|"changed"|"unavailable"|"signing_in";mode?:string};
@@ -33,6 +36,10 @@ export type SessionSnapshot = {
   terminal_replay?: string; terminal_sequence?: number; model?: string; reasoning_effort?: string;
   capabilities?: { terminal: boolean; steer: boolean; models: boolean; chat?: boolean };
   authentication?:CodexAuthentication;
+  external?:ExternalConversationSnapshot;
+  external_state?:ExternalSessionState;
+  storage_binding?:ExternalStorageBinding;
+  bot_context?:AgentBotContext;
 };
 export type AgentSessionEvent =
   | { type: "snapshot"; snapshot: SessionSnapshot }

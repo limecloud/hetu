@@ -123,6 +123,9 @@ impl ServerHandler for StableServer {
                                     | "hetu_save_task_checkpoint"
                                     | "hetu_inspect_runtime"
                                     | "hetu_call_action"
+                                    | "hetu_sessions"
+                                    | "hetu_bots"
+                                    | "hetu_computer"
                                     | "hetu_open_task_view"
                                     | "hetu_save_task_selection"
                                     | "hetu_request_model_confirmation"
@@ -283,6 +286,11 @@ impl ServerHandler for StableServer {
         } else {
             result
         };
+        let mut result = result;
+        let screenshot = if actual == "hetu.computer.request" { result["data"]["screenshot"].clone() } else { Value::Null };
+        if actual == "hetu.computer.request" && let Some(pixels) = result.get_mut("data").and_then(|data|data.get_mut("screenshot")).and_then(Value::as_object_mut) {
+            pixels.remove("data");pixels.insert("delivered_as".into(),json!("mcp_image"));
+        }
         let mut result = response::bounded(result, action, &recovery_input, MAX_RESULT_BYTES);
         if let Some(work) = &self.current_work {
             if remove_private_management_refs(&mut result) && result["data"].is_object() {
@@ -295,7 +303,9 @@ impl ServerHandler for StableServer {
                 None,
             ));
         }
-        Ok(response::tool_result(result).into())
+        let mut response=response::tool_result(result);
+        if let Some(bytes)=screenshot["data"].as_str(){response.content.push(rmcp::model::ContentBlock::image(bytes,if screenshot["format"]=="jpeg"{"image/jpeg"}else{"image/png"}));}
+        Ok(response.into())
     }
 
     async fn list_resources(
@@ -383,7 +393,7 @@ fn compact_tool(name: &str) -> bool {
     matches!(name, "hetu_inspect_collaboration" | "hetu_get_capability_map" | "hetu_begin_creation"
         | "hetu_open_collaboration_task" | "hetu_read_creative_task" | "hetu_read_task_operation"
         | "hetu_get_task_checkpoint" | "hetu_save_task_checkpoint" | "hetu_inspect_runtime"
-        | "hetu_call_action" | "hetu_open_task_view" | "hetu_save_task_selection" | "hetu_request_model_confirmation")
+        | "hetu_call_action" | "hetu_sessions" | "hetu_bots" | "hetu_computer" | "hetu_open_task_view" | "hetu_save_task_selection" | "hetu_request_model_confirmation")
 }
 
 /// 受管连接已持有私有范围；模型只需要公开WorkRef，后续请求仍由同一连接解析。

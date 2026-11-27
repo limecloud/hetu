@@ -2,7 +2,7 @@ import {test,expect,_electron as electron} from "@playwright/test";
 import {mkdtemp,writeFile} from "node:fs/promises";
 import path from "node:path";
 import os from "node:os";
-import {closeApplication} from "./navigation.ts";
+import {closeApplication, workspaceAction} from "./navigation.ts";
 
 const root=path.resolve(import.meta.dirname,"../../..");
 test("多引擎创建直接进入PTY，模型发现、会话切换及重开保持原记录",async({},testInfo)=>{
@@ -21,7 +21,7 @@ test("多引擎创建直接进入PTY，模型发现、会话切换及重开保�
     await expect(dialog.getByRole("button",{name:"创建",exact:true})).toBeEnabled();
     await page.screenshot({path:testInfo.outputPath("create-session.png")});
     await dialog.getByRole("button",{name:/^引擎(?: |$)/}).click();
-    await expect(dialog.getByRole("tab",{name:"Codex",exact:true})).toBeEnabled();
+    await expect(dialog.getByRole("tab",{name:"Codex",exact:true})).toHaveAttribute("data-available","true");
     const models=await page.evaluate(()=>window.hetuDesktop.agentSession("model_options",{client:"codex"}));expect(models.length).toBeGreaterThan(0);
     const firstModel=dialog.getByRole("option",{name:models[0].name,exact:true});await expect(firstModel).toBeVisible({timeout:45000});const modelName=await firstModel.innerText();await firstModel.click();
     await expect(dialog.getByRole("group",{name:"推理强度",exact:true})).toBeVisible();
@@ -41,9 +41,9 @@ test("多引擎创建直接进入PTY，模型发现、会话切换及重开保�
     await dialog.getByRole("tab",{name:"Codex",exact:true}).click();await dialog.getByRole("option",{name:modelName,exact:true}).click();await dialog.getByRole("button",{name:"打开终端",exact:false}).click();await expect(dialog).toHaveCount(0,{timeout:45000});
     await expect.poll(async()=>{const value=await get();return value.client==="codex"&&value.terminal_connected&&value.terminal_replay?.includes("]7501;state=idle");},{timeout:45000}).toBe(true);
     const codex=await get();expect(codex.messages).toHaveLength(0);expect(codex.model).toBeTruthy();expect(codex.reasoning_effort).toBeTruthy();
-    await page.getByRole("button",{name:"关闭终端面板",exact:true}).click();await page.getByLabel("更多操作",{exact:true}).click();await page.getByRole("button",{name:"打开终端工作区",exact:true}).click();
+    await workspaceAction(page,"关闭终端面板");await page.getByLabel("更多操作",{exact:true}).click();await page.getByRole("button",{name:"打开终端工作区",exact:true}).click();
     await expect(page.getByRole("dialog",{name:"创建会话",exact:true})).toHaveCount(0);expect((await get()).thread_id).toBe(codex.thread_id);expect((await get()).generation).toBe(codex.generation);
-    await page.getByLabel("当前会话",{exact:true}).click();await page.getByRole("button",{name:"终端",exact:true}).click();
+    await page.getByRole("complementary",{name:"会话导航",exact:true}).getByRole("button",{name:"终端",exact:true}).click();
     await expect.poll(async()=>(await get()).session_id).toBe(shell.session_id);expect((await get()).generation).toBe(shell.generation);await expect(page.locator(".xterm-accessibility-tree")).toContainText("HETU-PTY-OK");
     await page.getByRole("button",{name:"新建会话",exact:true}).click();await dialog.getByRole("button",{name:/^引擎(?: |$)/}).click();
     await dialog.getByRole("tab",{name:"Claude Code",exact:true}).click();await dialog.getByRole("button",{name:"打开终端",exact:false}).click();await expect(dialog).toHaveCount(0,{timeout:45000});

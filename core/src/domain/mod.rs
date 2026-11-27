@@ -2,6 +2,7 @@ use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
 use std::fmt;
 pub mod blueprint;
+pub mod bots;
 pub mod delivery_formats;
 pub mod delivery_pdf;
 pub mod drama;

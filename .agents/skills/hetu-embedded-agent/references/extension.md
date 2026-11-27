@@ -13,7 +13,7 @@
 | GUI/TUI切换 | `CodexSession`、`codex-terminal-bridge.ts` | 需同一服务/线程的安全接管协议；无此能力时不能假装无缝切换 |
 | 作品业务 | `prepareBusinessContext`、既有CLI/MCP、Core成果回读 | 配置能加载不等于实际作品动作可执行，必须验证原Owner保存与回读 |
 
-当前`engines.ts`中Shell、Claude Code、Gemini CLI与OpenCode使用原生终端；Codex另有结构化GUI与模型目录适配。新增引擎按真实支持填写`chat/models`及会话`capabilities`，不要顺手给其他引擎开启相同标志。Shell不承接创作请求。
+引擎身份和启动参数由`contracts/external-ai/providers.json`唯一维护，`engines.ts`负责实际安装发现。Codex保留受管App Server；Claude流式、ACP和Pi RPC经已接通驱动提供GUI，其余CLI使用真实PTY。目录、安装和协议握手是三个证据层。Shell不承接创作请求。
 
 例如“新增一个只有CLI的引擎”只需接入探测、会话路由、真实PTY及所需业务配置；“为已有引擎增加GUI”才涉及结构化协议和消息投影；“让两个表面接续原线程”还需证明原生接管与唯一输入权。不要将三个目标捆成每次接入的前置。
 
@@ -34,9 +34,9 @@
 
 ## 新增原生TUI
 
-1. 在`agent-session-contract.ts`登记实际引擎身份；在`engines.ts`扩展展示、探测和真实能力。同时核对`session-storage.ts`的持久化引擎校验，以及`machineClient`到Core既有客户端身份的映射；只修改类型联合或菜单会导致会话能创建却无法重开。沿`command-resolution.ts`核对可执行文件、解释器及平台后缀；命令与参数分开传递，支持含空格路径。不通过启动登录Shell或修改全局PATH来探测安装。还须检查Rust的`local_settings/suites.rs`安装入口：桌面探测成功不代表该入口选中同一命令。PATH中的失效脚本可继续探测后续候选；作者显式指定的入口失效时明确报错，不静默改选。
+1. 在`contracts/external-ai/providers.json`登记实际引擎身份、命令、别名、原生参数和协议；复用`engines.ts`展示与探测，同时核对`session-storage.ts`的持久化校验，以及`machineClient`到Core既有客户端身份的映射。沿`command-resolution.ts`核对可执行文件、解释器及平台后缀；命令与参数分开传递，支持含空格路径。不通过启动登录Shell或修改全局PATH来探测安装。还须检查Rust的`local_settings/suites.rs`安装入口：桌面探测成功不代表该入口选中同一命令。PATH中的失效脚本可继续探测后续候选；作者显式指定的入口失效时明确报错，不静默改选。
 2. 复用`session-manager.ts`与`ProcessSession`创建、选择和关闭会话，按引擎需要添加确切argv。原生程序仍处理登录、首次信任及自己的交互，不从屏幕关键词推断已登录、已生成或已保存。
-3. 需要作品能力时，在`business-context.ts`适配该引擎正式支持的MCP配置入口和本地指令文件。只写会话沙箱，保留作者原账号及全局配置；MCP连接绑定真实客户端和当前`WorkRef`。普通CLI启动、目录可见、工具可调用及业务回读分别核对。
+3. 需要作品能力时，复用`external-ai-launch.ts`及`acp-launch-preparation.ts`适配该引擎正式支持的MCP配置入口和本地指令文件。只写会话沙箱，保留作者原账号及全局配置；MCP连接绑定实际客户端和当前`WorkRef`。普通CLI启动、目录可见、工具可调用及业务回读分别核对。
 4. 请求先保存在原会话草稿，终端就绪后才明确放入。复用`insertDraft/pasteDraft`的代次、草稿版本及字节/控制字符检查，bracketed paste不追加Enter。首次信任提示期间不自动粘贴。
 5. 保留现有终端布局、偏好及目录/预览配合。折叠、最大化和系统全屏只改变工作面；重新fit并传递真实行列，不新建会话。隐藏工作面不停止PTY，明确关闭才停止原执行端。
 
@@ -48,13 +48,23 @@
 
 适配器只负责协议和会话状态；共用`AgentSessionEvent`及现有GUI投影。原生item/turn ID保持稳定，输出增量不等于一个新消息。待答、失败、unknown可见，未完成工具不会因重连快照被标为成功。草稿及上下文附加沿既有版本机制保存，发送受理不清除期间新输入。
 
-当前`session-manager.ts`显式将Codex路由到受管适配器，其余路由到`ProcessSession`；创建校验和会话菜单也有对应能力分支。为新引擎提供GUI时一并接入实际适配器、创建校验和可用操作，不能只将`chat`设为true。已有会话ID及选择索引保持原义，不为统一命名重写作者历史。
+当前`session-manager.ts`将Codex路由到`CodexSession`，其他GUI路由到`ExternalAgentSession`和已接通协议，TUI路由到`ProcessSession`。为新引擎提供GUI时一并接入实际驱动、启动准备、版本门槛、创建校验和可用操作，不能只将`chat`设为true。已有会话ID及选择索引保持原义，不为统一命名重写作者历史。
 
 切换表面前核对轮次状态及唯一输入者；只有旧执行端释放后才接管。适配器若缺少线程恢复或安全接管能力，应保持实际支持的单表面，不以另起进程、回放屏幕或复制聊天冒充原线程。跨引擎可继续同一作品任务，但各自线程及认证保持独立。
 
 GUI的“作品成果”来自工具回执中的固定引用与Core核验，不能从助手结尾文本提取“已完成”就显示保存成功。多次修改同一对象保留原修订与历史，采纳和定稿仍由作品决定合同处理。
 
 接入外部GUI的MCP App时，共用作品应用用例并按宿主实际能力显示复制、草稿和明确发送；`messages`、`drafts`及`directSend`分别传递，不能因支持消息就显示直接发送。每个面板通过正式打开入口获得自己的App会话，作品事实可以互通，面板session token不能相互复用；关闭一个面板不应由测试夹具误关另一面板的执行会话。
+
+## 外部执行、Bots与电脑
+
+无窗口执行复用`AgentSessions`和同一会话类；稳定CLI/MCP经私密会话宿主发送，不能再实现一套推理循环或PTY。先发现 `hetu.sessions.request`、`hetu.bots.request`、`hetu.computer.request`的实际Schema，再核对原WorkRef、客户端、代次和操作键。正常作品业务继续用Core原动作，不以电脑点击弥补机器接口。
+
+Bot配置固定角色与执行选择；新会话保存完整配置和bot_ref，旧会话不随配置更新。新派发持有配置及执行策略锁，普通sessions写动作拒绝Bot会话。停止、中断及原operation在停用、配置变化或confirm时仍可用，未知输入不因停止变成未发送。
+
+电脑适配仅执行固定原生程序，不接受任意脚本。观察不弹权限；窗口和安全输入分别核验。快照不缓存像素，MCP真实image块与JSON元数据分开传输；动作前重新确认窗口/元素，送达后独立回读。接管、恢复及下一动作的观察资格分开检查；未知目标围栏不得清除。
+
+当前外部执行confirm写入没有可信决定交付通道，保持拒绝；不能把引擎工具批准当河图决定或自行切auto。新平台按实际helper和系统能力实现，不按macOS成功外推。
 
 ## 将问题定位到实际边界
 

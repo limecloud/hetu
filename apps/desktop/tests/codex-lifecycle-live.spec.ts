@@ -2,7 +2,7 @@ import {test,expect,_electron as electron} from "@playwright/test";
 import {readFile,writeFile,mkdir} from "node:fs/promises";
 import {createHash} from "node:crypto";
 import path from "node:path";
-import {navigate} from "./navigation.ts";
+import {navigate, workspaceAction} from "./navigation.ts";
 
 const root=path.resolve(import.meta.dirname,"../../.."),output=path.join(root,"output/codex-creation-validation");
 const receipts=(snapshot:any)=>snapshot.tools.flatMap((tool:any)=>{try{return [JSON.parse(tool.output).structuredContent].filter(Boolean);}catch{return [];}});
@@ -68,7 +68,7 @@ test("真实TUI接续原作品的反馈、返工、比较、确切采纳与固�
   for(const candidate of original.structuredContent.data.submission.candidates)expect(createHash("sha256").update(candidate.content).digest("hex")).toBe(candidate.sha256);
   expect((await read("hetu.documents.get",{document_id:documentId})).data.content).toBe(before.data.content);
   const panel=page.getByRole("region",{name:"独立 Agent 会话",exact:true});
-  if(await panel.isVisible())await page.getByRole("button",{name:"关闭终端面板",exact:true}).click();
+  if(await panel.isVisible())await workspaceAction(page,"关闭终端面板");
   await page.getByRole("button",{name:"刷新任务目录",exact:true}).click();
   await page.getByRole("combobox",{name:"当前审阅任务"}).selectOption(task.task_id);
   frame=page.frameLocator('iframe[title="任务候选审阅"]');

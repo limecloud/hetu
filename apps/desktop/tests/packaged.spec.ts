@@ -1,4 +1,4 @@
-import { navigate, openDirectory, openCreativePlugin, closeApplication } from "./navigation.ts";
+import {navigate, openDirectory, openCreativePlugin, closeApplication, workspaceAction} from "./navigation.ts";
 import {
   test,
   expect,
@@ -81,7 +81,7 @@ test("随包原生PTY执行命令、响应尺寸变化并在隐藏后保留同�
     const after = await runSize("HETU_PACKAGE_PTY_RESIZED");
     expect(after.cols).toBeLessThan(before.cols); expect(after.rows).toBeLessThan(before.rows);
     expect(after.shell_pid).toBe(before.shell_pid);
-    await page.getByRole("button", { name: "关闭终端面板", exact: true }).click();
+    await workspaceAction(page,"关闭终端面板");
     await open(); await expect(dialog).toHaveCount(0);
     expect(identity(await get())).toEqual(identity(original));
     await expect(page.locator(".xterm-accessibility-tree")).toContainText("HETU_PACKAGE_PTY_FIRST=");

@@ -10,16 +10,18 @@
 | --- | --- |
 | 引擎、模型与会话契约 | `apps/desktop/src/agent-session-contract.ts` |
 | 可执行文件探测、模型目录、创建参数 | `apps/desktop/src/main/agent/engines.ts` |
+| 提供方唯一目录与已接通协议 | `contracts/external-ai/providers.json`、`apps/desktop/src/main/agent/external-conversation-registry.ts` |
 | 安装目录与失效启动器探测 | `apps/desktop/src/main/agent/command-resolution.ts` |
 | 多会话管理与选择 | `apps/desktop/src/main/agent/session-manager.ts` |
 | 普通原生CLI及PTY | `apps/desktop/src/main/agent/process-session.ts` |
 | Codex受管引擎、投递、状态与双表面 | `apps/desktop/src/main/agent/codex-session.ts` |
+| 其他结构化会话与GUI投影 | `external-agent-session.ts`、`structured-external-session.ts`及ACP／Claude／Pi驱动 |
 | 原生认证状态、渠道与账号摘要核对 | `apps/desktop/src/main/agent/codex-identity.ts`；生命周期与登录仍由`CodexSession`接续 |
 | JSON-RPC传输、超时和断连 | `apps/desktop/src/main/agent/codex-rpc.ts` |
 | 原生终端协议桥与输入边界 | `apps/desktop/src/main/agent/codex-terminal-bridge.ts` |
 | PTY、原生终端启动及退出 | `apps/desktop/src/main/agent/codex-terminal.ts` |
 | 进程及线程占用、私有记录和持久化引擎校验 | `apps/desktop/src/main/agent/session-lease.ts`、`session-storage.ts` |
-| 引擎私有沙箱与MCP配置 | `apps/desktop/src/main/agent/business-context.ts`、`context.ts`；宿主Owner位置沿`machine-environment.ts`窄投影 |
+| 引擎私有沙箱与MCP配置 | `apps/desktop/src/main/agent/external-ai-launch.ts`、`acp-launch-preparation.ts`及Codex的`context.ts`；宿主Owner位置沿`machine-environment.ts`窄投影 |
 | 其他引擎MCP回执 | `apps/desktop/src/main/agent/mcp-relay.mjs` |
 | 作品成果的固定回读 | `apps/desktop/src/main/agent/session-results.ts`；原集中计划成功步骤由`execution-results.ts`核对 |
 | 作品选择及类型化业务交接 | `apps/desktop/src/renderer/agent-business.tsx`、`apps/desktop/src/creative-request.ts` |
@@ -35,10 +37,31 @@
 | 窗口与左右布局 | `apps/desktop/src/renderer/agent-workspace.tsx`、`apps/desktop/src/main/window-chrome.ts` |
 | 偏好默认值及解析 | `contracts/agent-session-defaults.json`、`packages/workbench-ui/src/agent-preferences.ts` |
 | 执行策略及原操作恢复 | `core/src/execution.rs`及既有领域应用动作 |
+| 无窗口会话与稳定CLI/MCP | `core/src/external_execution/sessions.rs`、`apps/desktop/src/main/agent/agent-machine-service.ts` |
+| Bot配置、生命周期及固定派发 | `core/src/domain/bots.rs`、`core/src/external_execution/bots.rs` |
+| 固定角色说明与宿主校验 | `apps/desktop/src/main/agent/bot-context.ts`；Core把原配置交给宿主，不将内部校验字段透传给提供方协议 |
+| 原生电脑、固定观察与动作围栏 | `core/src/external_execution/computer*.rs`、`apps/desktop/native/computer*.swift` |
+| 外部工作面与本机恢复 | `apps/desktop/src/renderer/external-runtime-panel.tsx`、`apps/desktop/src/main/external-execution.ts` |
+| Bot真实终端与原序列回读 | `external-bot-terminal.tsx`经公开Bot请求复用`codex-terminal.tsx`，缺段沿原会话读取；`external-terminal-write-queue.ts`合并未派发输入、等待原回执并冻结未知结果 |
+
+## 外部执行、Bot与电脑
+
+三套公开动作共用 `contracts/schemas/external-execution.schema.json`。会话和Bot未知回执查询所属动作的 `operation`，不能转到作品账本；Bot会话回执中 `state`属于操作，`result`才是会话。旧Bot配置保留，读取返回原bot_ref，新派发核对当前配置及策略锁。模型和PTY原生参数缺失时拒绝，不回退默认模型。
+
+Bot终端曾逐字符调用公开入口并重复发送相同尺寸，连续输入在回执队列积压。只合并未派发、同会话及同代次的相邻字节；原请求进入派发后不改键或内容，未知结果冻结后续写入。关闭和切换前等待原队列，清理失败与原业务失败分别保存；不能增加等待或忽略字符断言来宣布输入正常。表单Escape先在内层消费，取消恢复原触发焦点，外层工作面保持。
+
+生命周期写入与状态回读保持同一忙碌区间，先等原终端队列，避免停用后旧尺寸进入派发并阻断配置刷新。宿主按WorkRef及领域共享写入队列，不能只依赖每个renderer实例的队列；未知回执继续沿原键核对，不靠串行等待改变结果。
+
+普通PTY持久保存选定存储目录、模型与Hermes profile。重开标签可启动新进程，但没有原生线程身份的 `restore`必须拒绝；GUI按原提供方身份接续。迁入不同产品的适配代码时检查客户端ID映射：河图使用 `claude-code`，协议及上下文分类中的 `claude`仍保留其原义。
+
+电脑面板重开先读取原session_id和目标，再获取新观察。观察携带真实输入控制状态，其他客户端接管时不可恢复；恢复前后均拒绝旧快照。操作账本只保存摘要与回执，不保存输入原文或截图像素；本机UI恢复记录不能授予窗口或作品权限。
+
+`snapshot.accessibility_status`区分真实窗口树和仅截图。AX窗口身份缺失时，截图仍固定原CG窗口并核对观察前后身份；不生成元素、猜测窗口或用OCR充当可写字段。需要AX的动作保持拒绝。原生读取异常保留AX角色、窗口身份与失败证据，不通过扩大等待或修改系统权限掩盖。
 
 ## PTY与恢复：已遇到的问题
 
 - **安装探测成功，启动却报ENOENT**：执行位并不能证明脚本的shebang解释器仍存在。读取有限头部核对绝对解释器，跳过失效旧入口继续寻找有效安装；显式指定的无效入口直接报错，不静默换引擎。不修改系统Node或作者全局PATH来掩盖问题。
+- **终端能找到Codex，Finder启动却找不到**：核对共享`command-resolution.ts`和`shell-environment.ts`。按登录Shell顺序发现已安装入口，共享有界探测并支持刷新，保留Bun等已知目录及随包Node兜底；PATH与mise状态一起进入引擎子进程，不输出完整Shell环境。使用最小继承PATH核对真实CLI、App Server、TUI及原线程恢复，不能只验Shell PTY。Orca与t3code的固定源码依据归研究14第16节。
 
 - **回放重复或乱序**：快照带有有序游标，实时输出与回放使用同一代次，消重接续；缺段回读原宿主。xterm回放期间的终端查询响应不能反向写入运行中的CLI。重连不重发模型请求。
 - **PTY活着但引擎已断开**：`terminal_connected` 不能只看PTY句柄。受管引擎断连后停止输入，保留屏幕；原引擎可恢复则连接原线程。原生服务可能先删socket、启动器稍后退出，须等实际退出再重建。
@@ -136,6 +159,8 @@ GUI选择器也沿这些Owner核验，长场次只附加固定范围，不把全
 
 成果按原工具回执提供的固定引用回读既有Core动作，核对WorkRef、修订和摘要。多次保存同一固定成果可去重，不按标题合并不同对象；旧版成果允许打开确切历史并提示当前已有更新。UI点击直接复用 `hetu:session-result` 及现有领域导航，不另存成果正文。
 
+Bot成果通过原`hetu.bots.request session_read`读取，先核对Core的原`bot_ref`、客户端、WorkRef和代次，不把Bot身份传给普通会话管理器。`conversation.receipts`来自原会话MCP中继，协议工具保留`server/name`；完整回执按条省略并标记预算，不能截断或从聊天正文补造。GUI和TUI共用成果按钮及现有Core核验，停用不妨碍原成果读取，返回保留原Bot与草稿。
+
 统一执行和专业插件会给真实回执增加层级。`execution.invoke`沿成功的`data.result`，集中执行沿各成功步骤，`plugins.invoke`沿实际`invocation.effect`及成功的`result`展开；只认已知写入动作或原Owner保存的专业对象，不递归搜索任意正文。部分、pending、unknown或摘要省略不能伪装完整保存。同一工具可交付多个成果，列表键使用工具身份与固定引用，避免React按同一tool ID覆盖；同一固定成果再次回执则去重。
 
 成功写入后丢失执行回执时，模型可能只查询`execution.get_plan`。成果投影应从查询提供的固定`plan_ref`再次读取原计划，核对工作区、计划摘要、固定命令与成功步骤顺序，再沿既有领域动作回读成果；不信任查询工具输出里附带的步骤或正文。已准备／已确认且尚未执行的计划不产生保存成果，部分完成只展示已成功前缀，unknown继续查询原计划，不换键执行。全局执行计划读取不接收领域`management_ref`，作品成果读取仍保留精确业务范围；具体调用形状以实际Schema为准。
@@ -169,6 +194,8 @@ MCP大结果可能只返回摘要，`core_actions`或`data_actions`省略不等�
 ## 包体与跨平台
 
 开发环境的Node、native addon与Electron运行时不能混为一谈。核对实际ABI、平台及架构，使用正式构建和打包脚本带齐 `node-pty` 原生模块与所需helper。helper路径以安装产物为准，不为不存在的目标盲目chmod。打包后验证实际二进制能启动PTY，再验证IPC、线程恢复和Core回读。
+
+运行时依赖从桌面workspace实际解析位置复制，再核对声明与包内加载版本。根级hoist可能属于其他工具：本轮根ws为8.21.0、桌面锁定8.22.0，直接复制根目录会形成错误包体。macOS装配可复用已核验的锁定Electron归档，保留源码／完整制品摘要与签名检查。
 
 先核对锁定版本的原生构建及调用分支，再决定哪些平台需要helper。当前`node-pty`的`binding.gyp`只在macOS构建`spawn-helper`，`src/unix/pty.cc`的Apple分支才使用它；Linux走`forkpty`，Windows沿自己的后端。源码编译与预构建路径都存在，不代表每个平台都有同一文件；只用临时目录造出Linux helper会让夹具通过，却无法证明真实依赖布局正确。现有`pty-helper.test.mjs`分别验证macOS所需文件与Linux／Windows无此要求，实际目标平台的PTY仍单独验收。
 
