@@ -80,7 +80,7 @@
     "../../packages/workbench-ui/src/image-region.css": "75cdf2dfb351adea96c88338329f8f3c4d2a6d4446037cd605570a34941d245c",
     "../../packages/workbench-ui/src/task-feedback-history.css": "0e0940167699c5a8aa10f4d3e85f43aaf455251de0b37195c9a59852cd83f96d",
     "scripts/build.mjs": "2cb8078ee2ff0ab2fd8d6222955a9640f47d8c67eff6699137014a07d415f821",
-    "package.json": "ab5061601b2c9e272ae8fddb46c4bbae2f1fc3eecaa268cdf85070ff57aed2d6",
+    "package.json": "fd177c4ed85b7339b6fbf7abfba49481dcce3f8aaa970d9ab37af5583369ef80",
     "THIRD-PARTY-NOTICES.txt": "f8da2e92ce87daf26c9d6d8b2e1ba99a8a28da89a09d3fa48f498b0f337cad8b"
   },
   "inputs": [

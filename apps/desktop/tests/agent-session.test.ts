@@ -2,6 +2,8 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { chmod, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
+import fs from "node:fs/promises";
+import {syncBuiltinESMExports} from "node:module";
 import { AcpSession, AgentSession, ClaudeSession, agentSessionPersistPath, agentSessionSandbox, buildAgentSessionPrompt, buildCodexAppServerArgs, serializeAgentSessionContext } from "../src/main/agent-session.ts";
 
 test("Agent会话上下文是类型化作品引用，不暴露工作区绝对路径", () => {
@@ -209,7 +211,7 @@ exec ${process.execPath} ${JSON.stringify(binary + ".mjs")}
   } finally { await session.stop(); if (previous === undefined) delete process.env.HETU_CLAUDE_BIN; else process.env.HETU_CLAUDE_BIN = previous; await rm(profile, { recursive: true, force: true }); await rm(directory, { recursive: true, force: true }); }
 });
 
-test("ACP v1 会话适配器支持初始化、会话恢复、增量消息和权限回传", async () => {
+async function acpFixture(){
   const directory = await mkdtemp("/tmp/hetu-acp-session-test-");
   const binary = path.join(directory, "fake-acp");
   const responsePath = path.join(directory, "permission-response.json");
@@ -238,20 +240,70 @@ exec ${process.execPath} ${JSON.stringify(binary + ".mjs")} ${JSON.stringify(res
     function notify(method, params) { process.stdout.write(JSON.stringify({ jsonrpc: "2.0", method, params }) + "\\n"); }
   `);
   await chmod(binary, 0o755);
+  return {directory,binary,responsePath};
+}
+
+test("ACP v1 会话适配器支持初始化、会话恢复、增量消息和权限回传", {timeout:15000}, async () => {
+  const {directory,binary,responsePath}=await acpFixture();
+  const profile = await mkdtemp("/tmp/hetu-acp-session-profile-");
+  let session:AcpSession|undefined;
   const previous = process.env.HETU_ACP_BIN; process.env.HETU_ACP_BIN = binary;
   try {
-    const profile = await mkdtemp("/tmp/hetu-acp-session-profile-");
     const work = { workspace_id: "ws-acp", kind: "novel" as const, object_id: "novel-acp" };
-    const session = new AcpSession({ client: "acp", work, cwd: path.join(profile, "sandbox"), profile, emit: () => undefined });
+    session = new AcpSession({ client: "acp", work, cwd: path.join(profile, "sandbox"), profile, emit: () => undefined });
     assert.equal((await session.start()).thread_id, "acp-session-test");
     await session.send("读取当前作品");
     for (let attempt = 0; attempt < 20 && !session.snapshot().pending_request; attempt++) await new Promise(resolve => setTimeout(resolve, 25));
     assert.equal(session.snapshot().pending_request?.method, "session/request_permission");
     await session.respond(44, { outcome: { outcome: "selected", optionId: "reject-once" } });
+    const deadline=Date.now()+5000;
+    while(true){
+      try{assert.deepEqual(JSON.parse(await readFile(responsePath,"utf8")),{outcome:{outcome:"selected",optionId:"reject-once"}});break;}
+      catch(error){if((error as NodeJS.ErrnoException).code!=="ENOENT")throw error;assert(Date.now()<deadline,"夹具未收到原权限答复");await new Promise(resolve=>setTimeout(resolve,10));}
+    }
     const persisted = JSON.parse(await readFile(path.join(profile, "agent-sessions", "acp-ws-acp-novel-novel-acp.json"), "utf8"));
     assert.equal(persisted.session_id, "acp-session-test");
     assert.ok(session.snapshot().messages.some(message => message.role === "assistant" && message.text.includes("ACP 已收到")));
+  } finally {
+    try { await session?.stop(); }
+    finally {if (previous === undefined) delete process.env.HETU_ACP_BIN; else process.env.HETU_ACP_BIN = previous; await rm(profile, { recursive: true, force: true }); await rm(directory, { recursive: true, force: true });}
+  }
+});
+
+test("ACP旧保存迟到不覆盖最新消息和权限答复，停止后可从同一会话恢复",{timeout:15000},async()=>{
+  const {directory,binary}=await acpFixture(),profile=await mkdtemp("/tmp/hetu-acp-persist-profile-");
+  const work={workspace_id:"ws-acp",kind:"novel" as const,object_id:"novel-acp"};
+  const persistedPath=path.join(profile,"agent-sessions","acp-ws-acp-novel-novel-acp.json");
+  const previous=process.env.HETU_ACP_BIN,original=fs.writeFile,originalOpen=fs.open;process.env.HETU_ACP_BIN=binary;
+  let release!:()=>void,entered!:()=>void,armed=false,inFlight=0,maximum=0;
+  const held=new Promise<void>(resolve=>{release=resolve;}),started=new Promise<void>(resolve=>{entered=resolve;});
+  let session:AcpSession|undefined,sending:Promise<unknown>|undefined;
+  try{
+    session=new AcpSession({client:"acp",work,cwd:path.join(profile,"sandbox"),profile,emit:()=>{}});
+    await session.start();
+    const saving=async<T>(file:unknown,run:()=>Promise<T>):Promise<T>=>{
+      if(typeof file!=="string"||file!==persistedPath&&!file.startsWith(persistedPath+"."))return run();
+      inFlight++;maximum=Math.max(maximum,inFlight);
+      try{if(armed){armed=false;entered();await held;}return await run();}finally{inFlight--;}
+    };
+    fs.writeFile=((file,...args)=>saving(file,()=>original(file,...args))) as typeof fs.writeFile;
+    fs.open=((file,...args)=>saving(file,()=>originalOpen(file,...args))) as typeof fs.open;
+    syncBuiltinESMExports();
+    armed=true;sending=session.send("核对固定作品");await started;
+    const deadline=Date.now()+5000;
+    while(!session.snapshot().pending_request){assert(Date.now()<deadline,"未收到真实夹具权限请求");await new Promise(resolve=>setTimeout(resolve,10));}
+    const responded=session.respond(44,{outcome:{outcome:"selected",optionId:"reject-once"}});
+    await fs.stat(persistedPath);
+    // 先释放最早写入，再等待公开调用完成；序列化实现必须保留最后的助手消息。
+    release();await sending;await responded;
     await session.stop();
-    await rm(profile, { recursive: true, force: true });
-  } finally { if (previous === undefined) delete process.env.HETU_ACP_BIN; else process.env.HETU_ACP_BIN = previous; await rm(directory, { recursive: true, force: true }); }
+    assert.equal(maximum,1,"同一会话的旧保存与新保存发生重叠");
+    const saved=JSON.parse(await readFile(persistedPath,"utf8"));
+    assert.ok(saved.messages.some((message:any)=>message.role==="assistant"&&message.text==="ACP 已收到"));
+    const resumed=await session.start();assert.equal(resumed.thread_id,"acp-session-test");
+    assert.ok(resumed.messages.some(message=>message.role==="assistant"&&message.text==="ACP 已收到"));
+  }finally{
+    release();await sending?.catch(()=>{});
+    try{await session?.stop();}finally{fs.writeFile=original;fs.open=originalOpen;syncBuiltinESMExports();if(previous===undefined)delete process.env.HETU_ACP_BIN;else process.env.HETU_ACP_BIN=previous;await rm(profile,{recursive:true,force:true});await rm(directory,{recursive:true,force:true});}
+  }
 });

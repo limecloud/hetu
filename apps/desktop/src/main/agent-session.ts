@@ -2,6 +2,7 @@ import { spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
+import {RecoveryStore} from "./recovery.ts";
 import type { WorkRef } from "@hetu/plugin-sdk";
 import desktopPackage from "../../package.json" with { type: "json" };
 
@@ -139,6 +140,7 @@ type AcpPending = {
 
 /** ACP v1 的最小客户端适配；只开放会话和宿主审批，不把作品目录交给 Agent。 */
 export class AcpSession implements AgentSessionAdapter {
+  #persistence=new RecoveryStore();
   #child?: ChildProcessWithoutNullStreams;
   #buffer = Buffer.alloc(0);
   #closed = true;
@@ -341,8 +343,7 @@ export class AcpSession implements AgentSessionAdapter {
   }
   async #savePersisted() {
     const record: AcpPersistedSession = { session_id: this.#sessionId, thread_id: this.#snapshot.thread_id, cwd: this.#cwd, work_ref: this.#snapshot.work_ref!, messages: this.#snapshot.messages.slice(-200), updated_at: this.#snapshot.updated_at };
-    await mkdir(path.dirname(this.#persistPath), { recursive: true });
-    await writeFile(this.#persistPath, JSON.stringify(record) + "\n", { mode: 0o600 });
+    await this.#persistence.write(this.#persistPath,record,8*1024*1024);
   }
 }
 

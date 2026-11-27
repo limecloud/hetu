@@ -1,0 +1,74 @@
+{
+  "recorded_at": "2026-11-27T00:31:27.083159+00:00",
+  "version": "0.15.4",
+  "source_base_commit": "19e4560e9339cd10ca8b872ce4651a1069ae11bf",
+  "release_0153": {
+    "run_id": 45906706960,
+    "conclusion": "cancelled",
+    "cancel_requested_by_this_task": true,
+    "reason": "Mac组合测试持续约89分钟，未提供运行日志，停止尚未进入签名的发行以取得诊断。",
+    "source_ci_run_id": 45906653137,
+    "source_ci_conclusion": "success",
+    "linux": "success",
+    "windows": "success",
+    "publish": "cancelled",
+    "npm": "cancelled",
+    "mac_task_view": {
+      "passed": 133,
+      "skipped": 20,
+      "failed": 0,
+      "duration_minutes": 31.2
+    },
+    "stalled_at": "ACP v1 会话适配器支持初始化、会话恢复、增量消息和权限回传",
+    "failed_test_duration_ms": 44.623416,
+    "first_failure_at": "2026-11-26T23:26:42Z",
+    "cancel_at": "2026-11-27T00:22:50Z",
+    "test_failure_detail_unavailable": true,
+    "failure_cleanup_missing": true,
+    "tag_kept": true,
+    "mac_installed": false
+  },
+  "investigation": {
+    "50_independent_original_runs_passed": true,
+    "original_assertion_root_cause": "unconfirmed; do not infer from separate controlled persistence finding",
+    "controlled_old_persistence": {
+      "failed": true,
+      "maximum_concurrent_writes": 4,
+      "failed_assertion": "同一会话的旧保存与新保存发生重叠",
+      "process_exited_after_failure_ms": 562.054792
+    },
+    "fix": "ACP私有投影复用既有RecoveryStore的有界顺序快照、同步临时文件及原子替换；夹具finally stop、15秒用例预算并核对真实权限回传。",
+    "controlled_fixed": {
+      "passed": 2,
+      "failed": 0,
+      "maximum_concurrent_writes": 1,
+      "latest_assistant_message_preserved": true,
+      "same_session_restored": true
+    },
+    "agent_full": {
+      "passed": 105,
+      "failed": 0,
+      "skipped": 0,
+      "duration_ms": 29887.428959
+    },
+    "agent_full_final_0154": {
+      "passed": 105,
+      "failed": 0,
+      "skipped": 0,
+      "duration_ms": 20277.644625
+    }
+  },
+  "source_files": {
+    "apps/desktop/src/main/agent-session.ts": "166320410d85379c03aedb8ea739ddb2121dcd05a4e0690cb82a39ac11513682",
+    "apps/desktop/tests/agent-session.test.ts": "56f6c0fb9120d0416465a69830be80230ef6f25500df118ba3f8ba6cee8e70b5",
+    "apps/desktop/src/main/recovery.ts": "46e76dcb832bd42fdb1e819b89a8681cbea80b06edcfb9b5f35caed738cff40d"
+  },
+  "scope": "ACP试验适配及测试退出修复；不代表全部引擎或新版正式安装验收。",
+  "model_turns": 0,
+  "not_verified": [
+    "0.15.4完整远端门禁",
+    "0.15.4正式签名／公证／安装",
+    "原远端ACP断言的唯一根因",
+    "全部软件工作包"
+  ]
+}

@@ -51,7 +51,8 @@
     "本机桌面测试取得焦点时保护拒绝点击，待空闲后恢复确切宿主。",
     "意见控件在视口外时尺寸0；实际滚动后才点击。",
     "CGEvent驱动报告投递但意见仍空，回读确认零输入后改用系统AXSetValue，未重复追加；本项不计真实键盘中文验收。",
-    "Disclosure原生点击没有产生预期展开，AXPress后读取新控件与实际预览再继续；动作成功本身不计业务通过。"
+    "Disclosure原生点击没有产生预期展开，AXPress后读取新控件与实际预览再继续；动作成功本身不计业务通过。",
+    "重开后另一并行本机应用取得前台，保护再次拒绝输入；停止本轮进一步输入，未向其他应用发送事件。"
   ],
   "checks": {
     "native_fixed_opinion_saved": true,
@@ -59,10 +60,12 @@
     "adoption_preview_before_write": true,
     "adoption_new_chapter_exact_bytes": true,
     "original_document_preserved": true,
-    "desktop_app_not_required": true
+    "desktop_app_not_required": true,
+    "original_feedback_visible_after_normal_restart": true,
+    "adopted_chapter_listed_after_normal_restart": true
   },
   "not_verified": [
-    "本轮原生关闭重开后的意见／采纳复验",
+    "重开已核对原意见和新章目录；新章正文在重开后的像素及完整字节仍需补验。",
     "本轮原生unknown恢复",
     "新版品牌GUI和0.15.3实际安装",
     "完整原生页面及其他平台"

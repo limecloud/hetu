@@ -1,9 +1,9 @@
 {
   "schema_version": "1.0.0",
-  "resource_uri": "ui://hetu/workbench/2/f6bb806890ce260b0508bb2b21677efe3f4846540b2f4e4b958830c910b28fe1",
+  "resource_uri": "ui://hetu/workbench/2/acfe9d6df08ce0163e4203d00353be98b5f7be9549e182dc1a5d4be25ba4c48e",
   "mime_type": "text/html;profile=mcp-app",
   "sdk": "@modelcontextprotocol/ext-apps@2.0.4",
-  "sha256": "f6bb806890ce260b0508bb2b21677efe3f4846540b2f4e4b958830c910b28fe1",
+  "sha256": "acfe9d6df08ce0163e4203d00353be98b5f7be9549e182dc1a5d4be25ba4c48e",
   "size_bytes": 5845804,
   "source_sha256": {
     "../../packages/workbench-ui/src/reading.css": "a5f13f78e461ce72b64540cc09686e8a78a8d19a835ea9258af1ba6031c694c2",
@@ -214,7 +214,7 @@
     "../desktop/src/renderer/contributions.tsx": "accd00312449a27c73e597bdeec82f5bf65dfdf12e619a3b9204eb4e133976e9",
     "../desktop/src/renderer/storage-settings.css": "ba373ff9309801739cd9597960df744092e89e40a2efd9199a5a90eb65f0eac1",
     "../desktop/src/renderer/storage-settings.tsx": "a43ccd61428907668f220acd1da64eb351694893f83fb2986d3506e9476051a3",
-    "../desktop/package.json": "62a285dc074833ab1b42a6c385869add02952a837f80584357d1ef79441a6e46",
+    "../desktop/package.json": "6aa837a2306f0f8ec96472683b8fa87ffa173c6f757fd190f5463192b32e3b51",
     "../desktop/src/renderer/settings.css": "dc293bf454c1ffb3d050a5ab1efb2543c526ee583f943c090dd7de154f00c227",
     "../desktop/src/renderer/model-settings.tsx": "460fa38df4f2a642872b3bbb950c25e9d25330dd1863a54d3c6b9472bfaa51c8",
     "../desktop/src/renderer/codex-settings.tsx": "ee2f8879aa540f4b54ec57cc295b0c7bf7b1d3a4a697b82ce78ee52447263295",
@@ -229,7 +229,7 @@
     "src/workbench.css": "05017be3882ef4ec9851e613666b2e7e4fd32e5fe54cadf1023de5dc70cecf81",
     "../../assets/styles/radix-workbench.css": "1a3923b5c461718b6856b507df3d778a477f47dd2a0a010e21a029b7b4dcc342",
     "scripts/build.mjs": "2cb8078ee2ff0ab2fd8d6222955a9640f47d8c67eff6699137014a07d415f821",
-    "package.json": "ab5061601b2c9e272ae8fddb46c4bbae2f1fc3eecaa268cdf85070ff57aed2d6",
+    "package.json": "fd177c4ed85b7339b6fbf7abfba49481dcce3f8aaa970d9ab37af5583369ef80",
     "THIRD-PARTY-NOTICES.txt": "f8da2e92ce87daf26c9d6d8b2e1ba99a8a28da89a09d3fa48f498b0f337cad8b"
   }
 }
