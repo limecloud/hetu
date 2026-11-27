@@ -55,7 +55,9 @@
       "verified_artifacts": 3154,
       "signature": true,
       "user_indexes_unchanged": true,
-      "source_sha256": "4f3cfdcdbdd92563859d130426ddaacdf86d45989b32f1c905b71f45582ec25f"
+      "source_sha256": "b284c8398a5257721c837159a2a8c09a5963758ff28df4b2099a1e799a6d2f7d",
+      "git_sha": "7ef8645c5f9b95129868d1227c35b7406d69bf96",
+      "source_files_verified": 3160
     },
     "packaged_live": {
       "passed": 2,
@@ -78,14 +80,50 @@
       "source_and_build_script_digests_identical": true,
       "output_sha256": "05cc0acf0e216dad01b94a9d12152341bef877d62e19463349844cf0bba72584",
       "source_manifest": "../../../output/local-install-20261127/hetu-dev-V9jtBj/manifest.json"
+    },
+    "installed_final_live": {
+      "codex_full_test_passed": true,
+      "real_tui_restore": true,
+      "model_turns": 0,
+      "settings_geometry_and_navigation_passed": true,
+      "settings_test_cleanup": "failed: native debugger exit timeout; not counted as a full pass",
+      "settings_bounds": {
+        "x": 0,
+        "y": 25,
+        "width": 1440,
+        "height": 788
+      },
+      "result": "../../../output/local-install-v0160/installed-final-results/"
+    },
+    "regressions": {
+      "chat": true,
+      "preview_directory": true,
+      "authoring_session": true
+    },
+    "ci": {
+      "run": 46045827814,
+      "status": "success",
+      "desktop_journeys_passed": 101,
+      "website_tests_passed": 658,
+      "shared_view_tests_passed": 133
     }
   },
   "release": {
     "version": "0.16.0",
-    "status": "regression_validation_in_progress",
+    "git_sha": "7ef8645c5f9b95129868d1227c35b7406d69bf96",
+    "run": 46046048484,
+    "url": "https://github.com/limecloud/hetu/releases/tag/v0.16.0",
+    "published": true,
+    "platforms": [
+      "macos-arm64",
+      "windows-x64",
+      "linux-x64"
+    ],
+    "macos_signing_notarization": true,
     "failed_runs": [
       46036082132,
-      46037356573
+      46037356573,
+      46045348911
     ],
     "cancelled_release": 46038934141
   }
