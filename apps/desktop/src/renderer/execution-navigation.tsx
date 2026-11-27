@@ -72,8 +72,8 @@ export function ExecutionNavigation(props: ExecutionNavigationProps) {
     return () => window.removeEventListener("keydown", find);
   }, [layout.full, layout.navigationVisible]);
   if (!layout.full) return null;
-  const works = layout.works.filter(item => !item.archived && matches(item.title));
   const currentSessions = sessions.filter(item => matches(item.title));
+  const works = layout.works.filter(item => !item.archived && (matches(item.title) || !!layout.work && sameWork(layout.work,item.work_ref) && currentSessions.length>0));
   return <>
     {layout.navigationVisible && <button className="execution-navigation-backdrop" aria-label="关闭会话导航" onClick={()=>layout.onNavigation(false)}/>}
     <aside className="execution-navigation" aria-label="会话导航" hidden={!layout.navigationVisible} style={{"--execution-navigation-width": `${layout.navigationWidth}px`} as React.CSSProperties} onKeyDown={event=>{if(event.key==="Escape"&&!event.defaultPrevented&&!event.nativeEvent.isComposing&&innerWidth<760){event.preventDefault();event.stopPropagation();layout.onNavigation(false);}}}>

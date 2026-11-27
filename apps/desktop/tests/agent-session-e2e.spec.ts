@@ -5,13 +5,14 @@ import { createRequire } from "node:module";
 import { spawnSync } from "node:child_process";
 import os from "node:os";
 import path from "node:path";
-import {navigate, workspaceAction} from "./navigation.ts";
+import {navigate, workspaceAction, closeApplication} from "./navigation.ts";
 
 const root = path.resolve(import.meta.dirname, "../../..");
 
 test("独立桌面 Agent 会话通过精确作品引用运行在私有沙箱", async () => {
   test.setTimeout(120000);
   const folder = await mkdtemp(path.join(os.tmpdir(), "hetu-agent-session-e2e-"));
+  const threadId="thread-desktop-e2e-"+path.basename(folder);
   const workspace = path.join(folder, "作品");
   const profile = path.join(folder, "profile");
   const collaboration = path.join(folder, "collaboration");
@@ -38,7 +39,7 @@ test("独立桌面 Agent 会话通过精确作品引用运行在私有沙箱", a
       else if(message.method==="config/read")reply(message.id,{config:{}});
       else if (message.method === "thread/start" || message.method === "thread/resume") {
         appendFileSync(log, JSON.stringify({ method: message.method, params: message.params, collaboration: process.env.HETU_COLLABORATION_DIR }) + "\\n");
-        reply(message.id, { thread: { id: "thread-desktop-e2e" } });
+        reply(message.id, { thread: { id: ${JSON.stringify(threadId)} } });
       } else if (message.method === "turn/start") {
         appendFileSync(log, JSON.stringify({ method: message.method, params: message.params }) + "\\n");
         reply(message.id, { turn: { id: "turn-desktop-e2e" } });
@@ -58,6 +59,7 @@ test("独立桌面 Agent 会话通过精确作品引用运行在私有沙箱", a
     HETU_APP_SERVER: path.join(root, "target/debug/hetu-app-server"),
     HETU_CLI: path.join(root, "target/debug/hetu"),
     HETU_CODEX_BIN: codex,
+    CODEX_HOME: path.join(folder,"codex-home"),
   } });
   try {
     const page = await app.firstWindow();
@@ -70,6 +72,12 @@ test("独立桌面 Agent 会话通过精确作品引用运行在私有沙箱", a
     await page.getByRole("dialog",{name:"创建会话",exact:true}).getByRole("button",{name:/^引擎(?: |$)/}).click();await page.getByRole("button",{name:"打开聊天",exact:true}).click();
     await expect(page.getByText("已连接", { exact: true })).toBeVisible({ timeout: 30000 });
     await page.getByRole("textbox", { name: "发送给 Agent", exact: true }).fill("请读取当前章节的固定来源并返回确认。");
+    const fixed = await page.evaluate(()=>window.hetuDesktop.agentSession("get"));
+    // 同一会话的线程绑定回包不能覆盖作者已经输入、尚未保存的草稿。
+    await app.evaluate(({BrowserWindow},snapshot)=>{const view=BrowserWindow.getAllWindows().find(window=>!window.webContents.getURL().includes("?view=settings"))!;view.webContents.send("desktop:agent-session",{type:"snapshot",snapshot:{...snapshot,thread_id:undefined}});},fixed);
+    await expect(page.getByRole("textbox",{name:"发送给 Agent",exact:true})).toHaveValue("请读取当前章节的固定来源并返回确认。");
+    await app.evaluate(({BrowserWindow},snapshot)=>{BrowserWindow.getAllWindows().find(window=>!window.webContents.getURL().includes("?view=settings"))!.webContents.send("desktop:agent-session",{type:"snapshot",snapshot});},fixed);
+    await expect(page.getByRole("button",{name:"发送",exact:true})).toBeEnabled();
     await page.getByRole("button", { name: "发送", exact: true }).click();
     await expect(page.getByText("已通过桌面会话读取固定上下文。", { exact: true })).toBeVisible({ timeout: 30000 });
     const records = (await readFile(log, "utf8")).trim().split("\n").filter(Boolean).map(line => JSON.parse(line));
@@ -145,6 +153,6 @@ test("独立桌面 Agent 会话通过精确作品引用运行在私有沙箱", a
     expect(rejected).toContain("作品已切换");
   } finally {
     await app.evaluate(()=>{(globalThis as any).__holdResourceLists=false;for(const release of (globalThis as any).__heldResourceLists??[])release();}).catch(()=>{});
-    await app.close();
+    await closeApplication(app);
   }
 });

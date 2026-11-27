@@ -61,7 +61,7 @@ export function AgentSession({ work, notify, controls,layout:providedLayout,maxi
     if(value.session_id===previous.session_id&&(value.generation??0)<(previous.generation??0))return;
     if(!changed&&(value.draft_version??0)<(previous.draft_version??0))value={...value,draft:previous.draft,gui_draft:previous.gui_draft,tui_draft:previous.tui_draft,draft_version:previous.draft_version,context_refs:previous.context_refs};
     current.current=value;setSnapshot(value);
-    if(changed||!localDraft.current.dirty){localDraft.current={text:value.draft??"",version:localDraft.current.version+1,dirty:false};setDraft(value.draft??"");}
+    if(value.session_id!==previous.session_id||value.surface!==previous.surface||!localDraft.current.dirty){localDraft.current={text:value.draft??"",version:localDraft.current.version+1,dirty:false};setDraft(value.draft??"");}
   }
   async function saveDraft():Promise<void>{
     if(savingDraft.current){await savingDraft.current;return saveDraft();}

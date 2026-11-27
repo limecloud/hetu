@@ -59,7 +59,7 @@ for (const appearance of ["light", "dark"] as const) test(`stdio ${appearance} �
     const settings = view.getByRole("region", {name: "本机设置", exact: true}); await expect(settings).toBeVisible();
     for (const width of [480, 320]) {
       await measure("settings-general", width);
-      expect.soft(await settings.getByRole("tablist", {name: "设置分类", exact: true}).getAttribute("aria-orientation")).toBe(width <= 440 ? "horizontal" : "vertical");
+      expect.soft(await settings.getByRole("tablist", {name: "设置分类", exact: true}).getAttribute("aria-orientation")).toBe(width <= 760 ? "horizontal" : "vertical");
     }
     const generalTab = settings.getByRole("tab", {name: "通用", exact: true});
     await generalTab.focus(); await generalTab.press("ArrowRight");

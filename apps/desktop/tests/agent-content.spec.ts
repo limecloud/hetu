@@ -48,9 +48,9 @@ test("目录和预览完整键盘菜单、读取恢复、旧修订及迟到回�
     await row("第一章 雾港").click();await expect(page.locator(".agent-content-temporary")).toHaveCount(1);
     await tab("第一章 雾港").focus();await tab("第一章 雾港").press("Shift+F10");await page.getByRole("menuitem",{name:"保留标签",exact:true}).click();await expect(page.locator(".agent-content-temporary")).toHaveCount(0);
     await row("第三章 夜航").dblclick();await expect(tab("第三章 夜航")).toBeVisible();
-    await tab("第一章 雾港").focus();await tab("第一章 雾港").press("ArrowLeft");await expect(tab("第二章 潮声")).toBeFocused();await expect(tab("第二章 潮声")).toHaveAttribute("aria-selected","true");
-    await tab("第二章 潮声").press("Home");await expect(tab("Codex")).toBeFocused();await expect(page.locator(".agent-content-terminal")).toBeVisible();
-    await tab("Codex").press("End");await expect(tab("第三章 夜航")).toBeFocused();
+    await tab("第一章 雾港").focus();await tab("第一章 雾港").press("ArrowLeft");await expect(tab("第二章 潮声")).toBeFocused();await expect(tab("第三章 夜航")).toHaveAttribute("aria-selected","true");await tab("第二章 潮声").press("Enter");await expect(tab("第二章 潮声")).toHaveAttribute("aria-selected","true");
+    await tab("第二章 潮声").press("Home");const sessionTab=tab(before.title??"Codex");await expect(sessionTab).toBeFocused();await expect(tab("第二章 潮声")).toHaveAttribute("aria-selected","true");await sessionTab.press("Enter");await expect(page.locator(".agent-content-terminal")).toBeVisible();
+    await sessionTab.press("End");await expect(tab("第三章 夜航")).toBeFocused();await tab("第三章 夜航").press("Enter");
     await tab("第三章 夜航").click({button:"middle"});await expect(tab("第三章 夜航")).toHaveCount(0);await expect(tab("第一章 雾港")).toHaveAttribute("aria-selected","true");await expect(tab("第一章 雾港")).toBeFocused();
     await tab("第二章 潮声").click({button:"right"});await page.getByRole("menuitem",{name:"关闭右侧预览",exact:true}).click();await expect(tab("第一章 雾港")).toHaveCount(0);
     await row("第一章 雾港").dblclick();await tab("第二章 潮声").click({button:"right"});await page.getByRole("menuitem",{name:"关闭其他预览",exact:true}).click();await expect(tab("第一章 雾港")).toHaveCount(0);
